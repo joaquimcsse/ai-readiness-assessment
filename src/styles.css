@@ -1,0 +1,54 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+:root {
+  --bs-primary: #2457a6;
+  --bs-primary-rgb: 36, 87, 166;
+  --ink: #1f2d3d;
+  --muted: #5f6f82;
+  --surface: #ffffff;
+  --background: #eef3f8;
+}
+
+body {
+  background: var(--background);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid #d8e0ea;
+}
+
+.question-card,
+.intro-card,
+.result-card {
+  background: var(--surface);
+  border: 1px solid #d8e0ea;
+  border-radius: 0.75rem;
+}
+
+.question-card.missing {
+  border-color: #dc3545;
+}
+
+.answer-button {
+  min-height: 3rem;
+}
+
+.answer-button.selected {
+  color: #fff;
+  background: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+.progress-bar {
+  transition: width 200ms ease;
+}
+
+.result-score {
+  color: var(--bs-primary);
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+}
