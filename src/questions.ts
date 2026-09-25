@@ -46,7 +46,7 @@ export const dimensoes: Dimensao[] = [
   {
     id: "D1",
     nome: "Disponibilidade e qualidade dos dados",
-    critica: true,
+    critica: false,
     perguntas: [
       {
         texto: "Os registros de clientes, vendas e operação estão completos e atualizados.",
@@ -115,19 +115,19 @@ export const dimensoes: Dimensao[] = [
         ajuda: "Treinamento, estudo ou experimentação dentro do expediente.",
       },
       {
-        texto: "As pessoas se sentem à vontade para sugerir melhorias e apontar erros.",
-        ajuda: "Ambiente em que apontar um problema não gera punição.",
+        texto: "As pessoas se sentem à vontade para sugerir melhorias, pedir ajuda e apontar erros.",
+        ajuda: "Ambiente em que apontar um problema não gera punição e em que pensamento crítico e questionador são incentivados.",
       },
       {
-        texto: "Há pelo menos uma pessoa curiosa que puxa o uso de novas tecnologias.",
-        ajuda: "Alguém que testa e ensina os demais.",
+        texto: "A equipe está genuínamente disposta a se dedicar para dominar novas ferramentas e processos.",
+        ajuda: "Percebe-se que os funcionários vão investir esforços e se dedicar para um processo completo de capacitação.",
       },
     ],
   },
   {
     id: "D4",
     nome: "Governança, ética e conformidade",
-    critica: false,
+    critica: true,
     perguntas: [
       {
         texto: "A empresa sabe quais dados pessoais coleta e por quê.",
