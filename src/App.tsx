@@ -37,7 +37,7 @@ function App() {
     <>
       <header className="app-header sticky-top">
         <div className="container py-3 d-flex justify-content-between align-items-center">
-          <span className="fw-semibold">Prontidão para IA</span>
+          <span className="fw-semibold">Diagnóstico de Prontidão para IA</span>
           <span className="text-secondary small">{respondidas} de {totalPerguntas} · {progresso}%</span>
         </div>
         <div className="progress rounded-0" role="progressbar" aria-label="Progresso" aria-valuenow={progresso} aria-valuemin={0} aria-valuemax={100}>
@@ -94,7 +94,7 @@ function App() {
 
         {resultado && <ResultadoView resultado={resultado} onRestart={recomecar} />}
 
-        <footer className="text-secondary small border-top mt-5 pt-3 d-flex flex-wrap gap-3">
+        <footer className="text-primary small border-top mt-5 pt-3 d-flex justify-content-center flex-wrap gap-3">
           <span>Prontidão para IA · PMEs</span><span>•</span><span>Livre e sem cadastro</span><span>•</span><span>Feito em aproximadamente 8 minutos</span>
         </footer>
       </main>

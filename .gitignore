@@ -1,0 +1,35 @@
+# dependencies
+node_modules
+
+# build output
+dist
+dist-ssr
+*.tsbuildinfo
+
+# editors
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# system files
+.DS_Store
+Thumbs.db
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# env
+.env
+.env.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
