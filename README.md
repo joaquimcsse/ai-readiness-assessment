@@ -22,3 +22,6 @@
 - Para cada questão existem 5 alternativas ordinais: as escolhas do usuário são normalizadas e assumem um valor entre 0 e 100. 
 - Um valor fixo discreto fixo é utilizado para garantir que as dimensões consideradas críticas terão sempre maior peso no resultado final.
 - O cálculo está implementado no código em /src/score.ts
+
+## Autores 
+- Guilherme Arcanjo, Joaquim Faraco, Lucas da Costa, Renan Herculano, Renan Andrade
