@@ -1,0 +1,11 @@
+{
+  "name": "mgp-pme",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MGP-PME — Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas (instanciação web estática)",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/",
+    "start": "python3 -m http.server 8000"
+  }
+}

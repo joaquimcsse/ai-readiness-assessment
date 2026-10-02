@@ -1,0 +1,49 @@
+# Verifica o núcleo lógico e os critérios de aceitação (V2, CT-01 a CT-08)
+# e publica a página estática no GitHub Pages.
+name: Testes e publicação
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test tests/
+
+  publicar:
+    if: github.event_name != 'pull_request'
+    needs: testes
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Montar site (somente arquivos da página)
+        run: |
+          mkdir -p _site
+          cp -r index.html dados.json css js _site/
+          touch _site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
