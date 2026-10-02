@@ -10,7 +10,7 @@ export const num = (v, casas = 1) =>
   Number(v).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
 
 export function dataBR(iso) {
-  if (!iso) return '—';
+  if (!iso) return 'sem data';
   const [a, m, d] = iso.slice(0, 10).split('-');
   return `${d}/${m}/${a}`;
 }
@@ -34,7 +34,7 @@ export const PORTES = [
 ];
 
 export function rotuloPorte(v) {
-  return PORTES.find(p => p.valor === v)?.rotulo.split(' (')[0] ?? v ?? '—';
+  return PORTES.find(p => p.valor === v)?.rotulo.split(' (')[0] ?? v ?? 'porte não informado';
 }
 
 export function aviso(container, tipo, html) {

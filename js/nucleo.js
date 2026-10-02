@@ -232,7 +232,7 @@ export function diagnosticar(respostas, modelo, opcoes = {}) {
     const nomes = Object.fromEntries(modelo.niveis.map(n => [n.numero, n.nome]));
     observacoes.push({
       codigo: 'FA-01',
-      texto: `O escore ponderado (${eg.toFixed(1).replace('.', ',')}) corresponde ao nível ${teto.nivelCompensatorio} (${nomes[teto.nivelCompensatorio]}), mas o nível atribuído é ${teto.nivelFinal} (${nomes[teto.nivelFinal]}): a média ponderada superestima a prontidão real, porque ${teto.gargalos.join(', ')} — dimensão crítica de menor escore — limita o que a empresa consegue sustentar.`,
+      texto: `O escore ponderado (${eg.toFixed(1).replace('.', ',')}) corresponde ao nível ${teto.nivelCompensatorio} (${nomes[teto.nivelCompensatorio]}), mas o nível atribuído é ${teto.nivelFinal} (${nomes[teto.nivelFinal]}): a média ponderada superestima a prontidão real, porque ${teto.gargalos.join(', ')}, a dimensão crítica de menor escore, limita o que a empresa consegue sustentar.`,
     });
   }
   if (!Object.values(faixas).includes('F1')) {

@@ -9,7 +9,7 @@ import { validarModelo, esforcoGestor } from './validacao.js';
 const DSR_CANVAS = [
   ['Problema de pesquisa', 'Como as Pequenas e Médias Empresas podem avaliar, de forma estruturada, acessível e sistemática, sua prontidão tecnológica, cultural e organizacional antes de investir na adoção de Inteligência Artificial?'],
   ['Classe de problemas', 'Avaliação de prontidão organizacional para adoção tecnológica em organizações de recursos limitados. O artefato é um exemplar desta classe, e não uma solução particular a uma empresa.'],
-  ['Artefato', 'MGP-PME — Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas: um modelo de referência com 6 dimensões e uma instanciação executável com 30 itens, 5 níveis de maturidade e 24 regras prescritivas.'],
+  ['Artefato', 'MGP-PME (Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas): um modelo de referência com 6 dimensões e uma instanciação executável com 30 itens, 5 níveis de maturidade e 24 regras prescritivas.'],
   ['Tipo de artefato', 'Combinação de modelo e instanciação, de natureza prescritiva. Não explica por que PMEs adotam ou deixam de adotar IA: orienta decisões concretas de investimento.'],
   ['Requisitos', 'Seis requisitos funcionais e cinco não funcionais, fixados na etapa de definição dos objetivos da solução. São critério de aceitação do artefato: a matriz de rastreabilidade liga cada um a um componente ou a uma decisão arquitetural.'],
   ['Base de conhecimento', 'Revisão de mais de trinta artigos publicados entre 2021 e 2026, em seis eixos temáticos; modelos TOE, TAM e UTAUT; Visão Baseada em Recursos e Capacidades Dinâmicas; modelos de maturidade em estágios; e o ciclo metodológico da DSR (Peffers et al., 2007).'],
@@ -66,7 +66,7 @@ export function renderSobre(el, { modelo }) {
     <section class="cartao">
       <p class="etapa-rotulo">Pesquisa Aplicada · PUCPR · Grupo G02 · PBL 4</p>
       <h1>Sobre o MGP-PME</h1>
-      <p class="lead">Instanciação executável do <strong>Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas</strong>, artefato de uma pesquisa conduzida segundo a <em>Design Science Research</em> (Peffers et al., 2007). Modelo em uso: versão <strong>${esc(modelo.versao_modelo)}</strong> — ${modelo.dimensoes.length} dimensões, ${modelo.itens.length} itens, ${modelo.niveis.length} níveis, ${modelo.regras_dimensao.length + modelo.regras_transversais.length} regras.</p>
+      <p class="lead">Instanciação executável do <strong>Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas</strong>, artefato de uma pesquisa conduzida segundo a <em>Design Science Research</em> (Peffers et al., 2007). Modelo em uso: versão <strong>${esc(modelo.versao_modelo)}</strong>, com ${modelo.dimensoes.length} dimensões, ${modelo.itens.length} itens, ${modelo.niveis.length} níveis, ${modelo.regras_dimensao.length + modelo.regras_transversais.length} regras.</p>
       ${rascunhos ? `<p class="aviso aviso-info">${rascunhos} dos ${modelo.itens.length} itens têm âncoras em status <strong>rascunho</strong>: redigidas a partir dos descritores genéricos da escala e aguardando revisão do grupo. Apenas I01, I06 e I16 têm a ancoragem integral publicada no PBL 4.</p>` : ''}
     </section>
 
@@ -100,9 +100,9 @@ export function renderSobre(el, { modelo }) {
         ${rt.matriz.map(m => {
           const titulo = REQUISITOS.find(r => r[0] === m.requisito)?.[1] ?? '';
           return `<tr><td><strong>${esc(m.requisito)}</strong><br><small>${esc(titulo)}</small></td>
-            <td>${m.componentes.map(c => `<abbr title="${esc(nomeCP[c])}">${esc(c)}</abbr>`).join(', ') || '—'}</td>
-            <td>${m.casos_de_uso.map(u => `<abbr title="${esc(nomeUC[u])}">${esc(u)}</abbr>`).join(', ') || '—'}</td>
-            <td>${m.decisoes.join(', ') || '—'}</td></tr>`;
+            <td>${m.componentes.map(c => `<abbr title="${esc(nomeCP[c])}">${esc(c)}</abbr>`).join(', ') || 'nenhum'}</td>
+            <td>${m.casos_de_uso.map(u => `<abbr title="${esc(nomeUC[u])}">${esc(u)}</abbr>`).join(', ') || 'nenhum'}</td>
+            <td>${m.decisoes.join(', ') || 'nenhuma'}</td></tr>`;
         }).join('')}
       </tbody></table>
       <h3>Casos de uso e onde estão nesta página</h3>

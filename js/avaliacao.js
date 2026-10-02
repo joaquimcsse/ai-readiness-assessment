@@ -45,7 +45,7 @@ export function renderAvaliacao(el, { modelo }) {
           <label>Diagnóstico de referência
             <select name="aplicacao">
               <option value="">Nenhum</option>
-              ${aplicacoes.map(a => `<option value="${esc(a.id)}">${esc(a.empresa.identificador)} — ${dataBR(a.data)} (nível ${a.diagnostico.nivelFinal})</option>`).join('')}
+              ${aplicacoes.map(a => `<option value="${esc(a.id)}">${esc(a.empresa.identificador)}, ${dataBR(a.data)} (nível ${a.diagnostico.nivelFinal})</option>`).join('')}
             </select>
           </label>
           <label>Tempo gasto na aplicação (minutos) <input name="minutos" type="number" min="0" step="1" inputmode="numeric"></label>

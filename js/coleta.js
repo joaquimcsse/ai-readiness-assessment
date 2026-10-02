@@ -102,9 +102,8 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
     <section class="questionario">
       <header class="cartao cabecalho-quest">
         <div>
-          <p class="etapa-rotulo">Etapa 2 de 4 · cerca de 13 a 18 minutos</p>
           <h1>Questionário de prontidão</h1>
-          <p class="lead">Para cada afirmação, escolha a descrição que <strong>corresponde ao que a empresa faz hoje</strong> — não ao que pretende fazer. Se ficar entre duas, escolha a mais baixa.</p>
+          <p class="lead">Para cada afirmação, escolha a descrição que <strong>corresponde ao que a empresa faz hoje</strong>, e não ao que pretende fazer. Se ficar entre duas, escolha a mais baixa.</p>
           <p class="meta-app">${esc(app.empresa.identificador)} · ${dataBR(app.data)} · modelo ${esc(app.versaoModelo)} · <span class="selo selo-estado" data-estado>${esc(app.estado)}</span>
             ${somenteLeitura ? '' : ' · <button type="button" class="link" data-acao="ficha">editar ficha</button>'}</p>
         </div>
@@ -244,13 +243,13 @@ export function renderGuia(el, modelo) {
   const gestor = (modelo.tempos_processo || []).filter(e => e.raia === 'Gestor da PME');
   el.innerHTML = `
     <h2 id="guia-titulo">Guia de aplicação</h2>
-    <p>O MGP-PME avalia se a sua empresa reúne as condições para adotar Inteligência Artificial com retorno — e, principalmente, <strong>o que a impede</strong>. Você mesmo aplica, sem consultoria, em ${tempo.min} a ${tempo.max} minutos.</p>
+    <p>O MGP-PME avalia se a sua empresa reúne as condições para adotar Inteligência Artificial com retorno e, principalmente, <strong>o que a impede</strong>. Você mesmo aplica, sem consultoria, em ${tempo.min} a ${tempo.max} minutos.</p>
 
     <details open><summary>Como preencher</summary>
       <ol>
         <li>Preencha a ficha da empresa. Ela não entra no cálculo.</li>
         <li>Responda os ${modelo.itens.length} itens, em três blocos. Para cada um, escolha a descrição que <strong>corresponde ao que a empresa faz hoje</strong>.</li>
-        <li>Se a prática existe só no papel, ou depende de uma pessoa, escolha a opção correspondente — não a ideal.</li>
+        <li>Se a prática existe só no papel, ou depende de uma pessoa, escolha a opção correspondente, e não a ideal.</li>
         <li>Na dúvida entre duas opções, escolha a mais baixa: o diagnóstico só ajuda se for realista.</li>
         <li>Gere o diagnóstico, leia o perfil, o nível e o roteiro, e <strong>exporte o arquivo</strong> para guardar.</li>
       </ol>
@@ -269,12 +268,12 @@ export function renderGuia(el, modelo) {
     </details>
 
     <details><summary>As seis dimensões</summary>
-      <dl>${modelo.dimensoes.map(d => `<dt>${esc(d.codigo)} · ${esc(d.nome)} — peso ${num(d.peso * 100, 0)}%${d.critica ? ', crítica' : ''}</dt><dd>${esc(d.definicao)}</dd>`).join('')}</dl>
+      <dl>${modelo.dimensoes.map(d => `<dt>${esc(d.codigo)} · ${esc(d.nome)}, peso ${num(d.peso * 100, 0)}%${d.critica ? ', crítica' : ''}</dt><dd>${esc(d.definicao)}</dd>`).join('')}</dl>
     </details>
 
     <details><summary>Como ler o resultado</summary>
       <p><strong>Escore por dimensão (0 a 100):</strong> média das respostas da dimensão, convertidas para a escala de 0 a 100.</p>
-      <p><strong>Teto de gargalo:</strong> as dimensões ${modelo.dimensoes.filter(d => d.critica).map(d => esc(d.codigo)).join(', ')} são críticas. O nível da empresa nunca ultrapassa o nível da dimensão crítica mais fraca — um ponto forte não compensa uma base que falta. Por isso o nível atribuído pode ser menor do que a média sugere; quando isso acontece, o relatório mostra os dois valores.</p>
+      <p><strong>Teto de gargalo:</strong> as dimensões ${modelo.dimensoes.filter(d => d.critica).map(d => esc(d.codigo)).join(', ')} são críticas. O nível da empresa nunca ultrapassa o nível da dimensão crítica mais fraca: um ponto forte não compensa uma base que falta. Por isso o nível atribuído pode ser menor do que a média sugere; quando isso acontece, o relatório mostra os dois valores.</p>
       <table class="tabela compacta"><thead><tr><th>Nível</th><th>Escore</th><th>Significado</th></tr></thead><tbody>
         ${modelo.niveis.map(n => `<tr><td>${n.numero} · ${esc(n.nome)}</td><td>${n.limite_inferior} a ${n.limite_superior}</td><td>${esc(n.interpretacao)}</td></tr>`).join('')}
       </tbody></table>
@@ -291,7 +290,7 @@ export function renderGuia(el, modelo) {
     </details>
 
     <details><summary>Privacidade</summary>
-      <p>Tudo roda neste navegador. Nenhuma resposta é enviada a servidor algum — nem ao grupo de pesquisa. Os dados ficam no armazenamento local do navegador e no arquivo que você exportar.</p>
+      <p>Tudo roda neste navegador. Nenhuma resposta é enviada a servidor algum, nem ao grupo de pesquisa. Os dados ficam no armazenamento local do navegador e no arquivo que você exportar.</p>
       <p><strong>Atenção:</strong> limpar os dados do navegador, usar janela anônima ou trocar de dispositivo apaga a aplicação. Por isso a exportação faz parte do processo.</p>
     </details>`;
 }

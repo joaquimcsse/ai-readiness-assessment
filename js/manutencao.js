@@ -58,7 +58,7 @@ export function diferencas(base, novo) {
       if (!(novo[lista] || []).some(x => x[chave] === b[chave])) mudancas.push(`${rotulo} ${b[chave]}: removido`);
     }
   };
-  comparar('dimensoes', 'codigo', 'Dimensão', ['nome', 'peso', 'critica', 'definicao']);
+  comparar('dimensoes', 'codigo', 'Dimensão', ['nome', 'peso', 'critica', 'resumo', 'definicao']);
   comparar('niveis', 'numero', 'Nível', ['nome', 'limite_inferior', 'limite_superior', 'interpretacao']);
   comparar('faixas', 'codigo', 'Faixa', ['nome', 'limite_inferior', 'limite_superior', 'leitura']);
   comparar('itens', 'codigo', 'Item', ['assertiva', 'dimensao', 'ancoras', 'ancoras_status']);
@@ -110,7 +110,7 @@ export function renderManutencao(el, { modelo }) {
     const mudancas = diferencas(base, rascunho);
     const soma = rascunho.dimensoes.reduce((a, d) => a + (Number(d.peso) || 0), 0);
     painelVal.innerHTML = erros.length
-      ? `<div class="aviso aviso-erro"><strong>${erros.length} inconsistência(s) — a publicação está bloqueada.</strong><ul>${erros.slice(0, 12).map(e => `<li>${esc(e)}</li>`).join('')}${erros.length > 12 ? `<li>… e mais ${erros.length - 12}.</li>` : ''}</ul></div>`
+      ? `<div class="aviso aviso-erro"><strong>${erros.length} inconsistência(s): a publicação está bloqueada.</strong><ul>${erros.slice(0, 12).map(e => `<li>${esc(e)}</li>`).join('')}${erros.length > 12 ? `<li>… e mais ${erros.length - 12}.</li>` : ''}</ul></div>`
       : `<div class="aviso aviso-ok"><strong>Modelo consistente.</strong> ${mudancas.length ? `${mudancas.length} alteração(ões) em relação à versão ${esc(base.versao_modelo)}.` : 'Nenhuma alteração em relação à versão publicada.'} Soma dos pesos: ${num(soma, 2)}.</div>`;
     const somaEl = el.querySelector('[data-soma]');
     if (somaEl) { somaEl.textContent = num(soma, 2); somaEl.classList.toggle('txt-F1', Math.abs(soma - 1) > 1e-6); }
@@ -123,10 +123,11 @@ export function renderManutencao(el, { modelo }) {
       corpo.innerHTML = `
         <h2>Dimensões, pesos e criticidade <small>UC-10</small></h2>
         <p class="nota">A soma dos pesos deve ser 1 e exatamente três dimensões devem ser críticas (operam como gargalo). Soma atual: <strong data-soma></strong>.</p>
-        <table class="tabela tabela-edicao"><thead><tr><th>Cód.</th><th>Nome</th><th>Peso</th><th>Crítica</th><th>Definição</th></tr></thead><tbody>
+        <table class="tabela tabela-edicao"><thead><tr><th>Cód.</th><th>Nome</th><th>Peso</th><th>Crítica</th><th>Resumo (página inicial)</th><th>Definição</th></tr></thead><tbody>
           ${rascunho.dimensoes.map((d, k) => `<tr><td><strong>${esc(d.codigo)}</strong></td><td>${campo(`dimensoes.${k}.nome`, { rotulo: 'Nome' })}</td>
             <td>${campo(`dimensoes.${k}.peso`, { tipo: 'num', passo: '0.01', rotulo: `Peso ${d.codigo}`, classe: 'curto' })}</td>
             <td class="centro">${campo(`dimensoes.${k}.critica`, { tipo: 'bool', rotulo: `Crítica ${d.codigo}` })}</td>
+            <td>${campo(`dimensoes.${k}.resumo`, { area: true, rotulo: 'Resumo' })}</td>
             <td>${campo(`dimensoes.${k}.definicao`, { area: true, rotulo: 'Definição' })}</td></tr>`).join('')}
         </tbody></table>`;
     } else if (aba === 'faixas') {

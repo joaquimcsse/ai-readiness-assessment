@@ -36,7 +36,7 @@ export function svgPerfil(diag, modelo, { largura = 680 } = {}) {
     const h = alturaLinha - 16;
     const w = Math.max(x(d.escore) - x(0), 1.5);
     return `<g class="barra-dim ${d.eGargalo ? 'gargalo' : ''}">
-      <title>${esc(d.codigo)} ${esc(d.nome)}: ${num(d.escore)} — nível ${d.nivel}, faixa ${esc(nomeFaixa(modelo, d.faixa))}${d.critica ? ', dimensão crítica' : ''}${d.eGargalo ? ', GARGALO' : ''}</title>
+      <title>${esc(d.codigo)} ${esc(d.nome)}: ${num(d.escore)}, nível ${d.nivel}, faixa ${esc(nomeFaixa(modelo, d.faixa))}${d.critica ? ', dimensão crítica' : ''}${d.eGargalo ? ', GARGALO' : ''}</title>
       <text class="rotulo-dim" x="${rotuloW - 12}" y="${y + h / 2 + 1}" text-anchor="end" dominant-baseline="middle">${d.critica ? '◆ ' : ''}${esc(d.codigo)} · ${esc(d.nome.length > 24 ? d.nome.slice(0, 23) + '…' : d.nome)}</text>
       <rect class="barra barra-${esc(d.faixa)}" x="${x(0)}" y="${y}" width="${w}" height="${h}" rx="3"/>
       <text class="valor" x="${x(0) + w + 6}" y="${y + h / 2 + 1}" dominant-baseline="middle">${num(d.escore)}${d.eGargalo ? ' ▲ gargalo' : ''}</text>
@@ -114,16 +114,16 @@ export function htmlCanvas(app, modelo) {
     ${celula('O que nos trava', diag.tetoAtuou
       ? `<p><strong>${diag.gargalos.map(g => `${esc(g)} ${esc(nomeDimensao(modelo, g))}`).join(', ')}</strong> limita o nível atribuído em ${diag.nivelCompensatorio - diag.nivelFinal} nível(is): de ${diag.nivelCompensatorio} para ${diag.nivelFinal}.</p>${criticasF1.length ? `<p>Dimensões críticas na faixa Crítica: ${criticasF1.map(esc).join(', ')}.</p>` : ''}`
       : `<p>Nenhuma dimensão crítica limita o nível atribuído.</p>${criticasF1.length ? `<p>Ainda assim, ${criticasF1.map(esc).join(', ')} está na faixa Crítica.</p>` : ''}`, 'Aplicador do teto de gargalo (CP-08)')}
-    ${celula('Em que nível estamos', `<p><strong>Nível ${diag.nivelFinal} — ${esc(nomeNivel(modelo, diag.nivelFinal))}.</strong> ${esc(modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao)}</p>`, 'Classificador de nível (CP-07)')}
+    ${celula('Em que nível estamos', `<p><strong>Nível ${diag.nivelFinal}: ${esc(nomeNivel(modelo, diag.nivelFinal))}.</strong> ${esc(modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao)}</p>`, 'Classificador de nível (CP-07)')}
     ${celula('O que a média esconde', diag.tetoAtuou
-      ? `<p>A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} — ${esc(nomeNivel(modelo, diag.nivelCompensatorio))}. O nível efetivamente atribuído é ${diag.nivelFinal}: dimensões fortes não compensam a base que falta.</p>`
+      ? `<p>A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} (${esc(nomeNivel(modelo, diag.nivelCompensatorio))}). O nível efetivamente atribuído é ${diag.nivelFinal}: dimensões fortes não compensam a base que falta.</p>`
       : `<p>Nada: o nível pela média ponderada (${num(diag.escoreGlobal)}) e o nível atribuído coincidem.</p>`, 'Regra transversal RT-03 / FA-01')}
     ${celula('O que fazer agora', agora.length
-      ? `<ol>${agora.map(r => `<li><strong>${esc(r.regra)}</strong> — esforço ${esc(r.esforco.toLowerCase())}</li>`).join('')}</ol>`
+      ? `<ol>${agora.map(r => `<li><strong>${esc(r.regra)}</strong>, esforço ${esc(r.esforco.toLowerCase())}</li>`).join('')}</ol>`
       : '<p>Sem ações de curto prazo neste roteiro.</p>', 'Priorizador do roteiro (CP-10)')}
     ${celula('O que fazer depois', depois.length
-      ? `<ol>${depois.map(r => `<li><strong>${esc(r.regra)}</strong> — ${esc(r.horizonte.toLowerCase())} prazo</li>`).join('')}</ol>`
-      : '<p>—</p>', 'Priorizador do roteiro (CP-10)')}
+      ? `<ol>${depois.map(r => `<li><strong>${esc(r.regra)}</strong>, ${esc(r.horizonte.toLowerCase())} prazo</li>`).join('')}</ol>`
+      : '<p>Nenhuma ação de médio ou longo prazo.</p>', 'Priorizador do roteiro (CP-10)')}
     ${celula('Quem responde por cada passo', comResp.length
       ? `<ul>${comResp.map(r => `<li><strong>${esc(r.regra)}</strong>: ${esc(resp[r.regra])}</li>`).join('')}</ul>`
       : '<p class="vazio">A preencher pela empresa: indique um responsável para cada passo na tabela do roteiro.</p>', 'Preenchido pela própria PME')}
@@ -158,7 +158,7 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
           : '<button type="button" class="btn btn-pri" data-acao="exportar">Exportar e arquivar</button>'}
       </div>
     </div>
-    ${!arquivada ? `<p class="aviso aviso-alerta nao-imprimir"><strong>Etapa 4 — exporte o diagnóstico.</strong> Ele está guardado apenas neste navegador; limpar os dados de navegação o apaga. O arquivo exportado é o que permite comparar com a próxima aplicação.</p>` : ''}
+    ${!arquivada ? `<p class="aviso aviso-alerta nao-imprimir"><strong>Etapa 4: exporte o diagnóstico.</strong> Ele está guardado apenas neste navegador; limpar os dados de navegação o apaga. O arquivo exportado é o que permite comparar com a próxima aplicação.</p>` : ''}
 
     <article class="relatorio" id="relatorio">
       <header class="rel-cab">
@@ -189,7 +189,7 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
               <td class="num"><strong>${num(d.escore)}</strong></td>
               <td class="num">${d.nivel}</td>
               <td><span class="faixa-tag tag-${esc(d.faixa)}">${esc(nomeFaixa(modelo, d.faixa))}</span></td>
-              <td>${d.eGargalo ? '<strong class="txt-F1">Gargalo — limita o nível</strong>' : d.faixa === 'F1' ? 'Exige ação antes de investir em IA' : d.faixa === 'F2' ? 'Sustenta piloto delimitado' : 'Não restringe a adoção'}</td>
+              <td>${d.eGargalo ? '<strong class="txt-F1">Gargalo: limita o nível</strong>' : d.faixa === 'F1' ? 'Exige ação antes de investir em IA' : d.faixa === 'F2' ? 'Sustenta piloto delimitado' : 'Não restringe a adoção'}</td>
             </tr>`;
           }).join('')}</tbody>
         </table>
@@ -222,7 +222,7 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
         <h2><span class="num-secao">3</span> Roteiro de ação priorizado</h2>
         <p class="rel-intro">${diag.totalAcoes} itens: ${diag.totalAdvertencias} advertência(s) e ${diag.totalAcoes - diag.totalAdvertencias} ações, uma por dimensão. Cada item vem de uma regra explícita da base, identificada pelo código. Indique um responsável para cada passo.</p>
         ${advertencias.length ? `<div class="advertencias">${advertencias.map(a => `
-          <div class="advertencia"><span class="adv-cod">${esc(a.regra)}</span><div><strong>Advertência — ${esc(a.alvo)}.</strong> ${esc(a.acao)}</div></div>`).join('')}</div>` : ''}
+          <div class="advertencia"><span class="adv-cod">${esc(a.regra)}</span><div><strong>Advertência: ${esc(a.alvo)}.</strong> ${esc(a.acao)}</div></div>`).join('')}</div>` : ''}
         <div class="filtro-horizonte nao-imprimir" role="group" aria-label="Filtrar por horizonte">
           <span>Filtrar por horizonte:</span>
           ${['Todos', 'Curto', 'Médio', 'Longo'].map((h, k) => `<button type="button" class="chip ${k === 0 ? 'ativo' : ''}" data-horizonte="${h}" aria-pressed="${k === 0}">${h}</button>`).join('')}
@@ -241,8 +241,8 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
               <td><input class="input-resp" data-regra="${esc(r.regra)}" value="${esc(resp[r.regra] || '')}" placeholder="Nome" aria-label="Responsável por ${esc(r.regra)}" ${arquivada ? 'readonly' : ''}><span class="so-impressao">${esc(resp[r.regra] || '')}</span></td>
             </tr>`).join('')}</tbody>
         </table>
-        <p class="nota legenda-esforco">Esforço — ${modelo.esforcos.map(e => `<strong>${esc(e.codigo)}</strong>: ${esc(e.significado)}`).join(' ')}<br>
-        Horizonte — ${modelo.horizontes.map(h => `<strong>${esc(h.codigo)}</strong>: ${esc(h.significado)}`).join(' ')}</p>
+        <p class="nota legenda-esforco">Esforço: ${modelo.esforcos.map(e => `<strong>${esc(e.codigo)}</strong>: ${esc(e.significado)}`).join(' ')}<br>
+        Horizonte: ${modelo.horizontes.map(h => `<strong>${esc(h.codigo)}</strong>: ${esc(h.significado)}`).join(' ')}</p>
         ${diag.observacoes.filter(o => o.codigo === 'UC-07').map(o => `<p class="aviso aviso-info">${esc(o.texto)}</p>`).join('')}
       </section>
 
@@ -305,9 +305,9 @@ export function renderComparacao(el, { modelo, a, b }) {
   el.innerHTML = `
     ${!mesmaEmpresa ? '<p class="aviso aviso-alerta">As duas aplicações são de empresas com identificadores diferentes. A comparação é possível, mas confira se é isso mesmo que deseja.</p>' : ''}
     <div class="comparacao-cab">
-      <div class="cartao-mini"><span class="lado-rot">Antes</span><strong>${esc(antes.empresa.identificador)}</strong><span>${dataBR(antes.data)} · nível ${da.nivelFinal} — ${esc(nomeNivel(modelo, da.nivelFinal))}</span></div>
+      <div class="cartao-mini"><span class="lado-rot">Antes</span><strong>${esc(antes.empresa.identificador)}</strong><span>${dataBR(antes.data)} · nível ${da.nivelFinal}, ${esc(nomeNivel(modelo, da.nivelFinal))}</span></div>
       <div class="seta" aria-hidden="true">→</div>
-      <div class="cartao-mini"><span class="lado-rot">Depois</span><strong>${esc(depois.empresa.identificador)}</strong><span>${dataBR(depois.data)} · nível ${db.nivelFinal} — ${esc(nomeNivel(modelo, db.nivelFinal))}</span></div>
+      <div class="cartao-mini"><span class="lado-rot">Depois</span><strong>${esc(depois.empresa.identificador)}</strong><span>${dataBR(depois.data)} · nível ${db.nivelFinal}, ${esc(nomeNivel(modelo, db.nivelFinal))}</span></div>
     </div>
     <div class="grafico">${svgComparacao(da, db, modelo, [`Antes (${dataBR(antes.data)})`, `Depois (${dataBR(depois.data)})`])}</div>
     <table class="tabela">
@@ -326,7 +326,7 @@ export function renderComparacao(el, { modelo, a, b }) {
       </tbody>
     </table>
     <div class="linha-2">
-      <div class="cartao-mini"><h3>Saíram do roteiro</h3>${sairam.length ? `<ul>${sairam.map(r => `<li><code>${esc(r)}</code></li>`).join('')}</ul>` : '<p>—</p>'}</div>
-      <div class="cartao-mini"><h3>Entraram no roteiro</h3>${entraram.length ? `<ul>${entraram.map(r => `<li><code>${esc(r)}</code></li>`).join('')}</ul>` : '<p>—</p>'}</div>
+      <div class="cartao-mini"><h3>Saíram do roteiro</h3>${sairam.length ? `<ul>${sairam.map(r => `<li><code>${esc(r)}</code></li>`).join('')}</ul>` : '<p>Nenhuma regra.</p>'}</div>
+      <div class="cartao-mini"><h3>Entraram no roteiro</h3>${entraram.length ? `<ul>${entraram.map(r => `<li><code>${esc(r)}</code></li>`).join('')}</ul>` : '<p>Nenhuma regra.</p>'}</div>
     </div>`;
 }

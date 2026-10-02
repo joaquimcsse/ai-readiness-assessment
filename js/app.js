@@ -28,6 +28,7 @@ function novaTela(classe = '') {
   const el = document.createElement('div');
   el.className = `tela ${classe}`;
   principal.replaceChildren(el);
+  principal.dataset.tela = classe;
   principal.focus({ preventScroll: true });
   window.scrollTo(0, 0);
   return el;
@@ -72,12 +73,12 @@ function telaInicio() {
   const respondidas = app ? estado.contarRespondidas(app) : 0;
   const semArmazenamento = !estado.armazenamentoDisponivel();
 
+  const criticas = modelo.dimensoes.filter(d => d.critica);
   el.innerHTML = `
-    <section class="heroi">
-      <div class="heroi-texto">
-        <p class="etapa-rotulo">Diagnóstico autoaplicável · 20 a 30 minutos · gratuito</p>
-        <h1>A sua empresa está pronta para a Inteligência Artificial — ou algo vai travar o investimento?</h1>
-        <p class="lead">Responda ${total} afirmações sobre como a empresa trabalha hoje. O MGP-PME calcula o perfil de prontidão em seis dimensões, identifica o <strong>gargalo</strong> que limita o avanço e entrega um <strong>roteiro de ação priorizado</strong> — sem consultoria, sem cadastro e sem enviar nenhum dado para fora deste navegador.</p>
+    <section class="lp-heroi">
+      <div class="lp-heroi-texto">
+        <p class="etapa-rotulo">Diagnóstico autoaplicável · gratuito</p>
+        <h1>A sua empresa está pronta para a Inteligência Artificial, ou algo vai travar o investimento?</h1>
         <div class="acoes acoes-esq">
           ${app && app.estado !== estado.ESTADOS.ARQUIVADA
             ? `<a class="btn btn-pri" href="${app.diagnostico ? '#/diagnostico' : '#/questionario'}">${app.diagnostico ? 'Ver diagnóstico atual' : `Continuar aplicação (${respondidas}/${total})`}</a>
@@ -85,34 +86,41 @@ function telaInicio() {
             : '<button type="button" class="btn btn-pri" data-acao="nova">Iniciar aplicação</button>'}
           <button type="button" class="btn btn-sec" data-acao="demo">Ver exemplo preenchido</button>
         </div>
+        ${app ? `<p class="lp-atual">Aplicação atual: <strong>${esc(app.empresa.identificador)}</strong> · ${dataBR(app.data)} · <span class="selo selo-estado">${esc(app.estado)}</span></p>` : ''}
         ${semArmazenamento ? '<p class="aviso aviso-alerta">O armazenamento local deste navegador está indisponível (janela anônima ou bloqueio). Você pode aplicar o instrumento, mas exporte o diagnóstico antes de fechar a página.</p>' : ''}
       </div>
-      <ol class="passos">
-        <li><strong>Ficha da empresa</strong><span>2 a 3 min</span></li>
-        <li><strong>${total} afirmações em 3 blocos</strong><span>13 a 18 min</span></li>
-        <li><strong>Perfil, nível e roteiro</strong><span>4 a 6 min</span></li>
-        <li><strong>Exportar e arquivar</strong><span>até 1 min</span></li>
+      <figure class="lp-visual">
+        ${svgExemplo()}
+        <figcaption>Exemplo: pela média, a empresa estaria no nível 3. Mas <strong class="txt-F1">Dados</strong> é crítica e está no nível 2, então o nível atribuído é 2.</figcaption>
+      </figure>
+    </section>
+
+    <section class="lp-secao">
+      <h2>Como funciona</h2>
+      <ol class="lp-passos">
+        <li><span class="lp-num">1</span><strong>Ficha da empresa</strong><small>2 a 3 min</small></li>
+        <li><span class="lp-num">2</span><strong>${total} afirmações em 3 blocos</strong><small>13 a 18 min</small></li>
+        <li><span class="lp-num">3</span><strong>Perfil, nível e roteiro</strong><small>4 a 6 min</small></li>
+        <li><span class="lp-num">4</span><strong>Exportar e arquivar</strong><small>até 1 min</small></li>
       </ol>
     </section>
 
-    <section class="cartao">
+    <section class="lp-secao">
       <h2>O que o diagnóstico considera</h2>
-      <div class="grade-dimensoes">
-        ${modelo.dimensoes.map(d => `<div class="dim-cartao ${d.critica ? 'critica' : ''}">
+      <p class="lp-intro">Seis dimensões. As ${criticas.length} marcadas como <span class="txt-F1">críticas</span> funcionam como teto: o nível da empresa nunca passa o da mais fraca delas.</p>
+      <ul class="lp-dims">
+        ${modelo.dimensoes.map(d => `<li class="${d.critica ? 'critica' : ''}">
           <span class="cod-dim">${esc(d.codigo)}</span>
-          <h3>${esc(d.nome)}</h3>
-          <p>${esc(d.definicao.split('. ')[0])}.</p>
-          ${d.critica ? '<span class="selo selo-critica">crítica — limita o nível</span>' : ''}
-        </div>`).join('')}
-      </div>
-      <p class="nota"><strong>Por que “gargalo”?</strong> Em uma média comum, um ponto forte compensa um ponto fraco. Aqui não: o nível da empresa nunca ultrapassa o da dimensão crítica mais fraca (${modelo.dimensoes.filter(d => d.critica).map(d => esc(d.nome)).join(', ')}). Uma estratégia clara não sustenta uma solução de IA se faltam dados que a alimentem.</p>
-    </section>
+          <div>
+            <h3>${esc(d.nome)}${d.critica ? ' <span class="lp-tag-critica">crítica</span>' : ''}</h3>
+            <p>${esc(d.resumo || d.definicao.split('. ')[0].replace(/\.$/, '') + '.')}</p>
+          </div>
+        </li>`).join('')}
+      </ul>
+      <p class="nota">A definição completa de cada dimensão está no <button type="button" class="link" data-acao="guia">Guia</button>.</p>
+    </section>`;
 
-    ${app ? `<section class="cartao">
-      <h2>Aplicação atual</h2>
-      <p>${esc(app.empresa.identificador)} · ${dataBR(app.data)} · <span class="selo selo-estado">${esc(app.estado)}</span> — ${esc(estado.SIGNIFICADO_ESTADO[app.estado])}</p>
-    </section>` : ''}`;
-
+  el.querySelector('[data-acao="guia"]').addEventListener('click', abrirGuia);
   el.querySelector('[data-acao="nova"]')?.addEventListener('click', () => {
     const atual = estado.aplicacaoAtual();
     if (atual && atual.estado !== estado.ESTADOS.ARQUIVADA && estado.contarRespondidas(atual) > 0 &&
@@ -121,6 +129,28 @@ function telaInicio() {
     ir('#/ficha');
   });
   el.querySelector('[data-acao="demo"]').addEventListener('click', carregarDemonstracao);
+}
+
+// Ilustração da página inicial: perfil de exemplo em colunas, com o gargalo
+// em destaque. Valores fixos, apenas para explicar o conceito.
+function svgExemplo() {
+  const dados = [['D0', 62.5, 'F2'], ['D1', 20, 'F1'], ['D2', 75, 'F3'], ['D3', 41.7, 'F2'], ['D4', 50, 'F2'], ['D5', 55, 'F2']];
+  const base = 214, alt = 170, larg = 36, passo = 58, x0 = 44;
+  const y = v => base - (v / 100) * alt;
+  const grade = [0, 20, 40, 60, 80, 100].map(v => `<line class="grade" x1="30" x2="400" y1="${y(v)}" y2="${y(v)}"/><text class="eixo" x="22" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join('');
+  const barras = dados.map(([c, v, f], k) => {
+    const x = x0 + k * passo;
+    return `<rect class="barra barra-${f}" x="${x}" y="${y(v)}" width="${larg}" height="${base - y(v)}" rx="5"/>
+      <text class="lp-cod ${f === 'F1' ? 'txt-F1' : ''}" x="${x + larg / 2}" y="${base + 20}" text-anchor="middle">${c}</text>`;
+  }).join('');
+  const xg = x0 + passo + larg / 2;
+  return `<svg class="grafico-perfil lp-grafico" viewBox="0 0 410 240" role="img" aria-label="Exemplo de perfil: cinco dimensões entre 40 e 75 pontos e a dimensão Dados com 20 pontos, marcada como gargalo. A média ponderada é 50.">
+    ${grade}
+    <line class="linha-global" x1="30" x2="400" y1="${y(50)}" y2="${y(50)}"/>
+    <text class="rotulo-global" x="${x0 + passo + larg / 2}" y="${y(50) - 8}" text-anchor="middle">média 50</text>
+    ${barras}
+    <text class="lp-gargalo" x="${xg}" y="${y(20) - 10}" text-anchor="middle">gargalo</text>
+  </svg>`;
 }
 
 function carregarDemonstracao() {
@@ -228,7 +258,7 @@ function telaHistorico() {
     <section class="cartao">
       <p class="etapa-rotulo">UC-08 e UC-09 · Exportar, reaplicar e comparar</p>
       <h1>Histórico de aplicações</h1>
-      <p class="lead">Aplicações guardadas neste navegador e diagnósticos importados de arquivo. Selecione duas para comparar a evolução — só são comparáveis diagnósticos da mesma versão do modelo.</p>
+      <p class="lead">Aplicações guardadas neste navegador e diagnósticos importados de arquivo. Selecione duas para comparar a evolução. Só são comparáveis diagnósticos da mesma versão do modelo.</p>
       <div class="acoes acoes-esq">
         <label class="btn btn-sec">Importar diagnóstico exportado (.json)<input type="file" accept="application/json,.json" data-acao="importar" multiple hidden></label>
         <button type="button" class="btn btn-pri" data-acao="comparar" disabled>Comparar selecionadas</button>

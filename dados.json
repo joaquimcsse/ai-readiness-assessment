@@ -12,31 +12,37 @@
   "dimensoes": [
     {
       "codigo": "D0", "nome": "Capacidade digital básica", "peso": 0.15, "critica": true,
+      "resumo": "Processos registrados em sistemas e boa conectividade.",
       "definicao": "Grau de digitalização dos processos, sistemas de gestão em uso e conectividade. É tratada como condição de entrada, e não como eixo paralelo, incorporando a distinção teórica entre ser digitalmente capaz e estar pronto para a IA.",
       "referencias": "Al Tawara et al. (2026a); Kalleparambil e Akoum (2025)"
     },
     {
       "codigo": "D1", "nome": "Dados", "peso": 0.18, "critica": true,
+      "resumo": "Dados disponíveis, confiáveis e integrados.",
       "definicao": "Disponibilidade, qualidade, estruturação, integração e propriedade dos dados operacionais, respondendo à constatação recorrente de que muitas PMEs operam com dados fragmentados ou incompletos.",
       "referencias": "Al Tawara et al. (2026a); Han et al. (2023); Rananga e Venter (2025)"
     },
     {
       "codigo": "D2", "nome": "Estratégia e processos", "peso": 0.18, "critica": false,
+      "resumo": "Problema claro, patrocínio e investimento reservado.",
       "definicao": "Clareza quanto ao problema de negócio a ser endereçado, patrocínio da liderança, capacidade de investimento e horizonte de retorno esperado.",
       "referencias": "Sharma et al. (2024); Rahman et al. (2026); Permana e Murniati (2026)"
     },
     {
       "codigo": "D3", "nome": "Pessoas e cultura", "peso": 0.20, "critica": true,
+      "resumo": "Equipe capacitada, com responsável e aberta à mudança.",
       "definicao": "Letramento em IA, existência de capacitação sistemática, atribuição de responsabilidades e abertura organizacional à mudança, dimensão em que a literatura identifica lacuna crônica entre percepção positiva e capacitação real.",
       "referencias": "Monisha et al. (2026); Mandičák et al. (2025); Priyadarsini e Bashir (2025)"
     },
     {
       "codigo": "D4", "nome": "Governança, ética e conformidade", "peso": 0.15, "critica": false,
+      "resumo": "Regras de uso, controle de acesso e proteção de dados.",
       "definicao": "Políticas de uso, controle de acesso, supervisão humana sobre decisões de alto risco e conformidade com a legislação de proteção de dados, tratada como recurso estratégico e não apenas como custo de conformidade.",
       "referencias": "Deák e Szabó (2026); Bacon e Menon (2025); Amarasuriya e Abston (2026)"
     },
     {
       "codigo": "D5", "nome": "Ecossistema e ambiente", "peso": 0.14, "critica": false,
+      "resumo": "Pressão de mercado, clientes e fornecedores capazes.",
       "definicao": "Pressão competitiva percebida, exigências de clientes e parceiros, e disponibilidade de fornecedores e intermediários capazes de sustentar a solução, reconhecendo que a prontidão isolada da PME é insuficiente.",
       "referencias": "Gunawan et al. (2026); Angelina et al. (2025); Emon et al. (2026)"
     }
@@ -429,7 +435,7 @@
     { "codigo": "RD-D3-F3", "dimensao": "D3", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
       "acao": "Ampliar a participação da equipe na definição dos usos e das salvaguardas, consolidando a capacitação contínua avaliada por resultado." },
     { "codigo": "RD-D4-F1", "dimensao": "D4", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
-      "acao": "Publicar política mínima de uso de IA — usos permitidos, dados que não podem ser submetidos e revisão humana obrigatória — e verificar a base legal do tratamento de dados pessoais." },
+      "acao": "Publicar política mínima de uso de IA (usos permitidos, dados que não podem ser submetidos e revisão humana obrigatória) e verificar a base legal do tratamento de dados pessoais." },
     { "codigo": "RD-D4-F2", "dimensao": "D4", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
       "acao": "Instituir revisão periódica dos acessos a dados sensíveis e padronizar o registro das decisões de maior impacto apoiadas por IA." },
     { "codigo": "RD-D4-F3", "dimensao": "D4", "faixa": "F3", "esforco": "Médio", "horizonte": "Longo",
