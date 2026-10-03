@@ -1,30 +1,11 @@
 {
-  "name": "ai-readiness-assessment",
-  "private": true,
+  "name": "mgp-pme",
   "version": "1.0.0",
+  "private": true,
+  "description": "MGP-PME — Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas (instanciação web estática)",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "lint": "eslint ."
-  },
-  "dependencies": {
-    "bootstrap": "^5.3.3",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.32.0",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "@vitejs/plugin-react": "^5.2.0",
-    "eslint": "^9.32.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^15.15.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.56.1",
-    "vite": "^7.0.0"
+    "test": "node --test tests/",
+    "start": "python3 -m http.server 8000"
   }
 }

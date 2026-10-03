@@ -1,0 +1,510 @@
+{
+  "versao_modelo": "1.0.0",
+  "data_versao": "2026-09-13",
+  "notas_versao": "Versão inicial, conforme PBL 4 (13/09/2026). Âncoras dos itens marcados como 'rascunho' redigidas a partir dos descritores genéricos e aguardam revisão do grupo.",
+  "escala": [
+    { "valor": 1, "descritor": "Inexistente", "significado": "A prática descrita não ocorre na empresa." },
+    { "valor": 2, "descritor": "Incipiente", "significado": "A prática ocorre de forma isolada, informal ou dependente de uma pessoa." },
+    { "valor": 3, "descritor": "Parcial", "significado": "A prática ocorre nos processos principais, com lacunas conhecidas." },
+    { "valor": 4, "descritor": "Estabelecida", "significado": "A prática ocorre de forma consistente, com responsável e periodicidade." },
+    { "valor": 5, "descritor": "Otimizada", "significado": "A prática é medida, revisada e melhorada de forma sistemática." }
+  ],
+  "dimensoes": [
+    {
+      "codigo": "D0", "nome": "Capacidade digital básica", "peso": 0.15, "critica": true,
+      "resumo": "Processos registrados em sistemas e boa conectividade.",
+      "definicao": "Grau de digitalização dos processos, sistemas de gestão em uso e conectividade. É tratada como condição de entrada, e não como eixo paralelo, incorporando a distinção teórica entre ser digitalmente capaz e estar pronto para a IA.",
+      "referencias": "Al Tawara et al. (2026a); Kalleparambil e Akoum (2025)"
+    },
+    {
+      "codigo": "D1", "nome": "Dados", "peso": 0.18, "critica": true,
+      "resumo": "Dados disponíveis, confiáveis e integrados.",
+      "definicao": "Disponibilidade, qualidade, estruturação, integração e propriedade dos dados operacionais, respondendo à constatação recorrente de que muitas PMEs operam com dados fragmentados ou incompletos.",
+      "referencias": "Al Tawara et al. (2026a); Han et al. (2023); Rananga e Venter (2025)"
+    },
+    {
+      "codigo": "D2", "nome": "Estratégia e processos", "peso": 0.18, "critica": false,
+      "resumo": "Problema claro, patrocínio e investimento reservado.",
+      "definicao": "Clareza quanto ao problema de negócio a ser endereçado, patrocínio da liderança, capacidade de investimento e horizonte de retorno esperado.",
+      "referencias": "Sharma et al. (2024); Rahman et al. (2026); Permana e Murniati (2026)"
+    },
+    {
+      "codigo": "D3", "nome": "Pessoas e cultura", "peso": 0.20, "critica": true,
+      "resumo": "Equipe capacitada, com responsável e aberta à mudança.",
+      "definicao": "Letramento em IA, existência de capacitação sistemática, atribuição de responsabilidades e abertura organizacional à mudança, dimensão em que a literatura identifica lacuna crônica entre percepção positiva e capacitação real.",
+      "referencias": "Monisha et al. (2026); Mandičák et al. (2025); Priyadarsini e Bashir (2025)"
+    },
+    {
+      "codigo": "D4", "nome": "Governança, ética e conformidade", "peso": 0.15, "critica": false,
+      "resumo": "Regras de uso, controle de acesso e proteção de dados.",
+      "definicao": "Políticas de uso, controle de acesso, supervisão humana sobre decisões de alto risco e conformidade com a legislação de proteção de dados, tratada como recurso estratégico e não apenas como custo de conformidade.",
+      "referencias": "Deák e Szabó (2026); Bacon e Menon (2025); Amarasuriya e Abston (2026)"
+    },
+    {
+      "codigo": "D5", "nome": "Ecossistema e ambiente", "peso": 0.14, "critica": false,
+      "resumo": "Pressão de mercado, clientes e fornecedores capazes.",
+      "definicao": "Pressão competitiva percebida, exigências de clientes e parceiros, e disponibilidade de fornecedores e intermediários capazes de sustentar a solução, reconhecendo que a prontidão isolada da PME é insuficiente.",
+      "referencias": "Gunawan et al. (2026); Angelina et al. (2025); Emon et al. (2026)"
+    }
+  ],
+  "itens": [
+    {
+      "codigo": "I01", "dimensao": "D0", "ancoras_status": "PBL4",
+      "assertiva": "Os processos operacionais da empresa são registrados em sistema de gestão",
+      "ancoras": [
+        "Registro em papel ou planilhas avulsas, sem sistema de gestão.",
+        "Um sistema isolado cobre parte dos processos; o restante é manual.",
+        "Um sistema de gestão cobre os processos principais, com lacunas conhecidas.",
+        "O sistema cobre todos os processos principais e é usado com disciplina.",
+        "Sistemas integrados cobrem a operação ponta a ponta e são a única fonte de registro."
+      ]
+    },
+    {
+      "codigo": "I02", "dimensao": "D0", "ancoras_status": "rascunho",
+      "assertiva": "A empresa dispõe de conectividade e equipamentos adequados ao trabalho digital",
+      "ancoras": [
+        "Internet instável ou ausente nas áreas operacionais; poucos equipamentos, compartilhados.",
+        "Conectividade e equipamentos atendem só ao escritório; a operação trabalha sem acesso.",
+        "As áreas principais têm acesso estável, mas há equipamentos obsoletos ou insuficientes.",
+        "Conectividade e equipamentos atendem a todas as áreas, com manutenção e reposição planejadas.",
+        "A infraestrutura é monitorada, tem redundância e é dimensionada antes de novas demandas."
+      ]
+    },
+    {
+      "codigo": "I03", "dimensao": "D0", "ancoras_status": "rascunho",
+      "assertiva": "Os canais de relacionamento com clientes geram registro digital das interações",
+      "ancoras": [
+        "Atendimentos e pedidos são combinados por telefone ou presencialmente, sem registro.",
+        "Algumas interações ficam em conversas de aplicativo ou e-mail pessoal de quem atendeu.",
+        "Os canais principais geram registro digital, mas parte das interações não é registrada.",
+        "Todos os canais registram as interações em um local único, consultado pela equipe.",
+        "O histórico de interações é integrado à gestão e analisado para melhorar o atendimento."
+      ]
+    },
+    {
+      "codigo": "I04", "dimensao": "D0", "ancoras_status": "rascunho",
+      "assertiva": "É possível extrair dos sistemas, sem apoio externo, os dados de um período",
+      "ancoras": [
+        "Não há sistema de onde extrair dados, ou ninguém sabe como fazê-lo.",
+        "Só o fornecedor ou uma pessoa específica consegue extrair os dados, quando solicitada.",
+        "A equipe extrai relatórios prontos do sistema, mas não os dados completos de um período.",
+        "A equipe extrai os dados completos de um período em formato aberto, quando precisa.",
+        "Extrações periódicas são automáticas e alimentam análises sem intervenção manual."
+      ]
+    },
+    {
+      "codigo": "I05", "dimensao": "D1", "ancoras_status": "rascunho",
+      "assertiva": "A empresa possui histórico de dados operacionais dos últimos doze meses",
+      "ancoras": [
+        "Não há histórico: os dados antigos são descartados ou se perderam.",
+        "Há fragmentos de histórico em arquivos pessoais, sem garantia de completude.",
+        "Há histórico das operações principais, com meses ou campos faltantes conhecidos.",
+        "O histórico de doze meses está completo, guardado em local definido e com responsável.",
+        "O histórico tem política de retenção, cópias de segurança e é verificado periodicamente."
+      ]
+    },
+    {
+      "codigo": "I06", "dimensao": "D1", "ancoras_status": "PBL4",
+      "assertiva": "Os cadastros seguem padrão único, sem duplicidade nem campos em branco",
+      "ancoras": [
+        "Cadastros duplicados e campos obrigatórios frequentemente vazios.",
+        "O padrão existe no papel, mas não é seguido na prática.",
+        "O padrão é seguido na maior parte dos registros; a limpeza é reativa.",
+        "O padrão é seguido, com validação no momento do cadastro.",
+        "Padrão validado automaticamente e monitorado por indicadores de qualidade."
+      ]
+    },
+    {
+      "codigo": "I07", "dimensao": "D1", "ancoras_status": "rascunho",
+      "assertiva": "Os dados de sistemas diferentes conversam entre si sem retrabalho manual",
+      "ancoras": [
+        "Os mesmos dados são redigitados em cada sistema ou planilha.",
+        "Há cópias manuais periódicas entre sistemas, feitas por uma pessoa específica.",
+        "Os sistemas principais trocam dados, mas parte ainda exige consolidação manual.",
+        "Os sistemas em uso estão integrados e a consolidação manual é exceção.",
+        "As integrações são monitoradas e falhas de sincronização são detectadas e corrigidas."
+      ]
+    },
+    {
+      "codigo": "I08", "dimensao": "D1", "ancoras_status": "rascunho",
+      "assertiva": "A empresa controla quem são os donos dos dados e onde eles estão armazenados",
+      "ancoras": [
+        "Ninguém sabe ao certo onde estão os dados nem quem responde por eles.",
+        "Cada pessoa sabe dos dados que usa, mas não há visão da empresa.",
+        "Os dados principais têm local e responsável conhecidos; os demais, não.",
+        "Há um inventário dos dados com local e responsável, mantido atualizado.",
+        "O inventário é revisado periodicamente e orienta acessos, retenção e descarte."
+      ]
+    },
+    {
+      "codigo": "I09", "dimensao": "D1", "ancoras_status": "rascunho",
+      "assertiva": "Decisões de rotina são tomadas a partir de indicadores extraídos dos dados",
+      "ancoras": [
+        "As decisões de rotina se baseiam apenas em experiência e percepção.",
+        "Alguém consulta números ocasionalmente, quando há dúvida ou problema.",
+        "Há indicadores para as áreas principais, mas nem sempre são consultados.",
+        "Indicadores definidos são acompanhados com periodicidade e orientam decisões.",
+        "Os indicadores são revisados quanto à utilidade e as decisões são avaliadas pelo resultado."
+      ]
+    },
+    {
+      "codigo": "I10", "dimensao": "D2", "ancoras_status": "rascunho",
+      "assertiva": "Existe um problema de negócio específico que se pretende resolver com IA",
+      "ancoras": [
+        "Não há problema identificado; o interesse em IA é genérico.",
+        "Há ideias soltas de uso, levantadas por pessoas diferentes, sem escolha feita.",
+        "Um problema foi escolhido, mas sem meta, responsável ou prazo definidos.",
+        "O problema está delimitado, com meta quantificada, responsável e prazo.",
+        "Há uma carteira de problemas priorizada por valor e viabilidade, revisada periodicamente."
+      ]
+    },
+    {
+      "codigo": "I11", "dimensao": "D2", "ancoras_status": "rascunho",
+      "assertiva": "A liderança patrocina ativamente a iniciativa, alocando tempo e decisão",
+      "ancoras": [
+        "A liderança não se envolveu nem foi consultada sobre o tema.",
+        "A liderança aprova em princípio, mas não dedica tempo nem toma decisões.",
+        "A liderança participa quando solicitada, mas sem agenda regular.",
+        "Um dirigente patrocina formalmente a iniciativa, com agenda e poder de decisão.",
+        "O patrocínio é parte da gestão: a iniciativa tem metas na pauta regular da direção."
+      ]
+    },
+    {
+      "codigo": "I12", "dimensao": "D2", "ancoras_status": "rascunho",
+      "assertiva": "Há capacidade de investimento reservada para a iniciativa nos próximos doze meses",
+      "ancoras": [
+        "Não há recursos disponíveis nem previsão de tê-los.",
+        "Gastos seriam decididos caso a caso, sem valor reservado.",
+        "Há um valor estimado, mas não formalmente reservado no orçamento.",
+        "Há orçamento formal reservado para o período, com responsável pelo uso.",
+        "O orçamento é acompanhado contra resultados e revisado conforme o retorno obtido."
+      ]
+    },
+    {
+      "codigo": "I13", "dimensao": "D2", "ancoras_status": "rascunho",
+      "assertiva": "A expectativa de retorno é explícita e compatível com o horizonte do projeto",
+      "ancoras": [
+        "Não se discutiu que retorno se espera da iniciativa.",
+        "Espera-se retorno, mas de forma vaga ou com prazo irrealista.",
+        "O retorno esperado foi estimado, mas sem premissas ou prazo explícitos.",
+        "O retorno esperado tem premissas, indicador e prazo compatível com o projeto.",
+        "O retorno é medido durante a execução e as premissas são revisadas com a evidência."
+      ]
+    },
+    {
+      "codigo": "I14", "dimensao": "D2", "ancoras_status": "rascunho",
+      "assertiva": "Os processos candidatos a apoio da IA estão mapeados e documentados",
+      "ancoras": [
+        "Os processos existem apenas na prática de quem os executa.",
+        "Alguns processos foram descritos informalmente, por iniciativa individual.",
+        "Os processos candidatos estão descritos, com etapas ou exceções faltantes.",
+        "Os processos candidatos estão documentados por completo, com responsável e indicadores.",
+        "A documentação é revisada periodicamente e usada para melhorar os processos."
+      ]
+    },
+    {
+      "codigo": "I15", "dimensao": "D3", "ancoras_status": "rascunho",
+      "assertiva": "A equipe compreende o que a IA pode e o que não pode fazer no negócio",
+      "ancoras": [
+        "A equipe não tem noção do que é IA ou tem expectativas fantasiosas.",
+        "Uma ou duas pessoas entendem o tema por interesse próprio.",
+        "A liderança tem compreensão básica, mas a equipe operacional não.",
+        "Liderança e equipe têm compreensão básica comum sobre usos e limites da IA.",
+        "A compreensão é atualizada periodicamente e aplicada na avaliação de novas propostas."
+      ]
+    },
+    {
+      "codigo": "I16", "dimensao": "D3", "ancoras_status": "PBL4",
+      "assertiva": "Existe capacitação sistemática, e não apenas aprendizado por conta própria",
+      "ancoras": [
+        "Não há qualquer ação de capacitação.",
+        "O aprendizado ocorre por iniciativa individual, sem apoio da empresa.",
+        "Há treinamentos pontuais, sem continuidade.",
+        "Há plano de capacitação com periodicidade e público definidos.",
+        "Capacitação contínua, avaliada por resultado e revisada periodicamente."
+      ]
+    },
+    {
+      "codigo": "I17", "dimensao": "D3", "ancoras_status": "rascunho",
+      "assertiva": "Há responsável designado para conduzir a iniciativa de IA",
+      "ancoras": [
+        "Ninguém responde pela iniciativa.",
+        "Alguém se interessa e conduz informalmente, quando sobra tempo.",
+        "Há um responsável indicado, mas sem tempo ou autoridade definidos.",
+        "Há responsável formal, com horas dedicadas e autoridade para decidir.",
+        "O responsável tem metas, presta contas periodicamente e conta com substituto preparado."
+      ]
+    },
+    {
+      "codigo": "I18", "dimensao": "D3", "ancoras_status": "rascunho",
+      "assertiva": "Mudanças de ferramenta e de processo são absorvidas sem resistência relevante",
+      "ancoras": [
+        "Mudanças anteriores foram abandonadas por resistência da equipe.",
+        "Mudanças só pegam quando impostas e acompanhadas de perto por alguém.",
+        "Mudanças são absorvidas na maior parte das áreas, com focos de resistência conhecidos.",
+        "Mudanças seguem um roteiro de comunicação e apoio, e são absorvidas sem conflitos relevantes.",
+        "A equipe propõe mudanças, e a adoção é medida e ajustada sistematicamente."
+      ]
+    },
+    {
+      "codigo": "I19", "dimensao": "D3", "ancoras_status": "rascunho",
+      "assertiva": "A equipe tem tempo disponível para participar da implantação",
+      "ancoras": [
+        "A equipe está sobrecarregada e não há como liberar tempo.",
+        "Só seria possível participar fora do horário ou em detrimento da operação.",
+        "Há algum tempo disponível, mas sem horas reservadas formalmente.",
+        "Há horas semanais reservadas para a implantação, respeitadas na prática.",
+        "A alocação de tempo é planejada com a carga operacional e revisada a cada etapa."
+      ]
+    },
+    {
+      "codigo": "I20", "dimensao": "D3", "ancoras_status": "rascunho",
+      "assertiva": "A equipe enxerga a IA como apoio ao trabalho, e não como ameaça ao emprego",
+      "ancoras": [
+        "O tema gera medo ou rejeição aberta na equipe.",
+        "Há desconfiança generalizada, com poucos entusiastas isolados.",
+        "Parte da equipe vê a IA como apoio; outra parte ainda a teme.",
+        "A equipe em geral vê a IA como apoio, e a empresa comunicou claramente suas intenções.",
+        "A equipe participa da definição dos usos e a percepção é acompanhada periodicamente."
+      ]
+    },
+    {
+      "codigo": "I21", "dimensao": "D4", "ancoras_status": "rascunho",
+      "assertiva": "Existe política que define usos permitidos e proibidos de ferramentas de IA",
+      "ancoras": [
+        "Não há qualquer orientação; cada pessoa usa o que quiser.",
+        "Há orientações verbais, dadas caso a caso.",
+        "Há regras escritas para parte dos usos, pouco conhecidas pela equipe.",
+        "Há política escrita, comunicada à equipe e com responsável pela atualização.",
+        "A política é revisada periodicamente e seu cumprimento é verificado."
+      ]
+    },
+    {
+      "codigo": "I22", "dimensao": "D4", "ancoras_status": "rascunho",
+      "assertiva": "O acesso a dados sensíveis é concedido por necessidade e revisado",
+      "ancoras": [
+        "Todos acessam tudo, com senhas compartilhadas.",
+        "Há restrições pontuais, definidas por quem configurou o sistema.",
+        "Os acessos aos dados principais são por função, mas raramente revistos.",
+        "Os acessos são concedidos por necessidade e revistos quando alguém muda de função ou sai.",
+        "Os acessos são revistos periodicamente e os registros de acesso são monitorados."
+      ]
+    },
+    {
+      "codigo": "I23", "dimensao": "D4", "ancoras_status": "rascunho",
+      "assertiva": "Decisões de maior impacto apoiadas por IA passam por revisão humana",
+      "ancoras": [
+        "Não se pensou em revisar o que sai de ferramentas automatizadas.",
+        "Revisa-se quando alguém desconfia do resultado.",
+        "Há revisão nas decisões principais, sem critério definido de quais revisar.",
+        "Há critério definido de quais decisões exigem revisão humana, e ele é seguido.",
+        "O critério é revisado a partir dos erros detectados, e a revisão é registrada."
+      ]
+    },
+    {
+      "codigo": "I24", "dimensao": "D4", "ancoras_status": "rascunho",
+      "assertiva": "O tratamento de dados pessoais está adequado à legislação aplicável",
+      "ancoras": [
+        "A empresa desconhece as obrigações da legislação de proteção de dados.",
+        "Há consciência das obrigações, mas nenhuma medida foi tomada.",
+        "Foram tomadas medidas para os tratamentos principais, com lacunas conhecidas.",
+        "Os tratamentos estão mapeados, com base legal e responsável designado.",
+        "A conformidade é auditada periodicamente e os incidentes têm resposta definida."
+      ]
+    },
+    {
+      "codigo": "I25", "dimensao": "D4", "ancoras_status": "rascunho",
+      "assertiva": "Há registro do que foi decidido com apoio de IA e com base em que informação",
+      "ancoras": [
+        "Não há registro de decisões nem das informações que as apoiaram.",
+        "Algumas decisões ficam em conversas ou anotações pessoais.",
+        "As decisões principais são registradas, mas sem a informação que as embasou.",
+        "As decisões apoiadas por IA são registradas com a informação usada e o responsável.",
+        "Os registros são revisados para avaliar a qualidade das decisões e ajustar o uso."
+      ]
+    },
+    {
+      "codigo": "I26", "dimensao": "D5", "ancoras_status": "rascunho",
+      "assertiva": "Concorrentes diretos já utilizam IA de forma visível no mercado da empresa",
+      "ancoras": [
+        "A empresa não sabe se concorrentes usam IA, ou nenhum usa.",
+        "Há rumores ou casos isolados de concorrentes usando IA.",
+        "Alguns concorrentes usam IA de forma visível em partes do negócio.",
+        "Boa parte dos concorrentes usa IA e isso já afeta a disputa por clientes.",
+        "O uso de IA é padrão no mercado e a empresa acompanha sistematicamente os movimentos."
+      ]
+    },
+    {
+      "codigo": "I27", "dimensao": "D5", "ancoras_status": "rascunho",
+      "assertiva": "Clientes ou parceiros já demandam capacidades que dependem de IA ou de dados",
+      "ancoras": [
+        "Nenhum cliente ou parceiro fez tal demanda.",
+        "Houve pedidos esporádicos, de um ou outro cliente.",
+        "Alguns clientes importantes demandam essas capacidades com frequência.",
+        "As demandas são recorrentes e já constam de contratos ou requisitos de fornecimento.",
+        "A empresa antecipa as demandas e as transforma em oferta, acompanhando sua evolução."
+      ]
+    },
+    {
+      "codigo": "I28", "dimensao": "D5", "ancoras_status": "rascunho",
+      "assertiva": "Existem fornecedores ou parceiros capazes de sustentar a solução após a entrega",
+      "ancoras": [
+        "A empresa não conhece fornecedores que poderiam sustentar uma solução.",
+        "Conhece um ou outro nome, sem avaliação de capacidade.",
+        "Identificou fornecedores, mas sem avaliar suporte e continuidade após a entrega.",
+        "Há fornecedores avaliados, com condições de suporte e continuidade conhecidas.",
+        "Há relação estabelecida com nível de serviço acordado e alternativa de substituição."
+      ]
+    },
+    {
+      "codigo": "I29", "dimensao": "D5", "ancoras_status": "rascunho",
+      "assertiva": "A empresa tem acesso a programas de fomento, crédito ou apoio técnico",
+      "ancoras": [
+        "A empresa desconhece programas de fomento, crédito ou apoio técnico.",
+        "Conhece programas, mas nunca verificou elegibilidade.",
+        "Verificou elegibilidade ou iniciou contato, sem acesso efetivo ainda.",
+        "Já acessa ou acessou algum programa de apoio aplicável à iniciativa.",
+        "Acompanha sistematicamente editais e programas e os combina no planejamento."
+      ]
+    },
+    {
+      "codigo": "I30", "dimensao": "D5", "ancoras_status": "rascunho",
+      "assertiva": "A empresa integra cadeias ou redes que exigem troca estruturada de dados",
+      "ancoras": [
+        "A empresa não participa de cadeias ou redes com troca de dados.",
+        "Troca informações com parceiros de forma manual e eventual.",
+        "Troca dados estruturados com alguns parceiros, em formatos diferentes para cada um.",
+        "Integra cadeias ou redes com padrão definido de troca de dados.",
+        "Participa da definição dos padrões da rede e monitora a qualidade das trocas."
+      ]
+    }
+  ],
+  "niveis": [
+    { "numero": 1, "nome": "Inicial", "limite_inferior": 0, "limite_superior": 20,
+      "interpretacao": "A empresa não reúne as condições mínimas para uma iniciativa de IA. Investir nesta etapa tende a produzir impacto neutro ou negativo." },
+    { "numero": 2, "nome": "Em desenvolvimento", "limite_inferior": 20, "limite_superior": 40,
+      "interpretacao": "Há práticas isoladas e dependentes de pessoas específicas. A empresa consegue experimentar, mas não sustentar uma solução em produção." },
+    { "numero": 3, "nome": "Definido", "limite_inferior": 40, "limite_superior": 60,
+      "interpretacao": "As práticas essenciais existem e estão descritas nos processos principais. É viável conduzir um piloto delimitado com acompanhamento próximo." },
+    { "numero": 4, "nome": "Gerenciado", "limite_inferior": 60, "limite_superior": 80,
+      "interpretacao": "As práticas são consistentes, têm responsável e periodicidade. A empresa pode colocar soluções de IA em operação rotineira e medir seus resultados." },
+    { "numero": 5, "nome": "Otimizado", "limite_inferior": 80, "limite_superior": 100,
+      "interpretacao": "As práticas são medidas e revisadas de forma sistemática. A empresa amplia o uso de IA de forma deliberada e recalibra decisões a partir de evidência." }
+  ],
+  "faixas": [
+    { "codigo": "F1", "nome": "Crítica", "limite_inferior": 0, "limite_superior": 40,
+      "leitura": "A dimensão é um gargalo ativo: bloqueia o avanço global e exige ação antes de qualquer investimento em IA." },
+    { "codigo": "F2", "nome": "Em evolução", "limite_inferior": 40, "limite_superior": 70,
+      "leitura": "A dimensão sustenta um piloto delimitado, mas ainda não sustenta operação rotineira sem acompanhamento." },
+    { "codigo": "F3", "nome": "Consolidada", "limite_inferior": 70, "limite_superior": 100,
+      "leitura": "A dimensão não restringe a adoção; o esforço desloca-se para manutenção e ampliação do que já funciona." }
+  ],
+  "esforcos": [
+    { "codigo": "Baixo", "significado": "Até 40 horas de trabalho interno, sem desembolso relevante." },
+    { "codigo": "Médio", "significado": "Entre 40 e 200 horas, podendo exigir apoio externo pontual." },
+    { "codigo": "Alto", "significado": "Acima de 200 horas ou investimento em sistema, com projeto próprio." }
+  ],
+  "horizontes": [
+    { "codigo": "Curto", "significado": "Até 3 meses." },
+    { "codigo": "Médio", "significado": "De 3 a 9 meses." },
+    { "codigo": "Longo", "significado": "De 9 a 18 meses." }
+  ],
+  "regras_dimensao": [
+    { "codigo": "RD-D0-F1", "dimensao": "D0", "faixa": "F1", "esforco": "Alto", "horizonte": "Médio",
+      "acao": "Digitalizar o registro dos processos operacionais principais em um sistema de gestão único antes de iniciar qualquer projeto de IA." },
+    { "codigo": "RD-D0-F2", "dimensao": "D0", "faixa": "F2", "esforco": "Médio", "horizonte": "Curto",
+      "acao": "Fechar as lacunas de cobertura do sistema de gestão e habilitar a extração autônoma de dados em formato aberto, sem depender do fornecedor." },
+    { "codigo": "RD-D0-F3", "dimensao": "D0", "faixa": "F3", "esforco": "Baixo", "horizonte": "Curto",
+      "acao": "Formalizar o suporte e a redundância da infraestrutura, preservando a extração autônoma como capacidade permanente da equipe." },
+    { "codigo": "RD-D1-F1", "dimensao": "D1", "faixa": "F1", "esforco": "Alto", "horizonte": "Médio",
+      "acao": "Consolidar um inventário único das fontes de dados operacionais e corrigir duplicidades e campos obrigatórios vazios nos cadastros mestres." },
+    { "codigo": "RD-D1-F2", "dimensao": "D1", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
+      "acao": "Integrar as fontes que ainda exigem consolidação manual e instituir indicadores de qualidade de dados com responsável designado." },
+    { "codigo": "RD-D1-F3", "dimensao": "D1", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
+      "acao": "Estender a retenção e a documentação do histórico e revisar periodicamente as regras de qualidade já instituídas." },
+    { "codigo": "RD-D2-F1", "dimensao": "D2", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
+      "acao": "Delimitar um único problema de negócio com meta quantificada, responsável e prazo, substituindo o interesse genérico em IA por um escopo verificável." },
+    { "codigo": "RD-D2-F2", "dimensao": "D2", "faixa": "F2", "esforco": "Médio", "horizonte": "Curto",
+      "acao": "Reservar orçamento formal para o período e explicitar as premissas de retorno, com prazo compatível com o horizonte do projeto." },
+    { "codigo": "RD-D2-F3", "dimensao": "D2", "faixa": "F3", "esforco": "Médio", "horizonte": "Médio",
+      "acao": "Constituir uma carteira de problemas priorizada por valor esperado e viabilidade, revisada periodicamente pela direção." },
+    { "codigo": "RD-D3-F1", "dimensao": "D3", "faixa": "F1", "esforco": "Médio", "horizonte": "Curto",
+      "acao": "Realizar letramento básico em IA para liderança e equipe operacional antes de selecionar ferramenta, tratando expectativas irreais como risco de projeto." },
+    { "codigo": "RD-D3-F2", "dimensao": "D3", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
+      "acao": "Designar formalmente o responsável pela iniciativa, com horas semanais protegidas, e converter treinamentos pontuais em plano de capacitação." },
+    { "codigo": "RD-D3-F3", "dimensao": "D3", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
+      "acao": "Ampliar a participação da equipe na definição dos usos e das salvaguardas, consolidando a capacitação contínua avaliada por resultado." },
+    { "codigo": "RD-D4-F1", "dimensao": "D4", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
+      "acao": "Publicar política mínima de uso de IA (usos permitidos, dados que não podem ser submetidos e revisão humana obrigatória) e verificar a base legal do tratamento de dados pessoais." },
+    { "codigo": "RD-D4-F2", "dimensao": "D4", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
+      "acao": "Instituir revisão periódica dos acessos a dados sensíveis e padronizar o registro das decisões de maior impacto apoiadas por IA." },
+    { "codigo": "RD-D4-F3", "dimensao": "D4", "faixa": "F3", "esforco": "Médio", "horizonte": "Longo",
+      "acao": "Evidenciar a conformidade em auditoria interna e converter a governança em diferencial declarável a clientes e parceiros." },
+    { "codigo": "RD-D5-F1", "dimensao": "D5", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
+      "acao": "Mapear fornecedores e parceiros capazes de sustentar a solução após a entrega e verificar elegibilidade a programas de fomento e apoio técnico." },
+    { "codigo": "RD-D5-F2", "dimensao": "D5", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
+      "acao": "Negociar condições e nível de serviço com os fornecedores já avaliados e estruturar a troca de dados com os parceiros principais." },
+    { "codigo": "RD-D5-F3", "dimensao": "D5", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
+      "acao": "Usar a prontidão consolidada como argumento comercial e aderir aos padrões de interoperabilidade do ecossistema em que a empresa opera." }
+  ],
+  "regras_transversais": [
+    { "codigo": "RT-01", "esforco": "Alto", "horizonte": "Médio",
+      "condicao_texto": "D0 na faixa Crítica",
+      "condicao": { "tipo": "faixa", "dimensao": "D0", "faixa": "F1" },
+      "acao": "Suspender a seleção de ferramentas de IA e tratar a digitalização básica como projeto antecedente: sem registro digital da operação não há insumo para nenhuma aplicação." },
+    { "codigo": "RT-02", "esforco": "Alto", "horizonte": "Longo",
+      "condicao_texto": "Duas ou mais dimensões críticas na faixa Crítica",
+      "condicao": { "tipo": "criticas_em_faixa", "faixa": "F1", "minimo": 2 },
+      "acao": "Reenquadrar a iniciativa como programa de reestruturação interna, e não como projeto de IA, com marcos de reavaliação a cada trimestre." },
+    { "codigo": "RT-03", "esforco": "Baixo", "horizonte": "Curto",
+      "condicao_texto": "Escore global na faixa Consolidada com alguma dimensão crítica na faixa Crítica",
+      "condicao": { "tipo": "todas", "condicoes": [
+        { "tipo": "faixa_global", "faixa": "F3" },
+        { "tipo": "criticas_em_faixa", "faixa": "F1", "minimo": 1 }
+      ] },
+      "acao": "Comunicar explicitamente no relatório que o escore ponderado superestima a prontidão real e que o nível atribuído foi limitado pela dimensão crítica de menor escore." },
+    { "codigo": "RT-04", "esforco": "Médio", "horizonte": "Curto",
+      "condicao_texto": "D1 na faixa Crítica e D2 fora da faixa Crítica",
+      "condicao": { "tipo": "todas", "condicoes": [
+        { "tipo": "faixa", "dimensao": "D1", "faixa": "F1" },
+        { "tipo": "nao", "condicao": { "tipo": "faixa", "dimensao": "D2", "faixa": "F1" } }
+      ] },
+      "acao": "Alinhar ambição e base disponível: a clareza estratégica está acima da maturidade dos dados, o que expõe a empresa a investir em solução sem insumo que a sustente." },
+    { "codigo": "RT-05", "esforco": "Médio", "horizonte": "Curto",
+      "condicao_texto": "D3 na faixa Crítica",
+      "condicao": { "tipo": "faixa", "dimensao": "D3", "faixa": "F1" },
+      "acao": "Priorizar letramento e atribuição de responsabilidade antes da contratação de qualquer ferramenta, sob pena de a rejeição interna anular o investimento." },
+    { "codigo": "RT-06", "esforco": "Baixo", "horizonte": "Curto",
+      "condicao_texto": "D4 na faixa Crítica com D1 fora da faixa Crítica",
+      "condicao": { "tipo": "todas", "condicoes": [
+        { "tipo": "faixa", "dimensao": "D4", "faixa": "F1" },
+        { "tipo": "nao", "condicao": { "tipo": "faixa", "dimensao": "D1", "faixa": "F1" } }
+      ] },
+      "acao": "Instituir governança mínima antes de ampliar o uso dos dados: a empresa já acumula dados utilizáveis sem as salvaguardas correspondentes." }
+  ],
+  "priorizacao": {
+    "peso_faixa": { "F1": 300, "F2": 200, "F3": 100 },
+    "bonus_dimensao_critica": 50,
+    "bonus_esforco": { "Baixo": 3, "Médio": 2, "Alto": 1 },
+    "peso_advertencia": 1000
+  },
+  "reaplicacao": [
+    { "niveis": [1, 2], "meses": 6, "gatilho": "Conclusão das ações de curto prazo do roteiro, o que ocorrer primeiro." },
+    { "niveis": [3], "meses": 9, "gatilho": "Conclusão de um piloto ou entrada em operação de uma primeira solução." },
+    { "niveis": [4, 5], "meses": 12, "gatilho": "Mudança relevante de escopo, porte, regulação aplicável ou cadeia de clientes." }
+  ],
+  "tempos_processo": [
+    { "etapa": 1, "raia": "Gestor da PME", "atividade": "Preencher a ficha de contexto da empresa", "uc": "UC-01", "min": 2, "max": 3 },
+    { "etapa": 2, "raia": "Gestor da PME", "atividade": "Consultar o guia de aplicação", "uc": "UC-03", "min": 1, "max": 2 },
+    { "etapa": 3, "raia": "Gestor da PME", "atividade": "Responder os itens de D0 e D1", "uc": "UC-02", "min": 4, "max": 6, "dimensoes": ["D0", "D1"] },
+    { "etapa": 4, "raia": "Gestor da PME", "atividade": "Responder os itens de D2 e D3", "uc": "UC-02", "min": 5, "max": 7, "dimensoes": ["D2", "D3"] },
+    { "etapa": 5, "raia": "Gestor da PME", "atividade": "Responder os itens de D4 e D5", "uc": "UC-02", "min": 4, "max": 5, "dimensoes": ["D4", "D5"] },
+    { "etapa": 6, "raia": "Ferramenta MGP-PME", "atividade": "Verificar completude das respostas", "uc": "UC-05", "min": 0, "max": 0 },
+    { "etapa": 7, "raia": "Ferramenta MGP-PME", "atividade": "Normalizar respostas e calcular escores por dimensão", "uc": "UC-04", "min": 0, "max": 0 },
+    { "etapa": 8, "raia": "Ferramenta MGP-PME", "atividade": "Aplicar o teto de gargalo e classificar a maturidade", "uc": "UC-05", "min": 0, "max": 0 },
+    { "etapa": 9, "raia": "Ferramenta MGP-PME", "atividade": "Selecionar regras e priorizar o roteiro", "uc": "UC-05", "min": 0, "max": 0 },
+    { "etapa": 10, "raia": "Gestor da PME", "atividade": "Ler o perfil por dimensão e o nível atribuído", "uc": "UC-06", "min": 2, "max": 3 },
+    { "etapa": 11, "raia": "Gestor da PME", "atividade": "Ler o roteiro priorizado", "uc": "UC-07", "min": 2, "max": 3 },
+    { "etapa": 12, "raia": "Gestor da PME", "atividade": "Exportar e arquivar o diagnóstico", "uc": "UC-08", "min": 0, "max": 1 }
+  ]
+}
