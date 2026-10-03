@@ -30,7 +30,7 @@ Metalmecânica Aurora (seção 4 do PBL 4) — o resultado bate com a Tabela 13.
 ## Testes (etapa V2 e critérios de aceitação)
 
 ```bash
-node --test tests/               # ou: npm test   (Node 20+, sem dependências)
+node --test "tests/*.test.js"    # ou: npm test   (Node 22+, sem dependências)
 ```
 
 | Arquivo | Verifica |
