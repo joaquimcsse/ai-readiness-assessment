@@ -110,22 +110,22 @@ export function htmlCanvas(app, modelo) {
     <h4>${esc(titulo)}</h4><div class="canvas-conteudo">${conteudo}</div><p class="canvas-origem">${esc(origem)}</p></div>`;
 
   return `<div class="canvas-grade">
-    ${celula('Onde estamos', `<ul class="mini-escores">${diag.porDimensao.map(d => `<li><span>${esc(d.codigo)} ${esc(d.nome)}</span><strong class="txt-${esc(d.faixa)}">${num(d.escore)}</strong></li>`).join('')}</ul>`, 'Painel de perfil (CP-11)')}
+    ${celula('Onde estamos', `<ul class="mini-escores">${diag.porDimensao.map(d => `<li><span>${esc(d.codigo)} ${esc(d.nome)}</span><strong class="txt-${esc(d.faixa)}">${num(d.escore)}</strong></li>`).join('')}</ul>`, 'Escore de cada dimensão, de 0 a 100')}
     ${celula('O que nos trava', diag.tetoAtuou
       ? `<p><strong>${diag.gargalos.map(g => `${esc(g)} ${esc(nomeDimensao(modelo, g))}`).join(', ')}</strong> limita o nível atribuído em ${diag.nivelCompensatorio - diag.nivelFinal} nível(is): de ${diag.nivelCompensatorio} para ${diag.nivelFinal}.</p>${criticasF1.length ? `<p>Dimensões críticas na faixa Crítica: ${criticasF1.map(esc).join(', ')}.</p>` : ''}`
-      : `<p>Nenhuma dimensão crítica limita o nível atribuído.</p>${criticasF1.length ? `<p>Ainda assim, ${criticasF1.map(esc).join(', ')} está na faixa Crítica.</p>` : ''}`, 'Aplicador do teto de gargalo (CP-08)')}
-    ${celula('Em que nível estamos', `<p><strong>Nível ${diag.nivelFinal}: ${esc(nomeNivel(modelo, diag.nivelFinal))}.</strong> ${esc(modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao)}</p>`, 'Classificador de nível (CP-07)')}
+      : `<p>Nenhuma dimensão crítica limita o nível atribuído.</p>${criticasF1.length ? `<p>Ainda assim, ${criticasF1.map(esc).join(', ')} está na faixa Crítica.</p>` : ''}`, 'Dimensão crítica de menor escore')}
+    ${celula('Em que nível estamos', `<p><strong>Nível ${diag.nivelFinal}: ${esc(nomeNivel(modelo, diag.nivelFinal))}.</strong> ${esc(modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao)}</p>`, 'Nível de maturidade atribuído')}
     ${celula('O que a média esconde', diag.tetoAtuou
       ? `<p>A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} (${esc(nomeNivel(modelo, diag.nivelCompensatorio))}). O nível efetivamente atribuído é ${diag.nivelFinal}: dimensões fortes não compensam a base que falta.</p>`
-      : `<p>Nada: o nível pela média ponderada (${num(diag.escoreGlobal)}) e o nível atribuído coincidem.</p>`, 'Regra transversal RT-03 / FA-01')}
+      : `<p>Nada: o nível pela média ponderada (${num(diag.escoreGlobal)}) e o nível atribuído coincidem.</p>`, 'Média ponderada contra nível atribuído')}
     ${celula('O que fazer agora', agora.length
-      ? `<ol>${agora.map(r => `<li><strong>${esc(r.regra)}</strong>, esforço ${esc(r.esforco.toLowerCase())}</li>`).join('')}</ol>`
-      : '<p>Sem ações de curto prazo neste roteiro.</p>', 'Priorizador do roteiro (CP-10)')}
+      ? `<ol>${agora.map(r => `<li>${esc(r.acao)} <small>(esforço ${esc(r.esforco.toLowerCase())})</small></li>`).join('')}</ol>`
+      : '<p>Sem ações de curto prazo neste roteiro.</p>', 'Roteiro priorizado')}
     ${celula('O que fazer depois', depois.length
-      ? `<ol>${depois.map(r => `<li><strong>${esc(r.regra)}</strong>, ${esc(r.horizonte.toLowerCase())} prazo</li>`).join('')}</ol>`
-      : '<p>Nenhuma ação de médio ou longo prazo.</p>', 'Priorizador do roteiro (CP-10)')}
+      ? `<ol>${depois.map(r => `<li>${esc(r.acao)} <small>(${esc(r.horizonte.toLowerCase())} prazo)</small></li>`).join('')}</ol>`
+      : '<p>Nenhuma ação de médio ou longo prazo.</p>', 'Roteiro priorizado')}
     ${celula('Quem responde por cada passo', comResp.length
-      ? `<ul>${comResp.map(r => `<li><strong>${esc(r.regra)}</strong>: ${esc(resp[r.regra])}</li>`).join('')}</ul>`
+      ? `<ul>${comResp.map(r => `<li><strong>${esc(resp[r.regra])}</strong>: ${esc(r.acao)}</li>`).join('')}</ul>`
       : '<p class="vazio">A preencher pela empresa: indique um responsável para cada passo na tabela do roteiro.</p>', 'Preenchido pela própria PME')}
     ${celula('Como saberemos que avançamos', `<p>Próxima aplicação: <strong>${dataBR(diag.dataReaplicacao)}</strong>.</p>${mudar.length
       ? `<p>Espera-se mudança de faixa em: ${mudar.map(d => `<strong>${esc(d)}</strong>`).join(', ')}.</p>`
