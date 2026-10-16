@@ -55,7 +55,7 @@ function versaoDivergente(app) {
 function telaVersaoDivergente(el, app) {
   el.innerHTML = `<section class="cartao estreito">
     <h1>O modelo foi atualizado</h1>
-    <div class="aviso aviso-erro" role="alert"><strong>Cálculo interrompido (FE-02).</strong> Esta aplicação foi iniciada sob a versão <strong>${esc(app.versaoModelo)}</strong> do modelo, mas a página agora usa a versão <strong>${esc(modelo.versao_modelo)}</strong>. Para não misturar respostas coletadas sob modelos distintos, a aplicação precisa ser reiniciada.</div>
+    <div class="aviso aviso-erro" role="alert"><strong>Cálculo interrompido.</strong> Esta aplicação foi iniciada sob a versão <strong>${esc(app.versaoModelo)}</strong> do modelo, mas a página agora usa a versão <strong>${esc(modelo.versao_modelo)}</strong>. Para não misturar respostas coletadas sob modelos distintos, a aplicação precisa ser reiniciada.</div>
     <div class="acoes"><button type="button" class="btn btn-pri" data-acao="reiniciar">Reiniciar com a mesma ficha</button></div>
   </section>`;
   el.querySelector('[data-acao="reiniciar"]').addEventListener('click', () => {
@@ -210,7 +210,7 @@ function gerarDiagnostico(app) {
     } else if (e.codigo === 'FE-02') {
       telaVersaoDivergente(novaTela(), app);
     } else {
-      novaTela().innerHTML = `<section class="cartao estreito"><div class="aviso aviso-erro" role="alert"><strong>Cálculo interrompido (${esc(e.codigo)}).</strong> ${esc(e.message)}</div></section>`;
+      novaTela().innerHTML = `<section class="cartao estreito"><div class="aviso aviso-erro" role="alert"><strong>Cálculo interrompido.</strong> ${esc(e.message)}</div></section>`;
     }
   }
 }
@@ -256,7 +256,7 @@ function telaHistorico() {
   const atual = estado.aplicacaoAtual();
   el.innerHTML = `
     <section class="cartao">
-      <p class="etapa-rotulo">UC-08 e UC-09 · Exportar, reaplicar e comparar</p>
+      <p class="etapa-rotulo">Exportar, reaplicar e comparar</p>
       <h1>Histórico de aplicações</h1>
       <p class="lead">Aplicações guardadas neste navegador e diagnósticos importados de arquivo. Selecione duas para comparar a evolução. Só são comparáveis diagnósticos da mesma versão do modelo.</p>
       <div class="acoes acoes-esq">
@@ -327,7 +327,7 @@ function telaComparar(idA, idB) {
   const el = novaTela();
   const a = estado.obterAplicacao(idA);
   const b = estado.obterAplicacao(idB);
-  el.innerHTML = `<section class="cartao"><p class="etapa-rotulo">UC-09 · Reaplicar o instrumento e comparar resultados</p>
+  el.innerHTML = `<section class="cartao"><p class="etapa-rotulo">Reaplicar o instrumento e comparar resultados</p>
     <h1>Comparação entre aplicações</h1>
     <div class="acoes acoes-esq nao-imprimir"><a class="btn btn-sec" href="#/historico">← Histórico</a><button type="button" class="btn btn-sec" data-acao="imprimir">Imprimir</button></div>
     <div data-comp></div></section>`;
@@ -394,7 +394,7 @@ async function iniciar() {
   const erros = validarModelo(modelo);
   if (erros.length) {
     principal.innerHTML = `<section class="cartao estreito"><div class="aviso aviso-erro" role="alert">
-      <strong>Parâmetros do modelo inválidos (FE-03).</strong> O diagnóstico não será calculado com um modelo inconsistente.
+      <strong>Parâmetros do modelo inválidos.</strong> O diagnóstico não será calculado com um modelo inconsistente.
       <ul>${erros.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></section>`;
     return;
   }
