@@ -39,12 +39,30 @@ function ir(rota) {
   else location.hash = rota;
 }
 
+const ROTAS_PESQUISA = ['avaliacao', 'manutencao', 'sobre'];
+const grupoPesquisa = document.getElementById('menu-pesquisa');
+
 function marcarMenu(rota) {
   document.querySelectorAll('.menu a').forEach(a => {
     const ativo = a.dataset.rota === rota;
     a.classList.toggle('ativo', ativo);
     if (ativo) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
+  grupoPesquisa.querySelector('summary').classList.toggle('ativo', ROTAS_PESQUISA.includes(rota));
+  grupoPesquisa.open = false;
+}
+
+// O grupo "Pesquisa" fecha ao clicar fora dele.
+document.addEventListener('click', ev => {
+  if (grupoPesquisa.open && !grupoPesquisa.contains(ev.target)) grupoPesquisa.open = false;
+});
+
+// "Diagnóstico" no menu leva ao ponto em que o gestor parou.
+function telaAplicacao() {
+  const app = estado.aplicacaoAtual();
+  if (!app) ir('#/ficha');
+  else if (app.diagnostico) ir('#/diagnostico');
+  else ir('#/questionario');
 }
 
 // FE-02: a versão do modelo fixada no início difere da carregada.
@@ -346,6 +364,7 @@ function roteador() {
   const mapa = {
     '': ['inicio', telaInicio],
     inicio: ['inicio', telaInicio],
+    aplicacao: ['aplicacao', telaAplicacao],
     ficha: ['aplicacao', telaFicha],
     questionario: ['aplicacao', () => telaQuestionario(args[0])],
     diagnostico: ['aplicacao', () => telaDiagnostico(args[0])],
@@ -365,6 +384,7 @@ const guia = document.getElementById('guia');
 const veu = document.getElementById('veu');
 const botaoGuia = document.getElementById('abrir-guia');
 function abrirGuia() {
+  estado.registrarAberturaGuia();
   guia.hidden = false; veu.hidden = false;
   botaoGuia.setAttribute('aria-expanded', 'true');
   document.getElementById('fechar-guia').focus();

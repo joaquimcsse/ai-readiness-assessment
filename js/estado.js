@@ -119,11 +119,38 @@ export function iniciarAplicacao(ficha, versaoModelo, anterior = null) {
     exportadaEm: null,
     origem: 'local',
     historicoEstados: [{ estado: ESTADOS.PREPARADA, em: new Date().toISOString() }],
+    metricas: novasMetricas(),
   };
   s.aplicacoes[app.id] = app;
   s.atual = app.id;
   salvar();
   return app;
+}
+
+// Medição de uso (R7 da avaliação do PBL 7): início e fim do preenchimento e
+// quantas vezes o guia foi aberto. Fica na aplicação e segue no arquivo
+// exportado, para cronometrar o tempo real (RNF04) e a autonomia (RNF02) na
+// próxima rodada de validação. Nada é enviado.
+function novasMetricas() {
+  return { inicioPreenchimento: null, fimPreenchimento: null, aberturasGuia: 0 };
+}
+
+function metricas(app) {
+  if (!app.metricas) app.metricas = novasMetricas();
+  return app.metricas;
+}
+
+export function registrarAberturaGuia() {
+  const app = aplicacaoAtual();
+  if (!app || app.estado === ESTADOS.ARQUIVADA) return;
+  metricas(app).aberturasGuia++;
+  salvar();
+}
+
+export function minutosPreenchimento(app) {
+  const m = app?.metricas;
+  if (!m?.inicioPreenchimento || !m.fimPreenchimento) return null;
+  return (Date.parse(m.fimPreenchimento) - Date.parse(m.inicioPreenchimento)) / 60000;
 }
 
 function mudarEstado(app, estado) {
@@ -155,8 +182,13 @@ export function registrarResposta(app, item, valor, totalItens) {
   if (app.respostas[item] === valor && app.estado !== ESTADOS.PREPARADA) return app;
   app.respostas[item] = valor;
   if (app.diagnostico) app.diagnostico = null;
+  const m = metricas(app);
+  if (!m.inicioPreenchimento) m.inicioPreenchimento = new Date().toISOString();
   mudarEstado(app, ESTADOS.EM_PREENCHIMENTO);
-  if (contarRespondidas(app) >= totalItens) mudarEstado(app, ESTADOS.COMPLETA);
+  if (contarRespondidas(app) >= totalItens) {
+    mudarEstado(app, ESTADOS.COMPLETA);
+    if (!m.fimPreenchimento) m.fimPreenchimento = new Date().toISOString();
+  }
   salvar();
   return app;
 }

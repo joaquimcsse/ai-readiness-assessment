@@ -4,7 +4,7 @@
 // protocolo respondido é exportado em arquivo — nada é enviado (ADR-03).
 
 import { esc, dataBR, notificar } from './ui.js';
-import { salvarAvaliacao, listarAvaliacoes, excluirAvaliacao, exportarAvaliacao, novoIdAvaliacao, listarAplicacoes, hojeISO } from './estado.js';
+import { salvarAvaliacao, listarAvaliacoes, excluirAvaliacao, exportarAvaliacao, novoIdAvaliacao, listarAplicacoes, hojeISO, minutosPreenchimento } from './estado.js';
 
 const ESCALA = ['Discordo totalmente', 'Discordo', 'Neutro', 'Concordo', 'Concordo totalmente'];
 
@@ -109,6 +109,8 @@ export function renderAvaliacao(el, { modelo }) {
         escores: vinculada.diagnostico.escores,
         nivelFinal: vinculada.diagnostico.nivelFinal,
         roteiro: vinculada.diagnostico.roteiro.map(r => r.regra),
+        metricasUso: vinculada.metricas ?? null,
+        minutosPreenchimento: minutosPreenchimento(vinculada),
       } : null,
     };
     salvarAvaliacao(avaliacao);

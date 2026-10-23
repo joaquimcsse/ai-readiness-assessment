@@ -1,6 +1,6 @@
 {
   "name": "mgp-pme",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "MGP-PME — Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas (instanciação web estática)",
   "type": "module",
