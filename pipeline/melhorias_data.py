@@ -31,7 +31,9 @@ DOCUMENTO = {
 
 # Resultado do CI no pull request desta etapa (R1). Preenchido depois que o
 # workflow roda no GitHub; enquanto for None, o relatório diz que está pendente.
-CI = {"pr": None, "url": None, "resultado": None, "testes": None}
+CI = {"pr": 1, "repositorio": "marshmll/ai-readiness-assessment",
+      "url": "https://github.com/marshmll/ai-readiness-assessment/actions/runs/40013305897",
+      "resultado": "aprovado", "testes": 38, "node": "22.23.3"}
 
 # ---------------------------------------------------------------- PBL 7 -> L
 # Cada limitação cita a evidência do relatório de avaliação (E1 testes, E2

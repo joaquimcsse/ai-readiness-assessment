@@ -241,22 +241,29 @@ A página é publicada pelo GitHub Pages a partir do branch \texttt{mgp-pme-pagi
 GitHub monta o site a cada push. O workflow de testes só disparava em push para \texttt{main}, então o que ia ao ar não
 passava pela suíte. Além disso, a execução do pull request \#4 terminou como falha por problema no arquivo do workflow,
 sem iniciar nenhum job. A melhoria M1 faz os testes rodarem no branch publicado e restringe as permissões de publicação
-ao job que publica. Para que uma falha nos testes também impeça a publicação, a fonte do GitHub Pages teria de passar
-a ser o GitHub Actions. Essa é uma configuração do repositório e cabe ao dono dele.
-""" % {"n": len(dados.MELHORIAS), "vd": esc(med["depois"]["versao"]), "garg": ", ".join(a["gargalos"]),
+ao job que publica. %(ci)sPara que uma falha nos testes também impeça a publicação, a fonte do GitHub Pages teria de
+passar a ser o GitHub Actions. Essa é uma configuração do repositório e cabe ao dono dele.
+""" % {"ci": frase_ci(), "n": len(dados.MELHORIAS), "vd": esc(med["depois"]["versao"]), "garg": ", ".join(a["gargalos"]),
        "tab": tabela_longa("Registro das melhorias da versão %s." % esc(med["depois"]["versao"]),
                            r"L{0.7cm}L{1.7cm}L{8.0cm}L{3.6cm}",
                            ["Cód.", "Origem", "Mudança", "Verificação"], linhas, "tab:melhorias")}
+
+
+def frase_ci():
+    ci = dados.CI
+    if not ci["resultado"]:
+        return ""
+    return (r"No pull request desta etapa, aberto no fork \texttt{%s} (\#%s), o job de testes rodou no Node %s e "
+            r"aprovou os %s testes; o job de publicação foi pulado, como deve acontecer num pull request. "
+            % (esc(ci["repositorio"]), ci["pr"], esc(ci["node"]), ci["testes"]))
 
 
 def resultado_ci():
     ci = dados.CI
     if not ci["resultado"]:
         return "Execução do workflow no pull request desta etapa (pendente no momento desta versão do relatório)."
-    txt = "Pull request #%s: workflow %s" % (ci["pr"], ci["resultado"])
-    if ci["testes"]:
-        txt += ", %s testes" % ci["testes"]
-    return txt + "."
+    return "Pull request #%s do fork %s: workflow %s, %s de %s testes no Node %s." % (
+        ci["pr"], ci["repositorio"], ci["resultado"], ci["testes"], ci["testes"], ci["node"])
 
 
 def evidencias(med):
