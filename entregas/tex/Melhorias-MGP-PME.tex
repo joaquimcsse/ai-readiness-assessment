@@ -1,0 +1,411 @@
+%==============================================================================
+%  MGP-PME --- Melhorias do Artefato MGP-PME
+%  Pesquisa Aplicada --- PUCPR --- Grupo G02
+%  Gerado por pipeline/build_tex_melhorias.py; compilacao: pdfLaTeX
+%==============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazilian]{babel}
+
+\usepackage{mathptmx}
+\usepackage[scaled=0.92]{helvet}
+\usepackage{microtype}
+
+\usepackage[a4paper,top=2.6cm,bottom=2.6cm,left=2.6cm,right=2.6cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage[font=small,labelfont=bf,skip=6pt]{caption}
+\usepackage{float}
+\usepackage{needspace}
+\usepackage{lastpage}
+\usepackage[hidelinks]{hyperref}
+
+% ---------- Titulos ----------
+\titleformat{\section}{\sffamily\large\bfseries}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\sffamily\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titlespacing*{\section}{0pt}{2.4ex plus 1ex minus .2ex}{1.1ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus 1ex minus .2ex}{0.8ex plus .2ex}
+\newcommand{\rotulo}[1]{\par\needspace{3\baselineskip}\vspace{0.4em}{\sffamily\bfseries #1}\par\nopagebreak\vspace{-0.4em}}
+
+% ---------- Sumario ----------
+\renewcommand{\contentsname}{Sum\'ario}
+\titlecontents{section}[1.5em]{\addvspace{6pt}\sffamily\bfseries}
+  {\contentslabel{1.5em}}{\hspace*{-1.5em}}{\hfill\contentspage}
+\titlecontents{subsection}[3.6em]{}{\contentslabel{2.1em}}{}
+  {\titlerule*[0.6pc]{.}\contentspage}
+
+% ---------- Cabecalho e rodape ----------
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+% \rightmark devolve a primeira marca da página: o cabeçalho mostra a seção em
+% que a página começa, como no relatório de avaliação
+\renewcommand{\sectionmark}[1]{\markboth{\thesection\quad #1}{\thesection\quad #1}}
+\renewcommand{\subsectionmark}[1]{}
+\fancyhead[L]{\sffamily\footnotesize Melhorias do MGP-PME \,|\, PBL 8}
+\fancyhead[R]{\sffamily\footnotesize\nouppercase{\rightmark}}
+\fancyfoot[C]{\sffamily\footnotesize\thepage}
+\newcommand{\paginacaocorpo}{\fancyfoot[C]{\sffamily\footnotesize\thepage{} de \pageref*{LastPage}}}
+
+% ---------- Tabelas ----------
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\thead}[1]{\sffamily\bfseries\small #1}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{6pt}
+
+% ---------- Captura de tela ----------
+% contorno fino: a captura tem fundo escuro e borda propria, mas o fio separa
+% duas capturas lado a lado. #1 = largura em cm  #2 = arquivo
+\newcommand{\captura}[2]{{\setlength{\fboxsep}{0pt}\setlength{\fboxrule}{0.4pt}%
+  \fbox{\includegraphics[width=\dimexpr#1cm-2\fboxrule\relax]{#2}}}}
+
+\setlist{itemsep=2pt,topsep=4pt}
+% parágrafos sem recuo e com espaço entre eles, como no relatório de avaliação
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em plus 0.1em}
+
+\begin{document}
+
+\begin{titlepage}
+\sffamily\setlength{\parindent}{0pt}
+\vspace*{3.2cm}
+{\small PESQUISA APLICADA \,|\, DESIGN SCIENCE RESEARCH \,|\, ETAPA 5}\par\vspace{6pt}
+\rule{\linewidth}{0.8pt}\par\vspace{1.4cm}
+{\fontsize{30}{36}\selectfont\bfseries Melhorias do Artefato\\MGP-PME\par}\vspace{0.9cm}
+{\large Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas\par}\vspace{0.5cm}
+{\normalsize PBL 8: refinar o artefato com base nos resultados da avaliação\par}\vspace{1.2cm}
+\rule{\linewidth}{0.4pt}
+\vfill
+{\footnotesize\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}p{3.6cm}p{11.6cm}@{}}
+\textbf{Artefato} & MGP-PME, versão 1.1.0 do artefato (modelo 1.0.0) \\
+\textbf{Código} & commit \texttt{cb20412}, branch \texttt{pbl8-melhorias}; versão avaliada: \texttt{b9668a4} \\
+\textbf{Grupo} & G02 \\
+\textbf{Integrantes} & Renan da Silva Oliveira Andrade \\ & Guilherme Arcanjo de Morais \\ & Lucas da Costa Paula \\ & Renan Americo Herculano \\ & Joaquim dos Anjos Faraco \\
+\textbf{Curso} & Bacharelado em Ciência da Computação, turma 6º A \\
+\textbf{Disciplina} & Pesquisa Aplicada, PUCPR \\
+\textbf{Data} & 23 de outubro de 2026 \\
+\end{tabular}}
+\vspace*{1.4cm}
+\end{titlepage}
+
+\pagenumbering{roman}
+\markboth{}{}
+\section*{Resumo}
+Este relatório corresponde à etapa de melhorias do processo de \emph{Design Science Research} (Peffers et al., 2007).
+A avaliação do PBL 7 concluiu que o núcleo de cálculo do MGP-PME estava correto e que as lacunas estavam no uso da
+página: códigos de regra na tela, texto demais, um fluxo confuso depois do preenchimento e nenhuma medida do tempo
+gasto. Das 10 recomendações daquele relatório, 6 foram implementadas, 1 foi implementada em parte e
+3 dependem de especialistas ou de novos respondentes, por isso ficam para o próximo ciclo.
+
+\begin{table}[H]
+\centering\small
+\caption{Recomendações do PBL 7 por situação.}
+\begin{tabularx}{\linewidth}{L{3.2cm}L{2.4cm}X}
+\toprule
+\thead{Situação} & \thead{Quantidade} & \thead{Recomendações} \\
+\midrule
+Implementada & 6 & R1, R2, R3, R4, R5, R9 \\
+Parcial & 1 & R7 \\
+Próximo ciclo & 3 & R6, R8, R10 \\
+\textbf{Total} & \textbf{10} &  \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\rotulo{Principais achados}
+Na versão 1.1.0, o relatório do gestor não mostra mais nenhum código de regra. No caso Aurora, a versão avaliada
+exibia 8 ocorrências de 7 códigos distintos. Sem abrir nenhuma seção, o diagnóstico agora mostra 327 palavras, contra 1.119 antes, e o
+restante do conteúdo continua nas seções recolhidas. O nível, o gargalo e o roteiro do caso Aurora são os mesmos nas
+duas versões, e a suíte passou de 30 para 38 testes, todos aprovados.
+
+\rotulo{Próximos passos}
+As lacunas que estavam no próprio artefato foram tratadas, mas os vereditos parciais de RNF01, RNF04, RF06 e OE5 só
+podem mudar com uma nova rodada do questionário. A Seção~\ref{sec:proximo} lista o que ficou para o próximo ciclo: a
+revisão por especialistas (R6 e R10), a ampliação da amostra (R7) e a decisão sobre a identidade visual (R8).
+
+\clearpage
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\paginacaocorpo
+
+\section{Introdução e método}
+Na DSRM, a avaliação pode levar de volta ao desenvolvimento, e o ciclo se repete até o artefato atender aos objetivos
+(Peffers et al., 2007; Hevner et al., 2004). Esta etapa faz uma dessas voltas. Ela parte das limitações levantadas na
+avaliação do PBL 7 (Grupo G02, 2026c), implementa as recomendações que estavam ao alcance do grupo e mede a versão
+nova com a mesma régua usada na anterior.
+
+Cada recomendação recebe uma de três situações:
+\begin{itemize}
+  \item \emph{Implementada}, quando a mudança está no código e um teste automático ou uma medição a confirma;
+  \item \emph{Parcial}, quando a parte que cabe ao artefato foi feita e o restante depende de coleta com pessoas;
+  \item \emph{Próximo ciclo}, quando a recomendação depende de especialistas, de novos respondentes ou de uma decisão
+        que uma única opinião não sustenta.
+\end{itemize}
+
+Duas restrições orientaram as mudanças. O modelo (\texttt{dados.json}) continua na versão 1.0.0, porque pesos,
+limites, itens e regras não mudaram e uma versão nova impediria comparar diagnósticos antigos e novos (RN-07). O núcleo
+de cálculo (\texttt{js/nucleo.js}) também ficou intacto, para que os resultados do PBL 7 sobre ele (E1 e E4) continuem
+valendo. Só a página mudou, e o artefato passou da versão 1.0.0 para a 1.1.0.
+
+As evidências da evolução estão na Tabela~\ref{tab:evid}. O script \texttt{pipeline/medir.mjs} extrai a versão avaliada
+(commit \texttt{b9668a4}) com \texttt{git archive}, roda a mesma medição nas duas versões e grava o resultado em
+\texttt{build/medidas.json}, de onde saem todos os números das Seções~\ref{sec:melhorias} e~\ref{sec:evidencias}. As
+capturas vêm de \texttt{pipeline/capturar.py}, que desenha o caso Aurora no Firefox \emph{headless} com os módulos de
+cada versão. O questionário (E3) e a simulação (E4) não foram repetidos nesta etapa.
+
+\begin{table}[H]
+\centering\small
+\caption{Evidências desta etapa.}\label{tab:evid}
+\begin{tabularx}{\linewidth}{L{1.1cm}L{5.4cm}X}
+\toprule
+\thead{Código} & \thead{Evidência} & \thead{O que mede} \\
+\midrule
+E1 & Suíte de testes automáticos (\texttt{node -{}-test}) & Núcleo, contrato de dados, critérios CT-01 a CT-08 e um teste para cada melhoria \\
+E2 & Medição comparativa (\texttt{pipeline/medir.mjs}) & Códigos expostos, palavras à vista, botões, menu, peso da página e rede, nas duas versões \\
+E5 & Capturas de tela (\texttt{pipeline/capturar.py}) & Aparência das telas alteradas na versão avaliada e na versão nova \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Limitações identificadas na avaliação}
+A Tabela~\ref{tab:lim} resume as limitações da Seção 5.2 e da Tabela 16 do PBL 7 e liga cada uma à recomendação
+correspondente. As seis primeiras (L1 a L6) estavam no próprio artefato e podiam ser tratadas nesta etapa. A L7 é mista:
+o grupo pode instrumentar a página, mas a medida depende de outros gestores. L8 e L9 dependem de especialistas ou de
+mais respondentes.
+
+{\small
+\begin{longtable}{L{0.7cm}L{6.6cm}L{2.1cm}L{2.3cm}L{1.2cm}}
+\caption{Limitações apontadas no PBL 7 e recomendação correspondente.}\label{tab:lim}\\
+\toprule
+\thead{Cód.} & \thead{Limitação} & \thead{Evidência} & \thead{Critérios} & \thead{Rec.} \\
+\midrule
+\endfirsthead
+\caption[]{(continuação)}\\
+\toprule
+\thead{Cód.} & \thead{Limitação} & \thead{Evidência} & \thead{Critérios} & \thead{Rec.} \\
+\midrule
+\endhead
+\midrule\multicolumn{5}{r}{\footnotesize\itshape continua na próxima página}\\
+\endfoot
+\bottomrule
+\endlastfoot
+L1 & Códigos de regra (RD, RT) ainda exibidos no roteiro; a respondente pediu para ``remover as tags de debug''. & E2; Q4, Q11 & RNF01 & R2 \\ \addlinespace[2pt]
+L2 & Texto demais e informação percebida como desorganizada; leitura longa e cansativa. & Q2, Q3, Q5, Q7 & RNF01, RNF04 & R3 \\ \addlinespace[2pt]
+L3 & Fluxo pouco fluido depois do preenchimento: muitas opções e nenhum próximo passo claro. & Q6 & RF06, OE5 & R4 \\ \addlinespace[2pt]
+L4 & Seis rotas no topo, misturando telas do gestor e da pesquisa; a respondente procurou um menu lateral. & Q2, Q9 & RNF01 & R5 \\ \addlinespace[2pt]
+L5 & Workflow de testes conferido só localmente; o branch publicado pelo GitHub Pages não passava pela suíte. & E1 & CT-01 a CT-08 & R1 \\ \addlinespace[2pt]
+L6 & Com o teto atuando, a primeira ação nem sempre é a do gargalo (15,3\% dos perfis correlacionados). & E4 & OE5 & R9 \\ \addlinespace[2pt]
+L7 & Tempo de aplicação só estimado (20 a 30 min) e autonomia sem medida; amostra de uma respondente. & E2, E3; Q5, Q7 & RNF02, RNF04, OE2, OE7 & R7 \\ \addlinespace[2pt]
+L8 & 27 de 30 itens com âncoras em rascunho; pesos, limites e dimensões críticas sem revisão de especialistas. & E2, E4 & OE1, OE2 & R6, R10 \\ \addlinespace[2pt]
+L9 & Visual possivelmente associado a interfaces geradas por IA (``estética claudiana''), embora também chamado de bonito. & Q1, Q10 & RF05 & R8 \\ \addlinespace[2pt]
+\end{longtable}}
+
+\section{Melhorias implementadas}\label{sec:melhorias}
+A Tabela~\ref{tab:melhorias} registra as 7 melhorias da versão 1.1.0, com a recomendação de origem, os critérios
+do PBL 3 e do PBL 4 envolvidos, os arquivos alterados e o teste ou a execução que confirma cada uma.
+
+{\small
+\begin{longtable}{L{0.7cm}L{1.7cm}L{8.0cm}L{3.6cm}}
+\caption{Registro das melhorias da versão 1.1.0.}\label{tab:melhorias}\\
+\toprule
+\thead{Cód.} & \thead{Origem} & \thead{Mudança} & \thead{Verificação} \\
+\midrule
+\endfirsthead
+\caption[]{(continuação)}\\
+\toprule
+\thead{Cód.} & \thead{Origem} & \thead{Mudança} & \thead{Verificação} \\
+\midrule
+\endhead
+\midrule\multicolumn{4}{r}{\footnotesize\itshape continua na próxima página}\\
+\endfoot
+\bottomrule
+\endlastfoot
+M1 & R1\newline {\footnotesize CT-01 a CT-08} & O workflow roda \texttt{node -{}-test} também nos pushes para \texttt{mgp-pme-pagina-estatica}, o branch que o GitHub Pages publica. As permissões de publicação ficaram só no job que publica, e cada ref tem o próprio grupo de concorrência, para que a execução de um PR não cancele uma publicação.\newline{\footnotesize Arquivos: \texttt{.github/workflows/pages.yml}} & Execução do workflow no pull request desta etapa (pendente no momento desta versão do relatório). \\ \addlinespace[2pt]
+M2 & R2\newline {\footnotesize RNF01} & No roteiro, a coluna ``Regra'' virou ``Onde'', com a dimensão e a faixa, e a coluna de prioridade numérica saiu. As advertências aparecem como ``Atenção'', sem o código RT. A comparação entre aplicações lista pela ação o que entrou e o que saiu do roteiro. Os códigos ficam no arquivo exportado e nas telas de Sobre e Manutenção, que a equipe usa.\newline{\footnotesize Arquivos: \texttt{js/painel.js}} & Teste R2 em \texttt{tests/interface.test.js}: nenhum código no texto, \texttt{aria-label}, \texttt{title} ou \texttt{placeholder} do relatório. \\ \addlinespace[2pt]
+M3 & R3\newline {\footnotesize RNF04, RNF01} & O diagnóstico começa por um resumo que cabe numa tela, com o nível atribuído, a dimensão que trava o resultado e os três primeiros passos. As outras quatro seções (perfil, explicação do nível, roteiro completo e Canvas) ficam recolhidas, cada uma com uma linha de resumo, e saem abertas na impressão. Os textos de introdução ficaram mais curtos.\newline{\footnotesize Arquivos: \texttt{js/painel.js}, \texttt{css/estilo.css}} & Teste R3 e contagem de palavras exibidas sem abrir nada (Seção 4.1). \\ \addlinespace[2pt]
+M4 & R4\newline {\footnotesize RF06, OE5} & Quando o gestor responde o último item, a página rola até o cartão ``Tudo respondido'', cujo único botão, ``Ver meu diagnóstico'', já recebe o foco. Antes disso, o destaque vai para ``Próximo bloco'' sempre que o bloco atual fica completo. No diagnóstico, o botão em destaque é ``Exportar e arquivar'' e, depois da exportação, ``Reaplicar''. Corrigir, comparar e imprimir foram para ``Mais opções''.\newline{\footnotesize Arquivos: \texttt{js/coleta.js}, \texttt{js/painel.js}, \texttt{css/estilo.css}} & Teste R4 (um único botão primário, aberta ou arquivada) e captura do fim do questionário (Seção 4.2). \\ \addlinespace[2pt]
+M5 & R5\newline {\footnotesize RNF01} & O topo tem agora as três rotas do gestor (Início, Diagnóstico e Histórico) e o grupo ``Pesquisa'', com Avaliação, Manutenção e Sobre. O link ``Diagnóstico'' abre a etapa em que o gestor parou, seja a ficha, o questionário ou o resultado.\newline{\footnotesize Arquivos: \texttt{index.html}, \texttt{js/app.js}, \texttt{css/estilo.css}} & Teste R5 e captura do menu (Seção 4.2). \\ \addlinespace[2pt]
+M6 & R9\newline {\footnotesize OE5} & O grupo decidiu sinalizar a ação do gargalo e manter a prioridade do PBL 4, com a qual o caso Aurora continua idêntico à Tabela 13. Quando o teto atua, o resumo começa pela ação da dimensão-gargalo, que também recebe o selo ``gargalo'' no roteiro.\newline{\footnotesize Arquivos: \texttt{js/painel.js}} & Teste R9 e os testes do núcleo, que não mudaram. \\ \addlinespace[2pt]
+M7 & R7\newline {\footnotesize RNF02, RNF04, OE7} & Cada aplicação guarda no navegador o início e o fim do preenchimento e o número de vezes que o guia foi aberto. Esses dados vão no arquivo exportado e no protocolo de avaliação por especialistas. A página continua sem enviar nada, então a equipe só recebe os dados se o gestor entregar o arquivo.\newline{\footnotesize Arquivos: \texttt{js/estado.js}, \texttt{js/app.js}, \texttt{js/avaliacao.js}} & \texttt{tests/metricas.test.js} (3 testes). \\ \addlinespace[2pt]
+\end{longtable}}
+
+\subsection{Decisão sobre o gargalo no roteiro (R9)}
+O PBL 7 mostrou que, com o teto atuando, uma ação de outra dimensão passa à frente da ação do gargalo em 15,3\% dos
+perfis correlacionados simulados. Pôr a ação do gargalo sempre em primeiro lugar alteraria a regra de priorização
+especificada no PBL 4 (CP-10) e o roteiro desses perfis, sem que nenhum gestor tenha pedido isso. O grupo preferiu
+sinalizar: o resumo do diagnóstico começa pela ação do gargalo e o roteiro marca essa ação com um selo, enquanto a
+ordem continua a do PBL 4. No caso Aurora, o gargalo é D1 e sua ação já é a primeira depois da advertência. Se
+os gestores da próxima rodada preferirem a outra opção, a mudança fica restrita à função \texttt{priorizar()} em
+\texttt{js/nucleo.js} e aos testes do núcleo.
+
+\subsection{Testes no branch publicado (R1)}
+A página é publicada pelo GitHub Pages a partir do branch \texttt{mgp-pme-pagina-estatica}, no modo em que o próprio
+GitHub monta o site a cada push. O workflow de testes só disparava em push para \texttt{main}, então o que ia ao ar não
+passava pela suíte. Além disso, a execução do pull request \#4 terminou como falha por problema no arquivo do workflow,
+sem iniciar nenhum job. A melhoria M1 faz os testes rodarem no branch publicado e restringe as permissões de publicação
+ao job que publica. Para que uma falha nos testes também impeça a publicação, a fonte do GitHub Pages teria de passar
+a ser o GitHub Actions. Essa é uma configuração do repositório e cabe ao dono dele.
+
+\section{Evidências da evolução}\label{sec:evidencias}
+\subsection{Medições antes e depois}
+A Tabela~\ref{tab:antesdepois} compara a versão avaliada no PBL 7 com a versão 1.1.0. As medidas do relatório usam o
+caso Aurora, renderizado pela função \texttt{renderDiagnostico()} de cada versão; para contar o que fica à vista, o
+conteúdo das seções recolhidas é descontado e os títulos delas, mantidos.
+
+\begin{table}[H]
+\centering\small
+\caption{Medidas da versão avaliada e da versão 1.1.0 (E1, E2).}\label{tab:antesdepois}
+\begin{tabularx}{\linewidth}{XL{2.3cm}L{2.3cm}L{1.4cm}}
+\toprule
+\thead{Medida} & \thead{Versão 1.0.0} & \thead{Versão 1.1.0} & \thead{Rec.} \\
+\midrule
+Testes automáticos (aprovados / total) & 30 / 30 & 38 / 38 & R1 a R9 \\
+Códigos de especificação ou regra expostos no relatório Aurora & 8 & 0 & R2 \\
+Palavras à vista no diagnóstico, sem abrir nada & 1.119 & 327 & R3 \\
+Palavras do relatório completo & 1.119 & 1.212 & R3 \\
+Seções recolhíveis no diagnóstico & 0 & 4 & R3 \\
+Botões visíveis na barra do diagnóstico (primários) & 3 (1) & 2 (1) & R4 \\
+Cartão de conclusão após o último item & não & sim & R4 \\
+Entradas no topo do menu (rotas no total) & 6 (6) & 4 (6) & R5 \\
+Ação do gargalo sinalizada no roteiro & não & sim & R9 \\
+Registro do tempo de preenchimento & não & sim & R7 \\
+Testes no branch publicado & não & sim & R1 \\
+Peso total da página & 211 KiB & 222 KiB & --- \\
+Recursos externos; chamadas de rede no código & 0; 1 & 0; 1 & --- \\
+Nível, gargalo e passos do roteiro (Aurora) & 2; D1; 7 & 2; D1; 7 & --- \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+O texto que o gestor encontra ao abrir o diagnóstico caiu 71\%. O relatório completo ficou com 93 palavras a
+mais, que são o resumo e as linhas de apoio dos títulos recolhidos, e nada do conteúdo anterior foi retirado. A página
+cresceu 11 KiB e continua sem recursos externos, com uma única chamada de rede (a leitura de \texttt{dados.json}).
+
+\subsection{Telas antes e depois}
+As Figuras~\ref{fig:diag-antes} e~\ref{fig:diag-depois} mostram o começo do diagnóstico do caso Aurora nas duas
+versões, recortado na mesma altura. Na versão avaliada, esse trecho trazia a barra com três botões, o aviso de
+exportação e o perfil por dimensão. Na versão nova, ele traz o nível, o gargalo e os três primeiros passos, com os
+detalhes recolhidos logo abaixo. As Figuras~\ref{fig:quest} e~\ref{fig:menu} mostram o fim do questionário e o menu.
+
+\begin{figure}[H]
+\centering
+\captura{13.5}{figuras/antes-diagnostico-recorte.png}
+\caption{Começo do diagnóstico do caso Aurora na versão 1.0.0.}\label{fig:diag-antes}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\captura{13.5}{figuras/depois-diagnostico-recorte.png}
+\caption{Começo do diagnóstico do caso Aurora na versão 1.1.0.}\label{fig:diag-depois}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\captura{12.5}{figuras/antes-questionario-recorte.png}\par\small (a) versão 1.0.0\par\vspace{6pt}
+\captura{12.5}{figuras/depois-questionario-recorte.png}\par\small (b) versão 1.1.0
+\caption{Fim do questionário, com os 30 itens respondidos.}\label{fig:quest}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\captura{15.8}{figuras/antes-menu-recorte.png}\par\small (a) versão 1.0.0\par\vspace{6pt}
+\captura{15.8}{figuras/depois-menu-recorte.png}\par\small (b) versão 1.1.0, com o grupo Pesquisa aberto
+\caption{Topo da página.}\label{fig:menu}
+\end{figure}
+
+\subsection{Situação dos critérios parciais}
+Pela regra de vereditos do PBL 7, um critério com queixa da usuária (E3) só deixa de ser parcial com uma nova coleta.
+Os vereditos ficam, portanto, como estavam. A Tabela~\ref{tab:parciais} mostra, para cada critério parcial, o que mudou
+no artefato e o que ainda falta para reavaliá-lo.
+
+\begin{table}[H]
+\centering\small
+\caption{Critérios parciais do PBL 7 depois das melhorias.}\label{tab:parciais}
+\begin{tabularx}{\linewidth}{L{2.4cm}L{3.6cm}XL{2.9cm}}
+\toprule
+\thead{Critério} & \thead{Lacuna no PBL 7} & \thead{O que mudou} & \thead{O que falta} \\
+\midrule
+\textbf{RNF01}\newline{\footnotesize Linguagem de negócio} & Código de regra em 2 pontos do roteiro; Q4 e Q11. & 0 códigos expostos no relatório (eram 8); menu agrupado. & Repetir o questionário (E3). \\
+\textbf{RNF04}\newline{\footnotesize Aplicação em 20 a 30 minutos} & Texto em excesso (Q5, Q7); tempo só estimado. & 327 palavras à vista no diagnóstico (eram 1.119); tempo de preenchimento registrado. & Cronometrar aplicações reais. \\
+\textbf{RF06}\newline{\footnotesize Roteiro prescritivo priorizado} & Fluxo pós-preenchimento pouco fluido (Q6). & Cartão de conclusão e um único próximo passo; ação do gargalo sinalizada. & Repetir o questionário (E3). \\
+\textbf{RNF02}\newline{\footnotesize Autoaplicável e autoinstrutivo} & Sem medida de autonomia. & Aberturas do guia registradas e exportadas. & Aplicar com mais gestores. \\
+\textbf{OE2}\newline{\footnotesize Instrumento de coleta} & 27 âncoras em rascunho; tempo estimado. & Tempo agora mensurável; âncoras inalteradas. & Revisão por especialistas (R6). \\
+\textbf{OE5}\newline{\footnotesize Diagnóstico e roteiro personalizado} & Q2, Q6; gargalo nem sempre primeiro (E4). & Resumo abre pelo gargalo; fluxo redesenhado. & Repetir o questionário (E3). \\
+\textbf{OE7}\newline{\footnotesize Validação empírica} & n = 1; nenhum especialista. & Instrumentação para a próxima rodada. & Especialistas e mais gestores (R6, R7). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{O que não mudou}
+Os 30 testes da versão avaliada continuam na suíte sem alteração e passam. O caso Aurora dá o mesmo nível
+(2), o mesmo gargalo (D1) e o mesmo roteiro de 7 passos nas duas versões, na mesma ordem. Como
+\texttt{js/nucleo.js} e \texttt{dados.json} não mudaram, os resultados da simulação do PBL 7 (E4) valem também para a
+versão 1.1.0.
+
+\section{O que fica para o próximo ciclo}\label{sec:proximo}
+As recomendações da Tabela~\ref{tab:prox} dependem de pessoas de fora do grupo ou de mais opiniões. A página já tem o
+que elas pedem do lado do artefato: o protocolo de avaliação por especialistas, desde o PBL 4, e o registro de tempo e
+de uso do guia, desde esta etapa.
+
+\begin{table}[H]
+\centering\small
+\caption{Recomendações para o próximo ciclo.}\label{tab:prox}
+\begin{tabularx}{\linewidth}{L{0.9cm}L{3.6cm}XL{4.2cm}}
+\toprule
+\thead{Rec.} & \thead{O que} & \thead{Por que ficou} & \thead{Como fazer} \\
+\midrule
+R6 & Revisão das 27 âncoras em rascunho e da calibração dos pesos. & Depende de especialistas, que o grupo ainda não reuniu. & Usar o protocolo da tela Avaliação por especialistas (V3), que já exporta as respostas em JSON. \\
+R7 & Ampliar a amostra de gestores, com tempo e ajuda medidos. & Depende de novas empresas; a instrumentação (M7) já está pronta. & Pedir a cada gestor o arquivo exportado, que agora traz início, fim e aberturas do guia. \\
+R8 & Decidir se a identidade visual muda. & A única respondente achou o visual ``bonito, moderno'' e também citou a ``estética claudiana'' como incômodo. Uma opinião só não basta para mudar a identidade visual. & Perguntar a mais respondentes, no mesmo questionário, como percebem o visual. \\
+R10 & Revisar dimensões críticas e limites dos níveis antes dos pesos. & Faz parte da revisão por especialistas (R6). Na simulação do PBL 7, os pesos quase não mudaram o nível. & Levar à revisão os números da análise de sensibilidade do PBL 7 (Tabela 11). \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Versão consolidada e conclusão}
+A versão 1.1.0 é a versão consolidada do MGP-PME ao fim desta etapa. Ela implementa 6 das 10 recomendações
+do PBL 7 e parte de uma outra (R7), mantém o modelo e o núcleo de cálculo da versão avaliada e passa nos 38 testes
+da suíte. As queixas da respondente que tinham causa no código foram tratadas: os códigos saíram da tela, o diagnóstico
+abre por um resumo, o fim do questionário leva a um único próximo passo e o menu separa as telas do gestor das telas da
+pesquisa.
+
+O próximo ciclo depende sobretudo de coleta. Os vereditos parciais só devem mudar quando outros gestores usarem a
+versão nova e responderem o questionário, e a validade do conteúdo continua à espera da revisão por especialistas.
+
+\subsection{Limitações}
+\begin{itemize}
+  \item Os ganhos de uso foram medidos por contagens sobre o relatório renderizado (palavras, botões, códigos), e
+        nenhuma pessoa usou a versão nova ainda. Menos palavras à vista não garantem leitura mais rápida.
+  \item As medições usam só o caso Aurora. Perfis com mais advertências geram resumos um pouco mais longos.
+  \item A decisão de sinalizar o gargalo, em vez de reordenar o roteiro, foi do grupo e ainda precisa ser testada com
+        gestores.
+  \item O registro de tempo depende de o gestor exportar o diagnóstico e entregar o arquivo à equipe.
+  \item A publicação continua sem depender dos testes enquanto a fonte do GitHub Pages for o branch (Seção 3.2).
+\end{itemize}
+
+\section*{Referências}
+\markboth{Referências}{Referências}
+\addcontentsline{toc}{section}{Referências}
+\begin{list}{}{\leftmargin=1.2em\itemindent=-1.2em\itemsep=3pt\parsep=0pt}
+\item Grupo G02, 2026a. PBL 3 --- Objetivos, descrição do artefato e requisitos. Pesquisa Aplicada, PUCPR, 16 de agosto de 2026.
+\item Grupo G02, 2026b. PBL 4 --- Arquitetura, modelos e especificação da solução (MGP-PME), versão 1.0. Pesquisa Aplicada, PUCPR, 13 de setembro de 2026.
+\item Grupo G02, 2026c. PBL 7 --- Avaliação do artefato MGP-PME. Pesquisa Aplicada, PUCPR, 16 de outubro de 2026.
+\item Hevner, A.R., March, S.T., Park, J., Ram, S., 2004. Design science in information systems research. MIS Quarterly 28, 75--105.
+\item Peffers, K., Tuunanen, T., Rothenberger, M.A., Chatterjee, S., 2007. A design science research methodology for information systems research. Journal of Management Information Systems 24, 45--77.
+\end{list}
+
+\end{document}
