@@ -134,7 +134,65 @@ export function htmlCanvas(app, modelo) {
 }
 
 // ------------------------------------------------------------ CP-12 — relatório
-export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoReaplicar, aoComparar, aoResponsavel, temAnteriores }) {
+// Versão 1.1.0 (avaliação do PBL 7, R2 a R4 e R9): o relatório abre por um
+// resumo de uma tela (nível, o que trava e o primeiro passo); perfil, nível,
+// roteiro completo e Canvas ficam recolhidos e se abrem na impressão. A tela do
+// gestor não mostra códigos de regra: eles seguem no arquivo exportado e nas
+// telas de Sobre e Manutenção.
+
+// R9: o roteiro não é reordenado (a prioridade continua a do PBL 4); quando o
+// teto atua, o resumo começa pela ação da dimensão-gargalo e ela recebe um selo.
+export function primeiroPasso(diag) {
+  if (diag.tetoAtuou) {
+    const doGargalo = diag.roteiro.find(r => r.origem === 'Ação' && diag.gargalos.includes(r.dimensao));
+    if (doGargalo) return doGargalo;
+  }
+  return diag.roteiro[0];
+}
+
+const ehGargalo = (diag, r) => r.origem === 'Ação' && diag.gargalos.includes(r.dimensao);
+const seloGargalo = '<span class="selo selo-critica">gargalo</span>';
+
+function alvoLegivel(r, modelo) {
+  return r.dimensao ? `${r.dimensao} ${nomeDimensao(modelo, r.dimensao)}` : `Atenção: ${r.alvo}`;
+}
+
+function secao(numero, titulo, resumo, conteudo, classe = '') {
+  return `<details class="rel-secao ${classe}">
+    <summary><h2><span class="num-secao">${numero}</span> ${titulo}</h2><span class="rel-resumo-secao">${resumo}</span></summary>
+    <div class="rel-secao-corpo">${conteudo}</div>
+  </details>`;
+}
+
+function htmlResumo(app, modelo) {
+  const diag = app.diagnostico;
+  const primeiro = primeiroPasso(diag);
+  const seguintes = diag.roteiro.filter(r => r !== primeiro).slice(0, 2);
+  const passo = r => `<li>${ehGargalo(diag, r) ? `${seloGargalo} ` : ''}<strong>${esc(alvoLegivel(r, modelo))}.</strong> ${esc(r.acao)} <small>(${esc(r.horizonte.toLowerCase())} prazo)</small></li>`;
+  return `<section class="rel-resumo" aria-labelledby="resumo-titulo">
+    <h2 id="resumo-titulo" class="sr">Resumo do diagnóstico</h2>
+    <div class="resumo-grade">
+      <div class="resumo-nivel">
+        <span class="lado-rot">Nível atribuído</span>
+        <div class="nivel-principal"><div class="nivel-num">${diag.nivelFinal}</div><div class="nivel-nome">${esc(nomeNivel(modelo, diag.nivelFinal))}</div></div>
+        ${diag.tetoAtuou ? `<p>Pela média seria ${diag.nivelCompensatorio}, mas uma dimensão crítica segura o resultado.</p>` : '<p>Nenhuma dimensão crítica segura o resultado.</p>'}
+      </div>
+      <div class="resumo-trava">
+        <span class="lado-rot">O que trava</span>
+        ${diag.tetoAtuou
+          ? `<p><strong class="txt-F1">${diag.gargalos.map(g => `${esc(g)} ${esc(nomeDimensao(modelo, g))}`).join(', ')}</strong></p><p>Enquanto não melhorar, o nível não passa de ${diag.nivelFinal}.</p>`
+          : `<p><strong>Nada impede o próximo nível.</strong></p><p>Use o roteiro para consolidar as dimensões mais fracas.</p>`}
+      </div>
+    </div>
+    <div class="resumo-passos">
+      <span class="lado-rot">Por onde começar</span>
+      <ol>${passo(primeiro)}${seguintes.map(passo).join('')}</ol>
+      <p class="nota">O roteiro completo, com ${diag.totalAcoes} passos, está na seção 3.</p>
+    </div>
+  </section>`;
+}
+
+export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
   const diag = app.diagnostico;
   const nivelInfo = modelo.niveis.find(n => n.numero === diag.nivelFinal);
   const reap = periodicidade(diag.nivelFinal, modelo);
@@ -142,23 +200,94 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
   const resp = app.responsaveis || {};
   const advertencias = diag.roteiro.filter(r => r.origem === 'Advertência');
 
-  el.innerHTML = `
+  // R4: um único próximo passo em destaque; o resto fica em "Mais opções".
+  const opcoes = [
+    !arquivada && ['corrigir', 'Corrigir respostas'],
+    temAnteriores && ['comparar', 'Comparar com outra aplicação'],
+    ['imprimir', 'Imprimir ou salvar PDF'],
+    arquivada && ['exportar', 'Exportar novamente'],
+  ].filter(Boolean);
+  const principal = arquivada ? ['reaplicar', 'Reaplicar o instrumento'] : ['exportar', 'Exportar e arquivar'];
+
+  const perfil = `
+    <p class="rel-intro">◆ marca as dimensões críticas. Cores: <span class="txt-F1">Crítica</span>, <span class="txt-F2">Em evolução</span>, <span class="txt-F3">Consolidada</span>.</p>
+    <div class="grafico">${svgPerfil(diag, modelo)}</div>
+    <table class="tabela tabela-perfil">
+      <thead><tr><th>Dimensão</th><th class="num">Peso</th><th class="num">Escore</th><th class="num">Nível</th><th>Faixa</th><th>Situação</th></tr></thead>
+      <tbody>${diag.porDimensao.map(d => {
+        const dim = modelo.dimensoes.find(x => x.codigo === d.codigo);
+        return `<tr class="${d.eGargalo ? 'linha-gargalo' : ''}">
+          <td><strong>${esc(d.codigo)}</strong> ${esc(d.nome)}${d.critica ? ' <span class="selo selo-critica">crítica</span>' : ''}</td>
+          <td class="num">${num((dim?.peso ?? 0) * 100, 0)}%</td>
+          <td class="num"><strong>${num(d.escore)}</strong></td>
+          <td class="num">${d.nivel}</td>
+          <td><span class="faixa-tag tag-${esc(d.faixa)}">${esc(nomeFaixa(modelo, d.faixa))}</span></td>
+          <td>${d.eGargalo ? '<strong class="txt-F1">Gargalo: limita o nível</strong>' : d.faixa === 'F1' ? 'Exige ação antes de investir em IA' : d.faixa === 'F2' ? 'Sustenta piloto delimitado' : 'Não restringe a adoção'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+
+  const nivel = `
+    <div class="nivel-bloco">
+      <div class="nivel-principal">
+        <div class="nivel-num">${diag.nivelFinal}</div>
+        <div>
+          <div class="nivel-nome">${esc(nivelInfo.nome)}</div>
+          <div class="nivel-escala" aria-hidden="true">${modelo.niveis.map(n => `<span class="${n.numero === diag.nivelFinal ? 'atual' : ''} ${diag.tetoAtuou && n.numero === diag.nivelCompensatorio ? 'ponderado' : ''}">${n.numero}</span>`).join('')}</div>
+        </div>
+      </div>
+      <p class="nivel-interp">${esc(nivelInfo.interpretacao)}</p>
+    </div>
+    ${diag.tetoAtuou ? `
+    <div class="teto-explica">
+      <div class="lado"><span class="lado-rot">Pela média ponderada</span><strong>${num(diag.escoreGlobal)} → nível ${diag.nivelCompensatorio}</strong><span>${esc(nomeNivel(modelo, diag.nivelCompensatorio))}</span></div>
+      <div class="seta" aria-hidden="true">→</div>
+      <div class="lado lado-final"><span class="lado-rot">Nível atribuído (teto de gargalo)</span><strong>nível ${diag.nivelFinal}</strong><span>${esc(nomeNivel(modelo, diag.nivelFinal))}</span></div>
+    </div>
+    <p class="aviso aviso-alerta"><strong>Por que o nível é menor do que a média?</strong> ${esc(diag.observacoes.find(o => o.codigo === 'FA-01')?.texto ?? '')}</p>`
+    : `<p class="nota">Escore global ponderado: <strong>${num(diag.escoreGlobal)}</strong>. O nível atribuído coincide com o da média ponderada.</p>`}
+    ${diag.observacoes.filter(o => o.codigo === 'FA-02').map(o => `<p class="aviso aviso-ok">${esc(o.texto)}</p>`).join('')}`;
+
+  const roteiro = `
+    <p class="rel-intro">Advertências primeiro, depois uma ação por dimensão, da mais urgente para a menos urgente. Indique um responsável para cada passo.</p>
+    ${advertencias.length ? `<div class="advertencias">${advertencias.map(a => `
+      <div class="advertencia"><div><strong>Atenção: ${esc(a.alvo)}.</strong> ${esc(a.acao)}</div></div>`).join('')}</div>` : ''}
+    <div class="filtro-horizonte nao-imprimir" role="group" aria-label="Filtrar por horizonte">
+      <span>Filtrar por horizonte:</span>
+      ${['Todos', 'Curto', 'Médio', 'Longo'].map((h, k) => `<button type="button" class="chip ${k === 0 ? 'ativo' : ''}" data-horizonte="${h}" aria-pressed="${k === 0}">${h}</button>`).join('')}
+    </div>
+    <table class="tabela tabela-roteiro">
+      <thead><tr><th class="num">#</th><th>Onde</th><th>O que fazer</th><th>Esforço</th><th>Horizonte</th><th>Responsável</th></tr></thead>
+      <tbody>${diag.roteiro.map(r => `
+        <tr data-h="${esc(r.horizonte)}" class="${r.origem === 'Advertência' ? 'linha-adv' : ''}">
+          <td class="num">${r.ordem}</td>
+          <td>${r.dimensao ? `<strong>${esc(r.dimensao)}</strong> ${esc(nomeDimensao(modelo, r.dimensao))}<br><small>${esc(nomeFaixa(modelo, r.faixa))}</small>` : '<strong>Atenção</strong>'}</td>
+          <td class="col-acao">${ehGargalo(diag, r) ? `${seloGargalo} ` : ''}${esc(r.acao)}</td>
+          <td>${esc(r.esforco)}</td>
+          <td>${esc(r.horizonte)}</td>
+          <td><input class="input-resp" data-regra="${esc(r.regra)}" value="${esc(resp[r.regra] || '')}" placeholder="Nome" aria-label="Responsável pelo passo ${r.ordem}" ${arquivada ? 'readonly' : ''}><span class="so-impressao">${esc(resp[r.regra] || '')}</span></td>
+        </tr>`).join('')}</tbody>
+    </table>
+    <p class="nota legenda-esforco">Esforço: ${modelo.esforcos.map(e => `<strong>${esc(e.codigo)}</strong>: ${esc(e.significado)}`).join(' ')}<br>
+    Horizonte: ${modelo.horizontes.map(h => `<strong>${esc(h.codigo)}</strong>: ${esc(h.significado)}`).join(' ')}</p>
+    ${diag.observacoes.filter(o => o.codigo === 'UC-07').map(o => `<p class="aviso aviso-info">${esc(o.texto)}</p>`).join('')}`;
+
+  return `
     <div class="barra-acoes nao-imprimir">
       <div>
-        <p class="etapa-rotulo">Etapa 3 de 4 · leitura em cerca de 4 a 6 minutos</p>
+        <p class="etapa-rotulo">Etapa 3 de 4 · seu resultado</p>
         <span class="selo selo-estado">${esc(app.estado)}</span>
         ${app.origem === 'importada' ? '<span class="selo">importada</span>' : ''}
       </div>
       <div class="acoes">
-        ${!arquivada ? '<button type="button" class="btn btn-sec" data-acao="corrigir">Corrigir respostas</button>' : ''}
-        ${temAnteriores ? '<button type="button" class="btn btn-sec" data-acao="comparar">Comparar com outra aplicação</button>' : ''}
-        <button type="button" class="btn btn-sec" data-acao="imprimir">Imprimir / salvar PDF</button>
-        ${arquivada
-          ? '<button type="button" class="btn btn-sec" data-acao="exportar">Exportar novamente</button><button type="button" class="btn btn-pri" data-acao="reaplicar">Reaplicar o instrumento</button>'
-          : '<button type="button" class="btn btn-pri" data-acao="exportar">Exportar e arquivar</button>'}
+        <details class="mais-opcoes">
+          <summary class="btn btn-sec">Mais opções</summary>
+          <div class="mais-opcoes-lista">${opcoes.map(([acao, rotulo]) => `<button type="button" class="link" data-acao="${acao}">${rotulo}</button>`).join('')}</div>
+        </details>
+        <button type="button" class="btn btn-pri" data-acao="${principal[0]}">${principal[1]}</button>
       </div>
     </div>
-    ${!arquivada ? `<p class="aviso aviso-alerta nao-imprimir"><strong>Etapa 4: exporte o diagnóstico.</strong> Ele está guardado apenas neste navegador; limpar os dados de navegação o apaga. O arquivo exportado é o que permite comparar com a próxima aplicação.</p>` : ''}
+    ${!arquivada ? '<p class="aviso aviso-alerta nao-imprimir"><strong>Próximo passo: exporte o arquivo.</strong> O diagnóstico fica só neste navegador, e é o arquivo que permite comparar com a próxima aplicação.</p>' : ''}
 
     <article class="relatorio" id="relatorio">
       <header class="rel-cab">
@@ -175,88 +304,33 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
         </dl>
       </header>
 
-      <section class="rel-secao">
-        <h2><span class="num-secao">1</span> Perfil por dimensão</h2>
-        <p class="rel-intro">Escore de 0 a 100 em cada dimensão. ◆ marca as dimensões críticas, que limitam o nível global. As cores indicam a faixa: <span class="txt-F1">Crítica</span>, <span class="txt-F2">Em evolução</span>, <span class="txt-F3">Consolidada</span>.</p>
-        <div class="grafico">${svgPerfil(diag, modelo)}</div>
-        <table class="tabela tabela-perfil">
-          <thead><tr><th>Dimensão</th><th class="num">Peso</th><th class="num">Escore</th><th class="num">Nível</th><th>Faixa</th><th>Situação</th></tr></thead>
-          <tbody>${diag.porDimensao.map(d => {
-            const dim = modelo.dimensoes.find(x => x.codigo === d.codigo);
-            return `<tr class="${d.eGargalo ? 'linha-gargalo' : ''}">
-              <td><strong>${esc(d.codigo)}</strong> ${esc(d.nome)}${d.critica ? ' <span class="selo selo-critica">crítica</span>' : ''}</td>
-              <td class="num">${num((dim?.peso ?? 0) * 100, 0)}%</td>
-              <td class="num"><strong>${num(d.escore)}</strong></td>
-              <td class="num">${d.nivel}</td>
-              <td><span class="faixa-tag tag-${esc(d.faixa)}">${esc(nomeFaixa(modelo, d.faixa))}</span></td>
-              <td>${d.eGargalo ? '<strong class="txt-F1">Gargalo: limita o nível</strong>' : d.faixa === 'F1' ? 'Exige ação antes de investir em IA' : d.faixa === 'F2' ? 'Sustenta piloto delimitado' : 'Não restringe a adoção'}</td>
-            </tr>`;
-          }).join('')}</tbody>
-        </table>
-      </section>
+      ${htmlResumo(app, modelo)}
 
-      <section class="rel-secao">
-        <h2><span class="num-secao">2</span> Nível de prontidão atribuído</h2>
-        <div class="nivel-bloco">
-          <div class="nivel-principal">
-            <div class="nivel-num">${diag.nivelFinal}</div>
-            <div>
-              <div class="nivel-nome">${esc(nivelInfo.nome)}</div>
-              <div class="nivel-escala" aria-hidden="true">${modelo.niveis.map(n => `<span class="${n.numero === diag.nivelFinal ? 'atual' : ''} ${diag.tetoAtuou && n.numero === diag.nivelCompensatorio ? 'ponderado' : ''}">${n.numero}</span>`).join('')}</div>
-            </div>
-          </div>
-          <p class="nivel-interp">${esc(nivelInfo.interpretacao)}</p>
-        </div>
-        ${diag.tetoAtuou ? `
-        <div class="teto-explica">
-          <div class="lado"><span class="lado-rot">Pela média ponderada</span><strong>${num(diag.escoreGlobal)} → nível ${diag.nivelCompensatorio}</strong><span>${esc(nomeNivel(modelo, diag.nivelCompensatorio))}</span></div>
-          <div class="seta" aria-hidden="true">→</div>
-          <div class="lado lado-final"><span class="lado-rot">Nível atribuído (teto de gargalo)</span><strong>nível ${diag.nivelFinal}</strong><span>${esc(nomeNivel(modelo, diag.nivelFinal))}</span></div>
-        </div>
-        <p class="aviso aviso-alerta"><strong>Por que o nível é menor do que a média sugere?</strong> ${esc(diag.observacoes.find(o => o.codigo === 'FA-01')?.texto ?? '')} Investir em IA sem essa base tende a produzir impacto neutro ou negativo; por isso o modelo não deixa dimensões fortes encobrirem o déficit.</p>`
-        : `<p class="nota">Escore global ponderado: <strong>${num(diag.escoreGlobal)}</strong>. Nenhuma dimensão crítica limitou o nível: o nível atribuído coincide com o da média ponderada.</p>`}
-        ${diag.observacoes.filter(o => o.codigo === 'FA-02').map(o => `<p class="aviso aviso-ok">${esc(o.texto)}</p>`).join('')}
-      </section>
-
-      <section class="rel-secao">
-        <h2><span class="num-secao">3</span> Roteiro de ação priorizado</h2>
-        <p class="rel-intro">${diag.totalAcoes} itens: ${diag.totalAdvertencias} advertência(s) e ${diag.totalAcoes - diag.totalAdvertencias} ações, uma por dimensão. Cada item vem de uma regra explícita da base, identificada pelo código. Indique um responsável para cada passo.</p>
-        ${advertencias.length ? `<div class="advertencias">${advertencias.map(a => `
-          <div class="advertencia"><span class="adv-cod">${esc(a.regra)}</span><div><strong>Advertência: ${esc(a.alvo)}.</strong> ${esc(a.acao)}</div></div>`).join('')}</div>` : ''}
-        <div class="filtro-horizonte nao-imprimir" role="group" aria-label="Filtrar por horizonte">
-          <span>Filtrar por horizonte:</span>
-          ${['Todos', 'Curto', 'Médio', 'Longo'].map((h, k) => `<button type="button" class="chip ${k === 0 ? 'ativo' : ''}" data-horizonte="${h}" aria-pressed="${k === 0}">${h}</button>`).join('')}
-        </div>
-        <table class="tabela tabela-roteiro">
-          <thead><tr><th class="num">#</th><th>Regra</th><th>Alvo</th><th>O que fazer</th><th>Esforço</th><th>Horizonte</th><th class="num">Prior.</th><th>Responsável</th></tr></thead>
-          <tbody>${diag.roteiro.map(r => `
-            <tr data-h="${esc(r.horizonte)}" class="${r.origem === 'Advertência' ? 'linha-adv' : ''}">
-              <td class="num">${r.ordem}</td>
-              <td><code>${esc(r.regra)}</code><br><small>${esc(r.origem)}</small></td>
-              <td>${r.dimensao ? `<strong>${esc(r.dimensao)}</strong><br><small>${esc(nomeFaixa(modelo, r.faixa))}</small>` : `<small>${esc(r.alvo)}</small>`}</td>
-              <td class="col-acao">${esc(r.acao)}</td>
-              <td>${esc(r.esforco)}</td>
-              <td>${esc(r.horizonte)}</td>
-              <td class="num">${r.prioridade}</td>
-              <td><input class="input-resp" data-regra="${esc(r.regra)}" value="${esc(resp[r.regra] || '')}" placeholder="Nome" aria-label="Responsável por ${esc(r.regra)}" ${arquivada ? 'readonly' : ''}><span class="so-impressao">${esc(resp[r.regra] || '')}</span></td>
-            </tr>`).join('')}</tbody>
-        </table>
-        <p class="nota legenda-esforco">Esforço: ${modelo.esforcos.map(e => `<strong>${esc(e.codigo)}</strong>: ${esc(e.significado)}`).join(' ')}<br>
-        Horizonte: ${modelo.horizontes.map(h => `<strong>${esc(h.codigo)}</strong>: ${esc(h.significado)}`).join(' ')}</p>
-        ${diag.observacoes.filter(o => o.codigo === 'UC-07').map(o => `<p class="aviso aviso-info">${esc(o.texto)}</p>`).join('')}
-      </section>
-
-      <section class="rel-secao quebra-antes">
-        <h2><span class="num-secao">4</span> Canvas de Prontidão</h2>
-        <p class="rel-intro">O resumo do diagnóstico em oito perguntas. Sete são respondidas automaticamente; a atribuição de responsáveis cabe à empresa.</p>
-        <div data-canvas>${htmlCanvas(app, modelo)}</div>
-      </section>
+      <p class="nota nao-imprimir">Toque em um título para ver os detalhes. Na impressão, tudo sai aberto.</p>
+      ${secao(1, 'Perfil por dimensão', 'Escore de 0 a 100 em cada uma das seis dimensões', perfil)}
+      ${secao(2, 'Por que este nível', diag.tetoAtuou ? `Média ${num(diag.escoreGlobal)} indicaria nível ${diag.nivelCompensatorio}; o teto de gargalo leva a ${diag.nivelFinal}` : `Média ponderada ${num(diag.escoreGlobal)}`, nivel)}
+      ${secao(3, 'Roteiro completo', `${diag.totalAcoes} passos, ${advertencias.length} advertência(s)`, roteiro)}
+      ${secao(4, 'Canvas de Prontidão', 'O diagnóstico resumido em oito perguntas', `<div data-canvas>${htmlCanvas(app, modelo)}</div>`, 'quebra-antes')}
 
       <footer class="rel-rodape">
         <p><strong>Próxima aplicação sugerida: ${dataBR(diag.dataReaplicacao)}</strong> (nível ${diag.nivelFinal}: a cada ${reap?.meses} meses). Antecipe se: ${esc(reap?.gatilho)}</p>
-        <p>Gerado pelo MGP-PME, modelo ${esc(diag.versaoModelo)}, em ${dataBR(diag.geradoEm)}. Diagnóstico calculado inteiramente neste dispositivo; nenhum dado foi transmitido. Só é comparável a diagnósticos da mesma versão do modelo. Aplicação ${esc(app.id)}.</p>
+        <p>Gerado pelo MGP-PME, modelo ${esc(diag.versaoModelo)}, em ${dataBR(diag.geradoEm)}. Calculado neste dispositivo; nenhum dado foi transmitido. Só é comparável a diagnósticos da mesma versão do modelo.</p>
       </footer>
     </article>`;
+}
+
+// Na impressão, as seções recolhidas saem abertas; depois voltam como estavam.
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('details.rel-secao:not([open])').forEach(d => { d.dataset.recolhida = '1'; d.open = true; });
+  });
+  window.addEventListener('afterprint', () => {
+    document.querySelectorAll('details.rel-secao[data-recolhida]').forEach(d => { d.open = false; delete d.dataset.recolhida; });
+  });
+}
+
+export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoReaplicar, aoComparar, aoResponsavel, temAnteriores }) {
+  el.innerHTML = htmlRelatorio(app, modelo, { temAnteriores });
 
   el.querySelector('.filtro-horizonte')?.addEventListener('click', ev => {
     const b = ev.target.closest('[data-horizonte]');
@@ -278,6 +352,7 @@ export function renderDiagnostico(el, { modelo, app, aoExportar, aoCorrigir, aoR
   el.querySelector('.barra-acoes').addEventListener('click', ev => {
     const b = ev.target.closest('[data-acao]');
     if (!b) return;
+    b.closest('details')?.removeAttribute('open');
     ({ imprimir: () => window.print(), exportar: aoExportar, corrigir: aoCorrigir, reaplicar: aoReaplicar, comparar: aoComparar })[b.dataset.acao]?.();
   });
 }
@@ -298,8 +373,9 @@ export function renderComparacao(el, { modelo, a, b }) {
   const sinal = v => (v > 0 ? '+' : '') + num(v);
   const regrasA = new Set(da.roteiro.map(r => r.regra));
   const regrasB = new Set(db.roteiro.map(r => r.regra));
-  const sairam = [...regrasA].filter(r => !regrasB.has(r));
-  const entraram = [...regrasB].filter(r => !regrasA.has(r));
+  const sairam = da.roteiro.filter(r => !regrasB.has(r.regra));
+  const entraram = db.roteiro.filter(r => !regrasA.has(r.regra));
+  const itemRoteiro = r => `<li><strong>${esc(alvoLegivel(r, modelo))}.</strong> ${esc(r.acao)}</li>`;
   const mesmaEmpresa = antes.empresa.identificador.trim().toLowerCase() === depois.empresa.identificador.trim().toLowerCase();
 
   el.innerHTML = `
@@ -326,7 +402,7 @@ export function renderComparacao(el, { modelo, a, b }) {
       </tbody>
     </table>
     <div class="linha-2">
-      <div class="cartao-mini"><h3>Saíram do roteiro</h3>${sairam.length ? `<ul>${sairam.map(r => `<li><code>${esc(r)}</code></li>`).join('')}</ul>` : '<p>Nenhuma regra.</p>'}</div>
-      <div class="cartao-mini"><h3>Entraram no roteiro</h3>${entraram.length ? `<ul>${entraram.map(r => `<li><code>${esc(r)}</code></li>`).join('')}</ul>` : '<p>Nenhuma regra.</p>'}</div>
+      <div class="cartao-mini"><h3>Saíram do roteiro</h3>${sairam.length ? `<ul>${sairam.map(itemRoteiro).join('')}</ul>` : '<p>Nenhum passo.</p>'}</div>
+      <div class="cartao-mini"><h3>Entraram no roteiro</h3>${entraram.length ? `<ul>${entraram.map(itemRoteiro).join('')}</ul>` : '<p>Nenhum passo.</p>'}</div>
     </div>`;
 }

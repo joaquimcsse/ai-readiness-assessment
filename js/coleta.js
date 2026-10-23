@@ -116,6 +116,13 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
           </button>`).join('')}
       </nav>
       <div class="corpo-bloco" data-corpo></div>
+      <section class="cartao concluido" data-concluido hidden aria-live="polite">
+        <div>
+          <h2>Tudo respondido</h2>
+          <p>As ${total} afirmações estão preenchidas. O diagnóstico sai em um clique.</p>
+        </div>
+        <button type="button" class="btn btn-pri" data-acao="gerar">Ver meu diagnóstico</button>
+      </section>
       <footer class="barra-progresso cartao" aria-live="polite">
         <div class="progresso">
           <div class="progresso-texto"><strong data-respondidas></strong> de ${total} itens respondidos</div>
@@ -125,7 +132,7 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
         <div class="acoes">
           <button type="button" class="btn btn-sec" data-acao="anterior">← Bloco anterior</button>
           <button type="button" class="btn btn-sec" data-acao="proximo">Próximo bloco →</button>
-          <button type="button" class="btn btn-pri" data-acao="gerar">Gerar diagnóstico</button>
+          <button type="button" class="btn btn-sec" data-acao="gerar" data-gerar-rodape>Gerar diagnóstico</button>
         </div>
       </footer>
     </section>`;
@@ -171,6 +178,26 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
     });
     el.querySelector('[data-acao="anterior"]').disabled = bloco === 0;
     el.querySelector('[data-acao="proximo"]').disabled = bloco === blocos.length - 1;
+    destacarProximoPasso();
+  }
+
+  // R4 (avaliação do PBL 7): um único botão primário por vez. Com o bloco atual
+  // completo, o destaque vai para "Próximo bloco"; com tudo respondido, para o
+  // diagnóstico.
+  function destacarProximoPasso() {
+    const pendentes = itensPendentes(app.respostas, modelo);
+    const pronto = pendentes.length === 0 || Boolean(app.diagnostico);
+    const doBloco = modelo.itens.filter(i => blocos[bloco].dimensoes.includes(i.dimensao));
+    const blocoCompleto = doBloco.every(i => app.respostas[i.codigo]);
+    const proximo = el.querySelector('[data-acao="proximo"]');
+    const gerar = el.querySelector('[data-gerar-rodape]');
+    const destaqueProximo = !pronto && blocoCompleto && !proximo.disabled;
+    proximo.classList.toggle('btn-pri', destaqueProximo);
+    proximo.classList.toggle('btn-sec', !destaqueProximo);
+    // com o cartão de conclusão à vista, o destaque fica só nele
+    const comCartao = pendentes.length === 0 && !somenteLeitura;
+    gerar.classList.toggle('btn-pri', pronto && !comCartao);
+    gerar.classList.toggle('btn-sec', !pronto || comCartao);
   }
 
   function atualizarProgresso() {
@@ -187,10 +214,12 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
       alvo.closest('.aba-bloco').classList.toggle('completo', feitos === itens.length);
     });
     // CP-02 — impede o cálculo enquanto houver item sem resposta e indica quais faltam
-    const gerar = el.querySelector('[data-acao="gerar"]');
+    const gerar = el.querySelector('[data-gerar-rodape]');
     gerar.disabled = pendentes.length > 0 || somenteLeitura;
     gerar.textContent = app.diagnostico ? 'Ver diagnóstico' : 'Gerar diagnóstico';
     if (app.diagnostico) gerar.disabled = false;
+    el.querySelector('[data-concluido]').hidden = pendentes.length > 0 || somenteLeitura;
+    destacarProximoPasso();
     const caixa = el.querySelector('[data-pendentes]');
     if (pendentes.length === 0) {
       caixa.innerHTML = '<span class="ok">Todos os itens respondidos. O diagnóstico pode ser gerado.</span>';
@@ -214,9 +243,15 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
     const input = ev.target;
     if (input.type !== 'radio') return;
     const codigo = input.name;
+    const faltavam = itensPendentes(app.respostas, modelo).length;
     aoResponder(codigo, Number(input.value));
     input.closest('fieldset').classList.add('respondido');
     atualizarProgresso();
+    if (faltavam > 0 && itensPendentes(app.respostas, modelo).length === 0) {
+      const cartao = el.querySelector('[data-concluido]');
+      cartao.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      cartao.querySelector('button').focus({ preventScroll: true });
+    }
   });
 
   el.addEventListener('click', ev => {

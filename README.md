@@ -37,6 +37,9 @@ node --test                      # ou: npm test   (Node 20+, sem dependências)
 |---|---|
 | `tests/nucleo.test.js` | caso Aurora (escores, nível, gargalo e roteiro exatos da Tabela 13); todos os mínimos; todos os máximos; gargalo isolado em D0, D1 e D3; 2 000 perfis aleatórios (CT-04, RN-06); FA-03; FE-01/02/03; limites de faixa; reaplicação |
 | `tests/contrato.test.js` | CT-01, CT-02, CT-03, CT-05, CT-06 (matriz de rastreabilidade), CT-07 (20–30 min), CT-08 (nenhum canal de saída; CSP) |
+| `tests/propriedades.test.js` | monotonicidade, fronteiras contra um oráculo em inteiros, entradas inválidas, modelo corrompido, datas de reaplicação |
+| `tests/interface.test.js` | RNF01 (nenhum código de especificação ou de regra na tela do gestor), resumo primeiro, um único próximo passo, gargalo sinalizado, menu agrupado |
+| `tests/metricas.test.js` | registro local do tempo de preenchimento e das aberturas do guia |
 
 ## Estrutura (seção 8 — módulos)
 
@@ -68,6 +71,32 @@ modelo continuamente e só permite publicar um modelo consistente. Ao publicar, 
 novo `dados.json` (com versão, data, justificativa e lista do que mudou) — substitua o
 arquivo no repositório. Aplicações em andamento sob a versão anterior são interrompidas
 (FE-02), e diagnósticos de versões diferentes não podem ser comparados (RN-07).
+
+## Versão 1.1.0 do artefato (PBL 8: melhorias)
+
+Esta versão responde à avaliação do PBL 7. O modelo continua na versão 1.0.0, porque
+pesos, limites, itens e regras não mudaram, e por isso diagnósticos antigos e novos
+continuam comparáveis. As mudanças estão todas na página:
+
+- O roteiro e as advertências não mostram mais o código da regra (RD, RT). Os códigos
+  ficam no arquivo exportado e nas telas de pesquisa (R2).
+- O diagnóstico começa por um resumo com o nível, a dimensão que trava o resultado e os
+  três primeiros passos. Perfil, explicação do nível, roteiro completo e Canvas ficam
+  recolhidos e saem abertos na impressão (R3).
+- Depois do último item aparece o cartão "Tudo respondido", com um único botão. No
+  diagnóstico, o botão em destaque é "Exportar e arquivar" (depois, "Reaplicar"), e as
+  outras ações ficam em "Mais opções" (R4).
+- O topo tem Início, Diagnóstico e Histórico. Avaliação, Manutenção e Sobre estão no
+  grupo "Pesquisa" (R5).
+- A ordem do roteiro é a mesma do PBL 4, então o caso Aurora continua igual à Tabela 13.
+  A ação da dimensão-gargalo ganhou um selo e abre o resumo (R9).
+- Cada aplicação guarda o início e o fim do preenchimento e quantas vezes o guia foi
+  aberto, e o arquivo exportado leva esses dados. A página continua sem enviar nada (R7).
+- Os testes rodam também no branch publicado, `mgp-pme-pagina-estatica` (R1).
+
+O relatório desta etapa sai de `make` (pipeline em `pipeline/`, PDF em
+`entregas/Melhorias-MGP-PME.pdf`), que mede esta versão contra a base `b9668a4`.
+Requer `node`, `git`, `pdflatex`, `firefox` e `pdftoppm`; `make deps` confere.
 
 ## Decisões de implementação a revisar
 

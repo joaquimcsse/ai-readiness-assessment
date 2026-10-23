@@ -22,13 +22,19 @@
         <svg viewBox="0 0 32 32" aria-hidden="true" width="30" height="30"><rect width="32" height="32" rx="7" class="marca-fundo"/><rect x="7" y="17" width="4" height="8" class="marca-barra"/><rect x="14" y="11" width="4" height="14" class="marca-barra"/><rect x="21" y="7" width="4" height="18" class="marca-barra-destaque"/></svg>
         <span><strong>MGP-PME</strong><small>Prontidão para IA</small></span>
       </a>
+      <!-- Três rotas do gestor; as telas da equipe de pesquisa ficam agrupadas -->
       <nav class="menu" aria-label="Principal">
         <a href="#/inicio" data-rota="inicio">Início</a>
-        <a href="#/questionario" data-rota="aplicacao">Aplicação</a>
+        <a href="#/aplicacao" data-rota="aplicacao">Diagnóstico</a>
         <a href="#/historico" data-rota="historico">Histórico</a>
-        <a href="#/avaliacao" data-rota="avaliacao">Avaliação</a>
-        <a href="#/manutencao" data-rota="manutencao">Manutenção</a>
-        <a href="#/sobre" data-rota="sobre">Sobre</a>
+        <details class="menu-grupo" id="menu-pesquisa">
+          <summary data-grupo="pesquisa">Pesquisa</summary>
+          <div class="menu-lista">
+            <a href="#/avaliacao" data-rota="avaliacao">Avaliação por especialistas</a>
+            <a href="#/manutencao" data-rota="manutencao">Manutenção do modelo</a>
+            <a href="#/sobre" data-rota="sobre">Sobre o projeto</a>
+          </div>
+        </details>
       </nav>
       <button type="button" class="btn btn-guia" id="abrir-guia" aria-controls="guia" aria-expanded="false">? Guia</button>
     </div>

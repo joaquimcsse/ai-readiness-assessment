@@ -2,19 +2,22 @@
 # e publica a página estática no GitHub Pages.
 name: Testes e publicação
 
+# Os testes rodam também no branch que o GitHub Pages publica hoje
+# (mgp-pme-pagina-estatica, modo "a partir de branch"): sem isso, o que vai ao
+# ar nunca passava pela suíte (R1 da avaliação do PBL 7).
 on:
   push:
-    branches: [main]
+    branches: [main, mgp-pme-pagina-estatica]
   pull_request:
   workflow_dispatch:
 
+# Mínimo privilégio: o job de testes só lê; as permissões de publicação ficam
+# no job que publica.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -28,9 +31,13 @@ jobs:
       - run: node --test
 
   publicar:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: testes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
