@@ -36,7 +36,7 @@ export function svgPerfil(diag, modelo, { largura = 680 } = {}) {
     const h = alturaLinha - 16;
     const w = Math.max(x(d.escore) - x(0), 1.5);
     return `<g class="barra-dim ${d.eGargalo ? 'gargalo' : ''}">
-      <title>${esc(d.codigo)} ${esc(d.nome)}: ${num(d.escore)}, nível ${d.nivel}, faixa ${esc(nomeFaixa(modelo, d.faixa))}${d.critica ? ', dimensão crítica' : ''}${d.eGargalo ? ', GARGALO' : ''}</title>
+      <title>${esc(d.codigo)} ${esc(d.nome)}: ${num(d.escore)}, nível ${d.nivel}, faixa ${esc(nomeFaixa(modelo, d.faixa))}${d.critica ? ', critério crítico' : ''}${d.eGargalo ? ', GARGALO' : ''}</title>
       <text class="rotulo-dim" x="${rotuloW - 12}" y="${y + h / 2 + 1}" text-anchor="end" dominant-baseline="middle">${d.critica ? '◆ ' : ''}${esc(d.codigo)} · ${esc(d.nome.length > 24 ? d.nome.slice(0, 23) + '…' : d.nome)}</text>
       <rect class="barra barra-${esc(d.faixa)}" x="${x(0)}" y="${y}" width="${w}" height="${h}" rx="3"/>
       <text class="valor" x="${x(0) + w + 6}" y="${y + h / 2 + 1}" dominant-baseline="middle">${num(d.escore)}${d.eGargalo ? ' ▲ gargalo' : ''}</text>
@@ -48,7 +48,7 @@ export function svgPerfil(diag, modelo, { largura = 680 } = {}) {
     <text class="rotulo-global" x="${x(eg)}" y="${altura - 2}" text-anchor="middle">média ponderada ${num(eg)}</text>`;
 
   return `<svg xmlns="${SVG_NS}" class="grafico-perfil" viewBox="0 0 ${largura} ${altura + 6}" role="img" aria-labelledby="perfil-titulo perfil-desc">
-    <title id="perfil-titulo">Perfil de prontidão por dimensão</title>
+    <title id="perfil-titulo">Perfil de prontidão por critério</title>
     <desc id="perfil-desc">${linhas.map(d => `${d.codigo} ${d.nome}: ${num(d.escore)} (${nomeFaixa(modelo, d.faixa)})`).join('; ')}. Média ponderada ${num(eg)}.</desc>
     ${faixas}${grade}${barras}${global}
   </svg>`;
@@ -84,7 +84,7 @@ export function svgComparacao(diagA, diagB, modelo, rotulos, { largura = 680 } =
     <rect class="barra-a" x="${rotuloW}" y="4" width="12" height="12" rx="2"/><text x="${rotuloW + 18}" y="14">${esc(rotulos[0])}</text>
     <rect class="barra-b" x="${rotuloW + 230}" y="4" width="12" height="12" rx="2"/><text x="${rotuloW + 248}" y="14">${esc(rotulos[1])}</text>
   </g>`;
-  return `<svg xmlns="${SVG_NS}" class="grafico-perfil" viewBox="0 0 ${largura} ${altura}" role="img" aria-label="Comparação dos escores por dimensão entre duas aplicações">
+  return `<svg xmlns="${SVG_NS}" class="grafico-perfil" viewBox="0 0 ${largura} ${altura}" role="img" aria-label="Comparação dos escores por critério entre duas aplicações">
     ${faixas}${grade}${linhas}${legenda}</svg>`;
 }
 
@@ -113,19 +113,19 @@ export function celulasCanvas(app, modelo) {
   const gargalos = diag.gargalos.map(g => `${g} ${nomeDimensao(modelo, g)}`).join(', ');
 
   return [
-    { titulo: 'Onde estamos', origem: 'Escore de cada dimensão, de 0 a 100',
+    { titulo: 'Onde estamos', origem: 'Escore de cada critério, de 0 a 100',
       blocos: [{ escores: diag.porDimensao.map(d => ({ rotulo: `${d.codigo} ${d.nome}`, valor: num(d.escore), faixa: d.faixa })) }] },
-    { titulo: 'O que nos trava', origem: 'Dimensão crítica de menor escore',
+    { titulo: 'O que nos trava', origem: 'Critério crítico de menor escore',
       blocos: diag.tetoAtuou
         ? [{ p: [forte(gargalos), ` limita o nível atribuído em ${diag.nivelCompensatorio - diag.nivelFinal} nível(is): de ${diag.nivelCompensatorio} para ${diag.nivelFinal}.`] },
-           ...(criticasF1.length ? [{ p: [`Dimensões críticas na faixa Crítica: ${criticasF1.join(', ')}.`] }] : [])]
-        : [{ p: ['Nenhuma dimensão crítica limita o nível atribuído.'] },
+           ...(criticasF1.length ? [{ p: [`Critérios críticos na faixa Crítica: ${criticasF1.join(', ')}.`] }] : [])]
+        : [{ p: ['Nenhum critério crítico limita o nível atribuído.'] },
            ...(criticasF1.length ? [{ p: [`Ainda assim, ${criticasF1.join(', ')} está na faixa Crítica.`] }] : [])] },
     { titulo: 'Em que nível estamos', origem: 'Nível de maturidade atribuído',
       blocos: [{ p: [forte(`Nível ${diag.nivelFinal}: ${nomeNivel(modelo, diag.nivelFinal)}.`), ` ${modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao ?? ''}`] }] },
     { titulo: 'O que a média esconde', origem: 'Média ponderada contra nível atribuído',
       blocos: [{ p: [diag.tetoAtuou
-        ? `A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} (${nomeNivel(modelo, diag.nivelCompensatorio)}). O nível efetivamente atribuído é ${diag.nivelFinal}: dimensões fortes não compensam a base que falta.`
+        ? `A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} (${nomeNivel(modelo, diag.nivelCompensatorio)}). O nível efetivamente atribuído é ${diag.nivelFinal}: critérios fortes não compensam a base que falta.`
         : `Nada: o nível pela média ponderada (${num(diag.escoreGlobal)}) e o nível atribuído coincidem.`] }] },
     { titulo: 'O que fazer agora', origem: 'Roteiro priorizado',
       blocos: agora.length ? [{ ol: agora.map(r => [r.acao, ` (esforço ${r.esforco.toLowerCase()})`]) }] : [{ p: ['Sem ações de curto prazo neste roteiro.'] }] },
@@ -227,13 +227,13 @@ function htmlResumo(app, modelo) {
       <div class="resumo-nivel">
         <span class="lado-rot">Nível atribuído</span>
         <div class="nivel-principal"><div class="nivel-num">${diag.nivelFinal}</div><div class="nivel-nome">${esc(nomeNivel(modelo, diag.nivelFinal))}</div></div>
-        ${diag.tetoAtuou ? `<p>Pela média seria ${diag.nivelCompensatorio}, mas uma dimensão crítica segura o resultado.</p>` : '<p>Nenhuma dimensão crítica segura o resultado.</p>'}
+        ${diag.tetoAtuou ? `<p>Pela média seria ${diag.nivelCompensatorio}, mas um critério crítico segura o resultado.</p>` : '<p>Nenhum critério crítico segura o resultado.</p>'}
       </div>
       <div class="resumo-trava">
         <span class="lado-rot">O que trava</span>
         ${diag.tetoAtuou
           ? `<p><strong class="txt-F1">${diag.gargalos.map(g => `${esc(g)} ${esc(nomeDimensao(modelo, g))}`).join(', ')}</strong></p><p>Enquanto não melhorar, o nível não passa de ${diag.nivelFinal}.</p>`
-          : `<p><strong>Nada impede o próximo nível.</strong></p><p>Use o roteiro para consolidar as dimensões mais fracas.</p>`}
+          : `<p><strong>Nada impede o próximo nível.</strong></p><p>Use o roteiro para consolidar os critérios mais fracos.</p>`}
       </div>
     </div>
     <div class="resumo-passos">
@@ -263,14 +263,14 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
   const principal = arquivada ? ['reaplicar', 'Reaplicar o instrumento'] : ['exportar', 'Exportar e arquivar'];
 
   const perfil = `
-    <p class="rel-intro">◆ marca as dimensões críticas. Cores: <span class="txt-F1">Crítica</span>, <span class="txt-F2">Em evolução</span>, <span class="txt-F3">Consolidada</span>.</p>
+    <p class="rel-intro">◆ marca os critérios críticos. Cores: <span class="txt-F1">Crítica</span>, <span class="txt-F2">Em evolução</span>, <span class="txt-F3">Consolidada</span>.</p>
     <div class="grafico">${svgPerfil(diag, modelo)}</div>
     <table class="tabela tabela-perfil">
-      <thead><tr><th>Dimensão</th><th class="num">Peso</th><th class="num">Escore</th><th class="num">Nível</th><th>Faixa</th><th>Situação</th></tr></thead>
+      <thead><tr><th>Critério</th><th class="num">Peso</th><th class="num">Escore</th><th class="num">Nível</th><th>Faixa</th><th>Situação</th></tr></thead>
       <tbody>${diag.porDimensao.map(d => {
         const dim = modelo.dimensoes.find(x => x.codigo === d.codigo);
         return `<tr class="${d.eGargalo ? 'linha-gargalo' : ''}">
-          <td><strong>${esc(d.codigo)}</strong> ${esc(d.nome)}${d.critica ? ' <span class="selo selo-critica">crítica</span>' : ''}</td>
+          <td><strong>${esc(d.codigo)}</strong> ${esc(d.nome)}${d.critica ? ' <span class="selo selo-critica">crítico</span>' : ''}</td>
           <td class="num">${num((dim?.peso ?? 0) * 100, 0)}%</td>
           <td class="num"><strong>${num(d.escore)}</strong></td>
           <td class="num">${d.nivel}</td>
@@ -302,7 +302,7 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
     ${diag.observacoes.filter(o => o.codigo === 'FA-02').map(o => `<p class="aviso aviso-ok">${esc(o.texto)}</p>`).join('')}`;
 
   const roteiro = `
-    <p class="rel-intro">Advertências primeiro, depois uma ação por dimensão, da mais urgente para a menos urgente. Indique um responsável para cada passo.</p>
+    <p class="rel-intro">Advertências primeiro, depois uma ação por critério, da mais urgente para a menos urgente. Indique um responsável para cada passo.</p>
     ${advertencias.length ? `<div class="advertencias">${advertencias.map(a => `
       <div class="advertencia"><div><strong>Atenção: ${esc(a.alvo)}.</strong> ${esc(a.acao)}${citacao(modelo, referenciasDoPasso(modelo, a))}</div></div>`).join('')}</div>` : ''}
     <div class="filtro-horizonte nao-imprimir" role="group" aria-label="Filtrar por horizonte">
@@ -360,7 +360,7 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
       ${htmlResumo(app, modelo)}
 
       <p class="nota nao-imprimir">Toque em um título para ver os detalhes. Na impressão, tudo sai aberto.</p>
-      ${secao(1, 'Perfil por dimensão', 'Escore de 0 a 100 em cada uma das seis dimensões', perfil)}
+      ${secao(1, 'Perfil por critério', 'Escore de 0 a 100 em cada um dos seis critérios', perfil)}
       ${secao(2, 'Por que este nível', diag.tetoAtuou ? `Média ${num(diag.escoreGlobal)} indicaria nível ${diag.nivelCompensatorio}; o teto de gargalo leva a ${diag.nivelFinal}` : `Média ponderada ${num(diag.escoreGlobal)}`, nivel)}
       ${secao(3, 'Roteiro completo', `${diag.totalAcoes} passos, ${advertencias.length} advertência(s)`, roteiro)}
       ${secao(4, 'Canvas de Prontidão', 'O diagnóstico resumido em oito perguntas', `<div data-canvas>${htmlCanvas(app, modelo)}</div>`, 'quebra-antes')}
@@ -443,10 +443,10 @@ export function renderComparacao(el, { modelo, a, b }) {
     </div>
     <div class="grafico">${svgComparacao(da, db, modelo, [`Antes (${dataBR(antes.data)})`, `Depois (${dataBR(depois.data)})`])}</div>
     <table class="tabela">
-      <thead><tr><th>Dimensão</th><th class="num">Antes</th><th class="num">Depois</th><th class="num">Variação</th><th>Faixa</th></tr></thead>
+      <thead><tr><th>Critério</th><th class="num">Antes</th><th class="num">Depois</th><th class="num">Variação</th><th>Faixa</th></tr></thead>
       <tbody>
         ${modelo.dimensoes.map(d => `<tr>
-          <td><strong>${esc(d.codigo)}</strong> ${esc(d.nome)}${d.critica ? ' <span class="selo selo-critica">crítica</span>' : ''}</td>
+          <td><strong>${esc(d.codigo)}</strong> ${esc(d.nome)}${d.critica ? ' <span class="selo selo-critica">crítico</span>' : ''}</td>
           <td class="num">${num(da.escores[d.codigo])}</td>
           <td class="num">${num(db.escores[d.codigo])}</td>
           <td class="num">${seta(da.escores[d.codigo], db.escores[d.codigo])} ${sinal(db.escores[d.codigo] - da.escores[d.codigo])}</td>
