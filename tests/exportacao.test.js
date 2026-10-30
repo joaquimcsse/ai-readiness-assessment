@@ -55,7 +55,7 @@ test('PDF: seções numeradas na ordem e roteiro com uma linha por passo', () =>
   const app = aplicacao();
   const doc = documentoRelatorio(app, modelo);
   const titulos = doc.content.filter(n => n.style === 'h1').map(n => n.text);
-  assert.deepEqual(titulos, ['1. Perfil por dimensão', '2. Por que este nível', '3. Roteiro de ação', '4. Canvas de Prontidão', '5. Respostas', '6. Referências']);
+  assert.deepEqual(titulos, ['1. Perfil por critério', '2. Por que este nível', '3. Roteiro de ação', '4. Canvas de Prontidão', '5. Respostas', '6. Referências']);
   const tabelaRoteiro = doc.content.find(n => n.table?.body?.[0]?.[2]?.text === 'O que fazer');
   assert.equal(tabelaRoteiro.table.body.length, app.diagnostico.roteiro.length + 1);
   assert.equal(tabelaRoteiro.table.headerRows, 1);
@@ -104,7 +104,7 @@ test('planilha: abas legíveis, aba de dados oculta e ida e volta sem perda', as
   const app = aplicacao();
   app.responsaveis = { [app.diagnostico.roteiro[0].regra]: 'Joana' };
   const wb = montarPlanilha(app, modelo, ExcelJS, { exportadoEm: '2026-09-13T12:00:00Z' });
-  assert.deepEqual(wb.worksheets.map(w => w.name), ['Resumo', 'Respostas', 'Dimensões', 'Roteiro', 'Referências', '_mgp']);
+  assert.deepEqual(wb.worksheets.map(w => w.name), ['Resumo', 'Respostas', 'Critérios', 'Roteiro', 'Referências', '_mgp']);
   assert.equal(wb.getWorksheet('_mgp').state, 'veryHidden');
   assert.equal(wb.getWorksheet('Respostas').rowCount, modelo.itens.length + 1);
   assert.equal(wb.getWorksheet('Roteiro').getCell('F2').value, 'Joana');

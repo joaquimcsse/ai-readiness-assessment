@@ -10,7 +10,7 @@ import { validarModelo } from './validacao.js';
 import { carregarRascunhoModelo, salvarRascunhoModelo, descartarRascunhoModelo, baixarArquivo } from './estado.js';
 
 const ABAS = [
-  { id: 'dimensoes', rotulo: 'Dimensões e pesos', uc: 'UC-10' },
+  { id: 'dimensoes', rotulo: 'Critérios e pesos', uc: 'UC-10' },
   { id: 'faixas', rotulo: 'Níveis, faixas e priorização', uc: 'UC-10' },
   { id: 'itens', rotulo: 'Itens e âncoras', uc: 'UC-11' },
   { id: 'regras', rotulo: 'Base de regras', uc: 'UC-12' },
@@ -58,7 +58,7 @@ export function diferencas(base, novo) {
       if (!(novo[lista] || []).some(x => x[chave] === b[chave])) mudancas.push(`${rotulo} ${b[chave]}: removido`);
     }
   };
-  comparar('dimensoes', 'codigo', 'Dimensão', ['nome', 'peso', 'critica', 'resumo', 'definicao']);
+  comparar('dimensoes', 'codigo', 'Critério', ['nome', 'peso', 'critica', 'resumo', 'definicao']);
   comparar('niveis', 'numero', 'Nível', ['nome', 'limite_inferior', 'limite_superior', 'interpretacao']);
   comparar('faixas', 'codigo', 'Faixa', ['nome', 'limite_inferior', 'limite_superior', 'leitura']);
   comparar('itens', 'codigo', 'Item', ['assertiva', 'dimensao', 'ancoras', 'ancoras_status']);
@@ -131,12 +131,12 @@ export function renderManutencao(el, { modelo }) {
     el.querySelectorAll('[data-aba]').forEach(b => { b.classList.toggle('ativa', b.dataset.aba === aba); b.setAttribute('aria-selected', String(b.dataset.aba === aba)); });
     if (aba === 'dimensoes') {
       corpo.innerHTML = `
-        <h2>Dimensões, pesos e criticidade <small>UC-10</small></h2>
-        <p class="nota">A soma dos pesos deve ser 1 e exatamente três dimensões devem ser críticas (operam como gargalo). Soma atual: <strong data-soma></strong>.</p>
-        <table class="tabela tabela-edicao"><thead><tr><th>Cód.</th><th>Nome</th><th>Peso</th><th>Crítica</th><th>Resumo (página inicial)</th><th>Definição</th></tr></thead><tbody>
+        <h2>Critérios, pesos e criticidade <small>UC-10</small></h2>
+        <p class="nota">A soma dos pesos deve ser 1 e exatamente três critérios devem ser críticos (operam como gargalo). Soma atual: <strong data-soma></strong>.</p>
+        <table class="tabela tabela-edicao"><thead><tr><th>Cód.</th><th>Nome</th><th>Peso</th><th>Crítico</th><th>Resumo (página inicial)</th><th>Definição</th></tr></thead><tbody>
           ${rascunho.dimensoes.map((d, k) => `<tr><td><strong>${esc(d.codigo)}</strong></td><td>${campo(`dimensoes.${k}.nome`, { rotulo: 'Nome' })}</td>
             <td>${campo(`dimensoes.${k}.peso`, { tipo: 'num', passo: '0.01', rotulo: `Peso ${d.codigo}`, classe: 'curto' })}</td>
-            <td class="centro">${campo(`dimensoes.${k}.critica`, { tipo: 'bool', rotulo: `Crítica ${d.codigo}` })}</td>
+            <td class="centro">${campo(`dimensoes.${k}.critica`, { tipo: 'bool', rotulo: `Crítico ${d.codigo}` })}</td>
             <td>${campo(`dimensoes.${k}.resumo`, { area: true, rotulo: 'Resumo' })}</td>
             <td>${campo(`dimensoes.${k}.definicao`, { area: true, rotulo: 'Definição' })}</td></tr>`).join('')}
         </tbody></table>`;
@@ -156,10 +156,10 @@ export function renderManutencao(el, { modelo }) {
             <td>${campo(`faixas.${k}.leitura`, { area: true })}</td></tr>`).join('')}
         </tbody></table>
         <h2>Priorização do roteiro</h2>
-        <p class="nota">prioridade = peso da faixa + bônus se a dimensão for crítica + bônus de esforço. Advertências recebem o peso de advertência e precedem todas as ações.</p>
+        <p class="nota">prioridade = peso da faixa + bônus se o critério for crítico + bônus de esforço. Advertências recebem o peso de advertência e precedem todas as ações.</p>
         <div class="grade-campos">
           ${rascunho.faixas.map(f => `<label>Peso da faixa ${esc(f.codigo)} ${campo(`priorizacao.peso_faixa.${f.codigo}`, { tipo: 'num', classe: 'curto' })}</label>`).join('')}
-          <label>Bônus de dimensão crítica ${campo('priorizacao.bonus_dimensao_critica', { tipo: 'num', classe: 'curto' })}</label>
+          <label>Bônus de critério crítico ${campo('priorizacao.bonus_dimensao_critica', { tipo: 'num', classe: 'curto' })}</label>
           ${['Baixo', 'Médio', 'Alto'].map(e => `<label>Bônus de esforço ${e} ${campo(`priorizacao.bonus_esforco.${e}`, { tipo: 'num', classe: 'curto' })}</label>`).join('')}
           <label>Peso de advertência ${campo('priorizacao.peso_advertencia', { tipo: 'num', classe: 'curto' })}</label>
         </div>
@@ -172,21 +172,21 @@ export function renderManutencao(el, { modelo }) {
       corpo.innerHTML = `
         <h2>Banco de itens e âncoras <small>UC-11</small></h2>
         <p class="nota">Cada item tem cinco âncoras de prática observável, da 1 (Inexistente) à 5 (Otimizada). Use o status para marcar âncoras revisadas pelo grupo.</p>
-        <div class="filtro-horizonte" role="group" aria-label="Dimensão">${rascunho.dimensoes.map(d => `<button type="button" class="chip ${d.codigo === filtroDim ? 'ativo' : ''}" data-dim="${esc(d.codigo)}">${esc(d.codigo)} <small>${rascunho.itens.filter(i => i.dimensao === d.codigo).length}</small></button>`).join('')}</div>
+        <div class="filtro-horizonte" role="group" aria-label="Critério">${rascunho.dimensoes.map(d => `<button type="button" class="chip ${d.codigo === filtroDim ? 'ativo' : ''}" data-dim="${esc(d.codigo)}">${esc(d.codigo)} <small>${rascunho.itens.filter(i => i.dimensao === d.codigo).length}</small></button>`).join('')}</div>
         ${itens.map(({ it, k }) => `
           <details class="item-edicao" ${itens.length <= 6 ? '' : ''}>
             <summary><strong>${esc(it.codigo)}</strong> ${esc(it.assertiva)} <span class="selo ${it.ancoras_status === 'rascunho' ? 'selo-alerta' : ''}">${esc(it.ancoras_status || '')}</span></summary>
             <label>Assertiva ${campo(`itens.${k}.assertiva`, { rotulo: 'Assertiva' })}</label>
             <div class="linha-2">
-              <label>Dimensão ${campo(`itens.${k}.dimensao`, { opcoes: rascunho.dimensoes.map(d => d.codigo) })}</label>
+              <label>Critério ${campo(`itens.${k}.dimensao`, { opcoes: rascunho.dimensoes.map(d => d.codigo) })}</label>
               <label>Status das âncoras ${campo(`itens.${k}.ancoras_status`, { opcoes: ['PBL4', 'rascunho', 'revisada'] })}</label>
             </div>
             ${it.ancoras.map((_, j) => `<label>Âncora ${j + 1} · ${esc(rascunho.escala[j]?.descritor)} ${campo(`itens.${k}.ancoras.${j}`, { area: true })}</label>`).join('')}
           </details>`).join('')}`;
     } else if (aba === 'regras') {
       corpo.innerHTML = `
-        <h2>Regras de dimensão <small>UC-12</small></h2>
-        <p class="nota">Exatamente uma regra por par dimensão-faixa, para que nenhum perfil produza roteiro vazio (CT-05).</p>
+        <h2>Regras de critério <small>UC-12</small></h2>
+        <p class="nota">Exatamente uma regra por par critério-faixa, para que nenhum perfil produza roteiro vazio (CT-05).</p>
         <table class="tabela tabela-edicao"><thead><tr><th>Regra</th><th>Ação prescrita</th><th>Esforço</th><th>Horizonte</th></tr></thead><tbody>
           ${rascunho.regras_dimensao.map((r, k) => `<tr><td><code>${esc(r.codigo)}</code></td><td>${campo(`regras_dimensao.${k}.acao`, { area: true })}</td>
             <td>${campo(`regras_dimensao.${k}.esforco`, { opcoes: ['Baixo', 'Médio', 'Alto'] })}</td><td>${campo(`regras_dimensao.${k}.horizonte`, { opcoes: ['Curto', 'Médio', 'Longo'] })}</td></tr>`).join('')}

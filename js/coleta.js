@@ -166,7 +166,7 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
       const itens = modelo.itens.filter(i => i.dimensao === dc);
       return `<section class="dimensao-bloco">
         <header class="dim-cab">
-          <h2><span class="cod-dim">${esc(d.codigo)}</span> ${esc(d.nome)} ${d.critica ? '<span class="selo selo-critica" title="Dimensão crítica: limita o nível global (teto de gargalo)">crítica</span>' : ''}</h2>
+          <h2><span class="cod-dim">${esc(d.codigo)}</span> ${esc(d.nome)} ${d.critica ? '<span class="selo selo-critica" title="Critério crítico: limita o nível global (teto de gargalo)">crítico</span>' : ''}</h2>
           <p>${esc(d.definicao)}${d.referencias?.length ? ` <cite class="dim-cita">(${esc(citar(modelo, d.referencias))})</cite>` : ''}</p>
         </header>
         ${itens.map(cartaoItem).join('')}
@@ -303,20 +303,20 @@ export function renderGuia(el, modelo) {
       <dl class="escala">${modelo.escala.map(e => `<dt>${e.valor} · ${esc(e.descritor)}</dt><dd>${esc(e.significado)}</dd>`).join('')}</dl>
     </details>
 
-    <details><summary>As seis dimensões</summary>
-      <dl>${modelo.dimensoes.map(d => `<dt>${esc(d.codigo)} · ${esc(d.nome)}, peso ${num(d.peso * 100, 0)}%${d.critica ? ', crítica' : ''}</dt><dd>${esc(d.definicao)}${d.referencias?.length ? ` <cite>(${esc(citar(modelo, d.referencias))})</cite>` : ''}</dd>`).join('')}</dl>
+    <details><summary>Os seis critérios</summary>
+      <dl>${modelo.dimensoes.map(d => `<dt>${esc(d.codigo)} · ${esc(d.nome)}, peso ${num(d.peso * 100, 0)}%${d.critica ? ', crítico' : ''}</dt><dd>${esc(d.definicao)}${d.referencias?.length ? ` <cite>(${esc(citar(modelo, d.referencias))})</cite>` : ''}</dd>`).join('')}</dl>
       <p class="nota">As referências completas estão na página inicial, em “Base científica”.</p>
     </details>
 
     <details><summary>Como ler o resultado</summary>
-      <p><strong>Escore por dimensão (0 a 100):</strong> média das respostas da dimensão, convertidas para a escala de 0 a 100.</p>
-      <p><strong>Teto de gargalo:</strong> as dimensões ${modelo.dimensoes.filter(d => d.critica).map(d => esc(d.codigo)).join(', ')} são críticas. O nível da empresa nunca ultrapassa o nível da dimensão crítica mais fraca: um ponto forte não compensa uma base que falta. Por isso o nível atribuído pode ser menor do que a média sugere; quando isso acontece, o relatório mostra os dois valores.</p>
+      <p><strong>Escore por critério (0 a 100):</strong> média das respostas do critério, convertidas para a escala de 0 a 100.</p>
+      <p><strong>Teto de gargalo:</strong> os critérios ${modelo.dimensoes.filter(d => d.critica).map(d => esc(d.codigo)).join(', ')} são críticos. O nível da empresa nunca ultrapassa o nível do critério crítico mais fraco: um ponto forte não compensa uma base que falta. Por isso o nível atribuído pode ser menor do que a média sugere; quando isso acontece, o relatório mostra os dois valores.</p>
       <table class="tabela compacta"><thead><tr><th>Nível</th><th>Escore</th><th>Significado</th></tr></thead><tbody>
         ${modelo.niveis.map(n => `<tr><td>${n.numero} · ${esc(n.nome)}</td><td>${n.limite_inferior} a ${n.limite_superior}</td><td>${esc(n.interpretacao)}</td></tr>`).join('')}
       </tbody></table>
-      <p><strong>Faixas das dimensões</strong> (selecionam as recomendações):</p>
+      <p><strong>Faixas dos critérios</strong> (selecionam as recomendações):</p>
       <dl>${modelo.faixas.map(f => `<dt>${esc(f.nome)} (${f.limite_inferior} a ${f.limite_superior})</dt><dd>${esc(f.leitura)}</dd>`).join('')}</dl>
-      <p><strong>Roteiro:</strong> advertências vêm primeiro, porque condicionam a leitura de tudo. Depois, as ações por prioridade: faixa crítica antes, dimensão crítica antes, e entre ações igualmente urgentes a de menor esforço.</p>
+      <p><strong>Roteiro:</strong> advertências vêm primeiro, porque condicionam a leitura de tudo. Depois, as ações por prioridade: faixa crítica antes, critério crítico antes, e entre ações igualmente urgentes a de menor esforço.</p>
     </details>
 
     <details><summary>Quando reaplicar</summary>

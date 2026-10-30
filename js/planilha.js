@@ -54,20 +54,20 @@ export function montarPlanilha(app, modelo, ExcelJS, { exportadoEm = new Date().
     { campo: 'Nível atribuído', valor: `${diag.nivelFinal} · ${nomeNivel(modelo, diag.nivelFinal)}` },
     { campo: 'Média ponderada (0 a 100)', valor: Number(diag.escoreGlobal.toFixed(1)) },
     { campo: 'Nível pela média', valor: `${diag.nivelCompensatorio} · ${nomeNivel(modelo, diag.nivelCompensatorio)}` },
-    { campo: 'O que trava', valor: diag.tetoAtuou ? diag.gargalos.map(g => `${g} ${nomeDimensao(modelo, g)}`).join(', ') : 'Nenhuma dimensão crítica limita o nível' },
+    { campo: 'O que trava', valor: diag.tetoAtuou ? diag.gargalos.map(g => `${g} ${nomeDimensao(modelo, g)}`).join(', ') : 'Nenhum critério crítico limita o nível' },
     { campo: 'Próxima aplicação sugerida', valor: `${dataBR(diag.dataReaplicacao)} (a cada ${reap?.meses} meses)` },
     { campo: 'Exportado em', valor: new Date(exportadoEm).toLocaleString('pt-BR') },
     { campo: 'Como usar este arquivo', valor: 'Guarde a planilha. Na próxima aplicação, importe-a em Histórico para comparar a evolução. Não altere a aba oculta de dados.' },
   ]);
   resumo.getColumn('campo').font = { bold: true };
 
-  aba(wb, 'Respostas', [['Código', 'codigo', 9], ['Dimensão', 'dimensao', 30], ['Afirmação', 'assertiva', 70], ['Resposta (1 a 5)', 'valor', 16], ['Nível da escala', 'descritor', 16], ['Descrição escolhida', 'ancora', 70]],
+  aba(wb, 'Respostas', [['Código', 'codigo', 9], ['Critério', 'dimensao', 30], ['Afirmação', 'assertiva', 70], ['Resposta (1 a 5)', 'valor', 16], ['Nível da escala', 'descritor', 16], ['Descrição escolhida', 'ancora', 70]],
     modelo.itens.map(i => {
       const v = app.respostas[i.codigo];
       return { codigo: i.codigo, dimensao: `${i.dimensao} ${nomeDimensao(modelo, i.dimensao)}`, assertiva: i.assertiva, valor: v ?? null, descritor: v ? modelo.escala[v - 1]?.descritor : '', ancora: v ? i.ancoras[v - 1] : '' };
     }));
 
-  const dims = aba(wb, 'Dimensões', [['Código', 'codigo', 9], ['Dimensão', 'nome', 34], ['Peso', 'peso', 9], ['Crítica', 'critica', 9], ['Escore (0 a 100)', 'escore', 16], ['Nível', 'nivel', 8], ['Faixa', 'faixa', 14], ['Gargalo', 'gargalo', 10]],
+  const dims = aba(wb, 'Critérios', [['Código', 'codigo', 9], ['Critério', 'nome', 34], ['Peso', 'peso', 9], ['Crítico', 'critica', 9], ['Escore (0 a 100)', 'escore', 16], ['Nível', 'nivel', 8], ['Faixa', 'faixa', 14], ['Gargalo', 'gargalo', 10]],
     diag.porDimensao.map(d => ({
       codigo: d.codigo, nome: d.nome, peso: modelo.dimensoes.find(x => x.codigo === d.codigo)?.peso ?? null,
       critica: d.critica ? 'sim' : 'não', escore: Number(d.escore.toFixed(1)), nivel: d.nivel, faixa: nomeFaixa(modelo, d.faixa), gargalo: d.eGargalo ? 'sim' : 'não',

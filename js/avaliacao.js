@@ -15,7 +15,7 @@ export const QUESTOES = [
   { codigo: 'Q04', criterio: 'Clareza', texto: 'As afirmações e as âncoras usam linguagem de gestão, sem jargão técnico (RNF01).' },
   { codigo: 'Q05', criterio: 'Clareza', texto: 'As cinco descrições de cada item permitem escolher sem ambiguidade.' },
   { codigo: 'Q06', criterio: 'Clareza', texto: 'O relatório explica por que o nível atribuído é o que é.' },
-  { codigo: 'Q07', criterio: 'Relevância', texto: 'As seis dimensões cobrem o que importa para a prontidão de uma PME.' },
+  { codigo: 'Q07', criterio: 'Relevância', texto: 'Os seis critérios cobrem o que importa para a prontidão de uma PME.' },
   { codigo: 'Q08', criterio: 'Relevância', texto: 'As recomendações são pertinentes ao perfil diagnosticado.' },
   { codigo: 'Q09', criterio: 'Autonomia', texto: 'Um gestor consegue aplicar o instrumento sozinho, apenas com o guia embutido (RNF02).' },
   { codigo: 'Q10', criterio: 'Eficiência', texto: 'A aplicação completa cabe em 20 a 30 minutos (RNF04).' },
@@ -58,7 +58,7 @@ export function renderAvaliacao(el, { modelo }) {
             ${ESCALA.map((e, k) => `<label class="likert-op"><input type="radio" name="${q.codigo}" value="${k + 1}" required aria-label="${esc(e)}"><span>${k + 1}</span></label>`).join('')}
           </div>`).join('')}
         </fieldset>
-        <label>Críticas e sugestões sobre o instrumento (itens, âncoras, dimensões)
+        <label>Críticas e sugestões sobre o instrumento (itens, âncoras, critérios)
           <textarea name="critica_instrumento" rows="3"></textarea></label>
         <label>Críticas e sugestões sobre as recomendações (roteiro, regras)
           <textarea name="critica_recomendacoes" rows="3"></textarea></label>

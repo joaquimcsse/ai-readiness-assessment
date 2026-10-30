@@ -121,12 +121,12 @@ function quadroResultado(diag, modelo) {
     ? [
       { text: 'O QUE TRAVA', style: 'rotulo' },
       { text: diag.gargalos.map(g => `${g} ${nomeDimensao(modelo, g)}`).join(', '), bold: true, fontSize: 13, color: CORES.alerta, margin: [0, 2, 0, 2] },
-      { text: `Pela média seria o nível ${diag.nivelCompensatorio}; enquanto esta dimensão não melhorar, o nível não passa de ${diag.nivelFinal}.`, fontSize: 8.5 },
+      { text: `Pela média seria o nível ${diag.nivelCompensatorio}; enquanto este critério não melhorar, o nível não passa de ${diag.nivelFinal}.`, fontSize: 8.5 },
     ]
     : [
       { text: 'O QUE TRAVA', style: 'rotulo' },
       { text: 'Nada impede o próximo nível', bold: true, fontSize: 13, margin: [0, 2, 0, 2] },
-      { text: 'Use o roteiro para consolidar as dimensões mais fracas.', fontSize: 8.5 },
+      { text: 'Use o roteiro para consolidar os critérios mais fracos.', fontSize: 8.5 },
     ];
   const corBorda = diag.tetoAtuou ? CORES.alerta : CORES.faixa;
   return {
@@ -201,7 +201,7 @@ function perfil(diag, modelo) {
     { text: '' },
   ];
   const linhas = diag.porDimensao.map(d => [
-    { text: [d.critica ? { text: 'crítica  ', style: 'pequeno', color: CORES.alerta } : '', { text: `${d.codigo} `, bold: true }, d.nome], fontSize: 8.5, alignment: 'right', margin: [0, 5, 8, 0] },
+    { text: [d.critica ? { text: 'crítico  ', style: 'pequeno', color: CORES.alerta } : '', { text: `${d.codigo} `, bold: true }, d.nome], fontSize: 8.5, alignment: 'right', margin: [0, 5, 8, 0] },
     { canvas: [
       ...zonas,
       { type: 'rect', x: 0, y: 5, w: Math.max(x(d.escore), 1.5), h: 12, color: COR_FAIXA[d.faixa] },
@@ -218,12 +218,12 @@ function perfil(diag, modelo) {
       headerRows: 1,
       widths: ['*', 34, 38, 30, 62, 130],
       body: [
-        [th('Dimensão'), th('Peso', 'right'), th('Escore', 'right'), th('Nível', 'right'), th('Faixa'), th('Situação')],
+        [th('Critério'), th('Peso', 'right'), th('Escore', 'right'), th('Nível', 'right'), th('Faixa'), th('Situação')],
         ...diag.porDimensao.map(d => {
           const peso = modelo.dimensoes.find(x => x.codigo === d.codigo)?.peso ?? 0;
           const situacao = d.eGargalo ? 'Gargalo: limita o nível' : d.faixa === 'F1' ? 'Exige ação antes de investir em IA' : d.faixa === 'F2' ? 'Sustenta piloto delimitado' : 'Não restringe a adoção';
           return [
-            { text: [{ text: `${d.codigo} `, bold: true }, d.nome, d.critica ? { text: '  crítica', style: 'pequeno' } : ''], style: 'td' },
+            { text: [{ text: `${d.codigo} `, bold: true }, d.nome, d.critica ? { text: '  crítico', style: 'pequeno' } : ''], style: 'td' },
             { text: `${num(peso * 100, 0)}%`, style: 'td', alignment: 'right' },
             { text: num(d.escore), style: 'td', alignment: 'right', bold: true },
             { text: String(d.nivel), style: 'td', alignment: 'right' },
@@ -236,8 +236,8 @@ function perfil(diag, modelo) {
     layout: TABELA,
     margin: [0, 10, 0, 0],
   };
-  return secao(1, 'Perfil por dimensão', grafico, [
-    { text: `Linha tracejada: média ponderada ${num(eg)}. Escore de 0 a 100 em cada dimensão; as críticas limitam o nível atribuído.`, style: 'pequeno', margin: [0, 4, 0, 0] },
+  return secao(1, 'Perfil por critério', grafico, [
+    { text: `Linha tracejada: média ponderada ${num(eg)}. Escore de 0 a 100 em cada critério; os críticos limitam o nível atribuído.`, style: 'pequeno', margin: [0, 4, 0, 0] },
     tabela,
   ], { quebra: true });
 }
@@ -267,7 +267,7 @@ function porQueNivel(diag, modelo) {
       margin: [0, 10, 0, 0],
     });
   } else {
-    resto.push({ text: 'O nível atribuído coincide com o da média ponderada: nenhuma dimensão crítica segura o resultado.', margin: [0, 10, 0, 0] });
+    resto.push({ text: 'O nível atribuído coincide com o da média ponderada: nenhum critério crítico segura o resultado.', margin: [0, 10, 0, 0] });
   }
   diag.observacoes.filter(o => o.codigo === 'FA-02').forEach(o => resto.push({ text: o.texto, margin: [0, 6, 0, 0] }));
   return secao(2, 'Por que este nível', corpo, resto);
@@ -278,7 +278,7 @@ function roteiro(app, modelo) {
   const diag = app.diagnostico;
   const resp = app.responsaveis || {};
   const advertencias = diag.roteiro.filter(r => r.origem === 'Advertência');
-  const intro = { text: 'Advertências primeiro, depois uma ação por dimensão, da mais urgente para a menos urgente.', style: 'pequeno' };
+  const intro = { text: 'Advertências primeiro, depois uma ação por critério, da mais urgente para a menos urgente.', style: 'pequeno' };
   const resto = advertencias.map(a => ({
     table: { widths: [3, '*'], body: [[{ text: '', fillColor: CORES.alerta }, { text: [{ text: `Atenção: ${a.alvo}. `, bold: true }, a.acao, cita(modelo, referenciasDoPasso(modelo, a))], fillColor: CORES.zebra, margin: [8, 6, 6, 6] }]] },
     layout: { hLineWidth: () => 0, vLineWidth: () => 0, paddingLeft: () => 0, paddingRight: () => 0, paddingTop: () => 0, paddingBottom: () => 0 },

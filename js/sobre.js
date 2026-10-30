@@ -9,7 +9,7 @@ import { validarModelo, esforcoGestor } from './validacao.js';
 const DSR_CANVAS = [
   ['Problema de pesquisa', 'Como as Pequenas e Médias Empresas podem avaliar, de forma estruturada, acessível e sistemática, sua prontidão tecnológica, cultural e organizacional antes de investir na adoção de Inteligência Artificial?'],
   ['Classe de problemas', 'Avaliação de prontidão organizacional para adoção tecnológica em organizações de recursos limitados. O artefato é um exemplar desta classe, e não uma solução particular a uma empresa.'],
-  ['Artefato', 'MGP-PME (Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas): um modelo de referência com 6 dimensões e uma instanciação executável com 30 itens, 5 níveis de maturidade e 24 regras prescritivas.'],
+  ['Artefato', 'MGP-PME (Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas): um modelo de referência com 6 critérios e uma instanciação executável com 30 itens, 5 níveis de maturidade e 24 regras prescritivas.'],
   ['Tipo de artefato', 'Combinação de modelo e instanciação, de natureza prescritiva. Não explica por que PMEs adotam ou deixam de adotar IA: orienta decisões concretas de investimento.'],
   ['Requisitos', 'Seis requisitos funcionais e cinco não funcionais, fixados na etapa de definição dos objetivos da solução. São critério de aceitação do artefato: a matriz de rastreabilidade liga cada um a um componente ou a uma decisão arquitetural.'],
   ['Base de conhecimento', 'Revisão de mais de trinta artigos publicados entre 2021 e 2026, em seis eixos temáticos; modelos TOE, TAM e UTAUT; Visão Baseada em Recursos e Capacidades Dinâmicas; modelos de maturidade em estágios; e o ciclo metodológico da DSR (Peffers et al., 2007).'],
@@ -20,17 +20,17 @@ const DSR_CANVAS = [
 ];
 
 const ADRS = [
-  ['ADR-01', 'Agregação não compensatória com teto de gargalo', 'O nível global é o mínimo entre o nível do escore ponderado e o menor nível entre as dimensões críticas.', 'O artefato pode atribuir nível inferior ao que a média sugere, o que exige explicar o teto no relatório.', 'RF03, RF04'],
+  ['ADR-01', 'Agregação não compensatória com teto de gargalo', 'O nível global é o mínimo entre o nível do escore ponderado e o menor nível entre os critérios críticos.', 'O artefato pode atribuir nível inferior ao que a média sugere, o que exige explicar o teto no relatório.', 'RF03, RF04'],
   ['ADR-02', 'Página web estática como única instanciação', 'As cinco âncoras de cada item aparecem como as próprias opções de resposta, o respondente não tem como corromper as fórmulas, e o cálculo fica auditável em um único lugar.', 'A aplicação depende do navegador e do seu armazenamento local, o que torna a exportação do diagnóstico parte obrigatória do fluxo.', 'RNF03, RF02, RF03'],
   ['ADR-03', 'Execução integralmente local, sem servidor e sem transmissão de dados', 'Nenhum dado de resposta deixa o dispositivo do respondente; a página é estática e usa apenas armazenamento local.', 'A pesquisa perde a coleta automática de dados de aplicação: a validação empírica depende de envio voluntário do diagnóstico.', 'RNF03, RNF05'],
   ['ADR-04', 'Parâmetros do modelo externalizados em repositórios', 'R1 (banco de itens), R2 (níveis e faixas) e R3 (base de regras) são dados de entrada das camadas, não lógica.', 'Exige disciplina de versionamento: dois diagnósticos só são comparáveis se produzidos sob a mesma versão do modelo.', 'RF01, RF06'],
-  ['ADR-05', 'D0 pontuada como dimensão crítica, e não como filtro binário de entrada', 'D0 recebe escore, entra na média ponderada e opera como gargalo; a empresa não apta recebe diagnóstico e roteiro em vez de recusa.', 'A distinção entre ser digitalmente capaz e estar pronto para a IA passa a depender da leitura do perfil.', 'RF03, RNF01'],
+  ['ADR-05', 'D0 pontuada como critério crítico, e não como filtro binário de entrada', 'D0 recebe escore, entra na média ponderada e opera como gargalo; a empresa não apta recebe diagnóstico e roteiro em vez de recusa.', 'A distinção entre ser digitalmente capaz e estar pronto para a IA passa a depender da leitura do perfil.', 'RF03, RNF01'],
   ['ADR-06', 'Âncoras comportamentais por item, em vez de escala de concordância', 'Cada um dos 30 itens tem cinco âncoras que descrevem práticas observáveis.', 'O banco de itens fica maior e mais caro de calibrar.', 'RF01, RNF01'],
   ['ADR-07', 'Base de regras determinística, e não recomendação por modelo estatístico', 'Toda recomendação decorre de uma regra explícita, rastreável até a faixa que a disparou.', 'As recomendações não se adaptam a particularidades setoriais além das previstas nas regras transversais.', 'RF06, RNF02'],
 ];
 
 const REQUISITOS = [
-  ['RF01', 'Coleta de dados estruturada'], ['RF02', 'Cálculo de escores por dimensão'], ['RF03', 'Lógica não compensatória (gargalos)'],
+  ['RF01', 'Coleta de dados estruturada'], ['RF02', 'Cálculo de escores por critério'], ['RF03', 'Lógica não compensatória (gargalos)'],
   ['RF04', 'Classificação de maturidade'], ['RF05', 'Geração de painel visual'], ['RF06', 'Emissão de roteiro prescritivo'],
   ['RNF01', 'Usabilidade e linguagem'], ['RNF02', 'Autonomia e autossuficiência'], ['RNF03', 'Custo e acessibilidade tecnológica'],
   ['RNF04', 'Eficiência de tempo'], ['RNF05', 'Privacidade e confidencialidade'],
@@ -52,11 +52,11 @@ export function renderSobre(el, { modelo }) {
   const nomeUC = Object.fromEntries(rt.casos_de_uso.map(u => [u.codigo, u.nome]));
   const rascunhos = modelo.itens.filter(i => i.ancoras_status === 'rascunho').length;
   const criterios = [
-    ['CT-01', 'Trinta itens nas seis dimensões, cada um com cinco âncoras', modelo.itens.length === 30 && modelo.itens.every(i => i.ancoras.length === 5)],
-    ['CT-02', 'Soma dos pesos igual a um e exatamente três dimensões críticas', !erros.some(e => /pesos|críticas/.test(e))],
+    ['CT-01', 'Trinta itens nos seis critérios, cada um com cinco âncoras', modelo.itens.length === 30 && modelo.itens.every(i => i.ancoras.length === 5)],
+    ['CT-02', 'Soma dos pesos igual a um e exatamente três critérios críticos', !erros.some(e => /pesos|crític/.test(e))],
     ['CT-03', 'Níveis e faixas contíguos cobrindo 0 a 100', !erros.some(e => /^(Níveis|Faixas)/.test(e))],
-    ['CT-04', 'Nível atribuído nunca excede o da dimensão crítica de menor escore', null],
-    ['CT-05', 'Ao menos uma regra para cada par dimensão-faixa', !erros.some(e => /regra para/.test(e))],
+    ['CT-04', 'Nível atribuído nunca excede o do critério crítico de menor escore', null],
+    ['CT-05', 'Ao menos uma regra para cada par critério-faixa', !erros.some(e => /regra para/.test(e))],
     ['CT-06', 'Todo RF atendido por componente e exercitado por caso de uso', rt.matriz.filter(m => m.requisito.startsWith('RF')).every(m => m.componentes.length && m.casos_de_uso.length)],
     ['CT-07', `Esforço do gestor entre 20 e 30 minutos (declarado: ${t.min} a ${t.max})`, t.min >= 20 && t.max <= 30],
     ['CT-08', 'Nenhuma resposta deixa o dispositivo do respondente', null],
@@ -66,7 +66,7 @@ export function renderSobre(el, { modelo }) {
     <section class="cartao">
       <p class="etapa-rotulo">Pesquisa Aplicada · PUCPR · Grupo G02 · PBL 4</p>
       <h1>Sobre o MGP-PME</h1>
-      <p class="lead">Instanciação executável do <strong>Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas</strong>, artefato de uma pesquisa conduzida segundo a <em>Design Science Research</em> (Peffers et al., 2007). Modelo em uso: versão <strong>${esc(modelo.versao_modelo)}</strong>, com ${modelo.dimensoes.length} dimensões, ${modelo.itens.length} itens, ${modelo.niveis.length} níveis, ${modelo.regras_dimensao.length + modelo.regras_transversais.length} regras.</p>
+      <p class="lead">Instanciação executável do <strong>Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas</strong>, artefato de uma pesquisa conduzida segundo a <em>Design Science Research</em> (Peffers et al., 2007). Modelo em uso: versão <strong>${esc(modelo.versao_modelo)}</strong>, com ${modelo.dimensoes.length} critérios, ${modelo.itens.length} itens, ${modelo.niveis.length} níveis, ${modelo.regras_dimensao.length + modelo.regras_transversais.length} regras.</p>
       ${rascunhos ? `<p class="aviso aviso-info">${rascunhos} dos ${modelo.itens.length} itens têm âncoras em status <strong>rascunho</strong>: redigidas a partir dos descritores genéricos da escala e aguardando revisão do grupo. Apenas I01, I06 e I16 têm a ancoragem integral publicada no PBL 4.</p>` : ''}
     </section>
 
@@ -82,7 +82,7 @@ export function renderSobre(el, { modelo }) {
         ${CAMADAS.map(c => `<tr><td><strong>${c[0]}</strong></td><td>${esc(c[1])}</td><td><code>${esc(c[2])}</code></td><td>${esc(c[3])}</td></tr>`).join('')}
       </tbody></table>
       <h3>Modelo de referência</h3>
-      <table class="tabela"><thead><tr><th>Dim.</th><th>Nome</th><th class="num">Peso</th><th>Crítica</th><th class="num">Itens</th><th>Referências</th></tr></thead><tbody>
+      <table class="tabela"><thead><tr><th>Crit.</th><th>Nome</th><th class="num">Peso</th><th>Crítico</th><th class="num">Itens</th><th>Referências</th></tr></thead><tbody>
         ${modelo.dimensoes.map(d => `<tr><td><strong>${esc(d.codigo)}</strong></td><td>${esc(d.nome)}</td><td class="num">${num(d.peso, 2)}</td><td>${d.critica ? 'sim' : 'não'}</td><td class="num">${modelo.itens.filter(i => i.dimensao === d.codigo).length}</td><td><small>${esc(citar(modelo, d.referencias))}</small></td></tr>`).join('')}
       </tbody></table>
     </section>
@@ -121,7 +121,7 @@ export function renderSobre(el, { modelo }) {
 
     <section class="cartao">
       <h2>Referências</h2>
-      <p class="nota">Obras citadas no documento de arquitetura (PBL 4, seção 11). As das dimensões e dos itens também aparecem na página inicial.</p>
+      <p class="nota">Obras citadas no documento de arquitetura (PBL 4, seção 11). As dos critérios e dos itens também aparecem na página inicial.</p>
       <ol class="referencias">
         ${[...(modelo.referencias || [])].sort((a, b) => a.autores.localeCompare(b.autores, 'pt-BR')).map(r => `<li>${referenciaCompleta(r)}</li>`).join('')}
       </ol>

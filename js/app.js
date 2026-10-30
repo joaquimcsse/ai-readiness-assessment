@@ -112,7 +112,7 @@ function telaInicio() {
       </div>
       <figure class="lp-visual">
         ${svgExemplo()}
-        <figcaption>Exemplo: pela média, a empresa estaria no nível 3. Mas <strong class="txt-F1">Dados</strong> é crítica e está no nível 2, então o nível atribuído é 2.</figcaption>
+        <figcaption>Exemplo: pela média, a empresa estaria no nível 3. Mas <strong class="txt-F1">Dados</strong> é crítico e está no nível 2, então o nível atribuído é 2.</figcaption>
       </figure>
     </section>
 
@@ -127,19 +127,18 @@ function telaInicio() {
     </section>
 
     <section class="lp-secao">
-      <h2>O que o diagnóstico considera</h2>
-      <p class="lp-intro">Seis dimensões. As ${criticas.length} marcadas como <span class="txt-F1">críticas</span> funcionam como teto: o nível da empresa nunca passa o da mais fraca delas.</p>
+      <h2>Estrutura do Diagnóstico</h2>
+      <p class="lp-intro">A empresa é avaliada nos critérios abaixo. Os ${criticas.length} marcados como <span class="txt-F1">críticos</span> limitam o resultado: o nível final nunca fica acima do nível do critério crítico mais fraco.</p>
       <ul class="lp-dims">
         ${modelo.dimensoes.map(d => `<li class="${d.critica ? 'critica' : ''}">
-          <span class="cod-dim">${esc(d.codigo)}</span>
           <div>
-            <h3>${esc(d.nome)}${d.critica ? ' <span class="lp-tag-critica">crítica</span>' : ''}</h3>
+            <h3>${esc(d.nome)}${d.critica ? ' <span class="lp-tag-critica">crítico</span>' : ''}</h3>
             <p>${esc(d.resumo || d.definicao.split('. ')[0].replace(/\.$/, '') + '.')}</p>
             ${d.referencias?.length ? `<p class="lp-cita">${d.referencias.map(c => `<a href="#ref-${esc(c)}" data-ref="${esc(c)}">${esc(citar(modelo, [c]))}</a>`).join('; ')}</p>` : ''}
           </div>
         </li>`).join('')}
       </ul>
-      <p class="nota">A definição completa de cada dimensão está no <button type="button" class="link" data-acao="guia">Guia</button>.</p>
+      <p class="nota">A definição completa de cada critério está no <button type="button" class="link" data-acao="guia">Guia</button>.</p>
     </section>
 
     ${secaoReferencias()}`;
@@ -176,7 +175,7 @@ function secaoReferencias() {
   if (!refs.length) return '';
   return `<section class="lp-secao lp-refs" aria-labelledby="refs-titulo">
       <h2 id="refs-titulo">Base científica</h2>
-      <p class="lp-intro">As dimensões e as afirmações do questionário vêm de uma revisão de estudos recentes sobre adoção de IA em PMEs, e o instrumento foi construído pelo método Design Science Research. Estas são as obras citadas na página e no questionário.</p>
+      <p class="lp-intro">Os critérios e as afirmações do questionário vêm de uma revisão de estudos recentes sobre adoção de IA em PMEs, e o instrumento foi construído pelo método Design Science Research. Estas são as obras citadas na página e no questionário.</p>
       <ol class="referencias lp-referencias">
         ${refs.map(r => `<li id="ref-${esc(r.chave)}">${referenciaCompleta(r)}</li>`).join('')}
       </ol>
@@ -196,7 +195,7 @@ function svgExemplo() {
       <text class="lp-cod ${f === 'F1' ? 'txt-F1' : ''}" x="${x + larg / 2}" y="${base + 20}" text-anchor="middle">${c}</text>`;
   }).join('');
   const xg = x0 + passo + larg / 2;
-  return `<svg class="grafico-perfil lp-grafico" viewBox="0 0 410 240" role="img" aria-label="Exemplo de perfil: cinco dimensões entre 40 e 75 pontos e a dimensão Dados com 20 pontos, marcada como gargalo. A média ponderada é 50.">
+  return `<svg class="grafico-perfil lp-grafico" viewBox="0 0 410 240" role="img" aria-label="Exemplo de perfil: cinco critérios entre 40 e 75 pontos e o critério Dados com 20 pontos, marcada como gargalo. A média ponderada é 50.">
     ${grade}
     <line class="linha-global" x1="30" x2="400" y1="${y(50)}" y2="${y(50)}"/>
     <text class="rotulo-global" x="${x0 + passo + larg / 2}" y="${y(50) - 8}" text-anchor="middle">média 50</text>

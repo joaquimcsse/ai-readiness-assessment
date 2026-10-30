@@ -52,7 +52,7 @@ function validarCondicao(cond, modelo, caminho, erros) {
   const faixas = modelo.faixas.map(f => f.codigo);
   switch (cond.tipo) {
     case 'faixa':
-      if (!dims.includes(cond.dimensao)) erros.push(`${caminho}: dimensão ${cond.dimensao} inexistente.`);
+      if (!dims.includes(cond.dimensao)) erros.push(`${caminho}: critério ${cond.dimensao} inexistente.`);
       if (!faixas.includes(cond.faixa)) erros.push(`${caminho}: faixa ${cond.faixa} inexistente.`);
       break;
     case 'faixa_global':
@@ -89,9 +89,9 @@ export function validarModelo(modelo) {
 
   // CT-02: dimensões, pesos e criticidade
   const dims = modelo.dimensoes || [];
-  if (dims.length !== 6) erros.push(`Esperadas 6 dimensões, encontradas ${dims.length}.`);
+  if (dims.length !== 6) erros.push(`Esperados 6 critérios, encontrados ${dims.length}.`);
   const codigosDim = dims.map(d => d.codigo);
-  if (new Set(codigosDim).size !== codigosDim.length) erros.push('Códigos de dimensão duplicados.');
+  if (new Set(codigosDim).size !== codigosDim.length) erros.push('Códigos de critério duplicados.');
   let soma = 0;
   for (const d of dims) {
     if (typeof d.peso !== 'number' || Number.isNaN(d.peso) || d.peso < 0 || d.peso > 1) {
@@ -102,7 +102,7 @@ export function validarModelo(modelo) {
   }
   if (Math.abs(soma - 1) > 1e-6) erros.push(`A soma dos pesos deve ser 1 (atual: ${soma.toFixed(4)}).`);
   const criticas = dims.filter(d => d.critica === true);
-  if (criticas.length !== 3) erros.push(`Exatamente 3 dimensões devem ser críticas (atual: ${criticas.length}).`);
+  if (criticas.length !== 3) erros.push(`Exatamente 3 critérios devem ser críticos (atual: ${criticas.length}).`);
 
   // CT-01: 30 itens, cada um com 5 âncoras, distribuídos nas 6 dimensões
   const itens = modelo.itens || [];
@@ -110,7 +110,7 @@ export function validarModelo(modelo) {
   const codigosItem = itens.map(i => i.codigo);
   if (new Set(codigosItem).size !== codigosItem.length) erros.push('Códigos de item duplicados.');
   for (const it of itens) {
-    if (!codigosDim.includes(it.dimensao)) erros.push(`Item ${it.codigo}: dimensão ${it.dimensao} inexistente.`);
+    if (!codigosDim.includes(it.dimensao)) erros.push(`Item ${it.codigo}: critério ${it.dimensao} inexistente.`);
     if (!it.assertiva || !String(it.assertiva).trim()) erros.push(`Item ${it.codigo}: assertiva vazia.`);
     if (!Array.isArray(it.ancoras) || it.ancoras.length !== 5) {
       erros.push(`Item ${it.codigo}: deve ter exatamente 5 âncoras.`);
@@ -120,7 +120,7 @@ export function validarModelo(modelo) {
   }
   for (const d of codigosDim) {
     const n = itens.filter(i => i.dimensao === d).length;
-    if (n < 4 || n > 6) erros.push(`Dimensão ${d} deve agrupar de 4 a 6 itens (atual: ${n}).`);
+    if (n < 4 || n > 6) erros.push(`Critério ${d} deve agrupar de 4 a 6 itens (atual: ${n}).`);
   }
 
   // Referências: toda citação de dimensão ou de item aponta para uma obra do
@@ -132,7 +132,7 @@ export function validarModelo(modelo) {
     if (!Array.isArray(lista)) { erros.push(`${onde}: referências devem ser uma lista de chaves.`); return; }
     lista.filter(c => !chavesRef.includes(c)).forEach(c => erros.push(`${onde}: referência ${c} inexistente.`));
   };
-  dims.forEach(d => conferirCitacoes(d.referencias, `Dimensão ${d.codigo}`));
+  dims.forEach(d => conferirCitacoes(d.referencias, `Critério ${d.codigo}`));
   for (const it of itens.filter(i => i.fundamento)) {
     if (!String(it.fundamento.texto || '').trim()) erros.push(`Item ${it.codigo}: fundamento sem texto.`);
     if (!it.fundamento.referencias?.length) erros.push(`Item ${it.codigo}: fundamento sem referência.`);
@@ -185,7 +185,7 @@ export function validarModelo(modelo) {
     for (const e of ESFORCOS) {
       if (typeof p.bonus_esforco?.[e] !== 'number') erros.push(`Bônus de esforço ${e} ausente.`);
     }
-    if (typeof p.bonus_dimensao_critica !== 'number') erros.push('Bônus de dimensão crítica ausente.');
+    if (typeof p.bonus_dimensao_critica !== 'number') erros.push('Bônus de critério crítico ausente.');
     if (typeof p.peso_advertencia !== 'number') erros.push('Peso de advertência ausente.');
   }
 

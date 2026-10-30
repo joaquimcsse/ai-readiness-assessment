@@ -31,7 +31,7 @@
     {
       "codigo": "D3", "nome": "Pessoas e cultura", "peso": 0.20, "critica": true,
       "resumo": "Equipe capacitada, com responsável e aberta à mudança.",
-      "definicao": "Letramento em IA, existência de capacitação sistemática, atribuição de responsabilidades e abertura organizacional à mudança, dimensão em que a literatura identifica lacuna crônica entre percepção positiva e capacitação real.",
+      "definicao": "Letramento em IA, existência de capacitação sistemática, atribuição de responsabilidades e abertura organizacional à mudança, critério em que a literatura identifica lacuna crônica entre percepção positiva e capacitação real.",
       "referencias": ["monisha2026", "mandicak2025", "priyadarsini2025"]
     },
     {
@@ -398,11 +398,11 @@
   ],
   "faixas": [
     { "codigo": "F1", "nome": "Crítica", "limite_inferior": 0, "limite_superior": 40,
-      "leitura": "A dimensão é um gargalo ativo: bloqueia o avanço global e exige ação antes de qualquer investimento em IA." },
+      "leitura": "O critério é um gargalo ativo: bloqueia o avanço global e exige ação antes de qualquer investimento em IA." },
     { "codigo": "F2", "nome": "Em evolução", "limite_inferior": 40, "limite_superior": 70,
-      "leitura": "A dimensão sustenta um piloto delimitado, mas ainda não sustenta operação rotineira sem acompanhamento." },
+      "leitura": "O critério sustenta um piloto delimitado, mas ainda não sustenta operação rotineira sem acompanhamento." },
     { "codigo": "F3", "nome": "Consolidada", "limite_inferior": 70, "limite_superior": 100,
-      "leitura": "A dimensão não restringe a adoção; o esforço desloca-se para manutenção e ampliação do que já funciona." }
+      "leitura": "O critério não restringe a adoção; o esforço desloca-se para manutenção e ampliação do que já funciona." }
   ],
   "esforcos": [
     { "codigo": "Baixo", "significado": "Até 40 horas de trabalho interno, sem desembolso relevante." },
@@ -477,17 +477,17 @@
       "acao": "Suspender a seleção de ferramentas de IA e tratar a digitalização básica como projeto antecedente: sem registro digital da operação não há insumo para nenhuma aplicação.",
       "referencias": ["kalleparambil2025"] },
     { "codigo": "RT-02", "esforco": "Alto", "horizonte": "Longo",
-      "condicao_texto": "Duas ou mais dimensões críticas na faixa Crítica",
+      "condicao_texto": "Dois ou mais critérios críticos na faixa Crítica",
       "condicao": { "tipo": "criticas_em_faixa", "faixa": "F1", "minimo": 2 },
       "acao": "Reenquadrar a iniciativa como programa de reestruturação interna, e não como projeto de IA, com marcos de reavaliação a cada trimestre.",
       "referencias": ["altawara2026a"] },
     { "codigo": "RT-03", "esforco": "Baixo", "horizonte": "Curto",
-      "condicao_texto": "Escore global na faixa Consolidada com alguma dimensão crítica na faixa Crítica",
+      "condicao_texto": "Escore global na faixa Consolidada com algum critério crítico na faixa Crítica",
       "condicao": { "tipo": "todas", "condicoes": [
         { "tipo": "faixa_global", "faixa": "F3" },
         { "tipo": "criticas_em_faixa", "faixa": "F1", "minimo": 1 }
       ] },
-      "acao": "Comunicar explicitamente no relatório que o escore ponderado superestima a prontidão real e que o nível atribuído foi limitado pela dimensão crítica de menor escore.",
+      "acao": "Comunicar explicitamente no relatório que o escore ponderado superestima a prontidão real e que o nível atribuído foi limitado pelo critério crítico de menor escore.",
       "referencias": ["kalleparambil2025"] },
     { "codigo": "RT-04", "esforco": "Médio", "horizonte": "Curto",
       "condicao_texto": "D1 na faixa Crítica e D2 fora da faixa Crítica",
@@ -529,10 +529,10 @@
     { "etapa": 4, "raia": "Gestor da PME", "atividade": "Responder os itens de D2 e D3", "uc": "UC-02", "min": 5, "max": 7, "dimensoes": ["D2", "D3"] },
     { "etapa": 5, "raia": "Gestor da PME", "atividade": "Responder os itens de D4 e D5", "uc": "UC-02", "min": 4, "max": 5, "dimensoes": ["D4", "D5"] },
     { "etapa": 6, "raia": "Ferramenta MGP-PME", "atividade": "Verificar completude das respostas", "uc": "UC-05", "min": 0, "max": 0 },
-    { "etapa": 7, "raia": "Ferramenta MGP-PME", "atividade": "Normalizar respostas e calcular escores por dimensão", "uc": "UC-04", "min": 0, "max": 0 },
+    { "etapa": 7, "raia": "Ferramenta MGP-PME", "atividade": "Normalizar respostas e calcular escores por critério", "uc": "UC-04", "min": 0, "max": 0 },
     { "etapa": 8, "raia": "Ferramenta MGP-PME", "atividade": "Aplicar o teto de gargalo e classificar a maturidade", "uc": "UC-05", "min": 0, "max": 0 },
     { "etapa": 9, "raia": "Ferramenta MGP-PME", "atividade": "Selecionar regras e priorizar o roteiro", "uc": "UC-05", "min": 0, "max": 0 },
-    { "etapa": 10, "raia": "Gestor da PME", "atividade": "Ler o perfil por dimensão e o nível atribuído", "uc": "UC-06", "min": 2, "max": 3 },
+    { "etapa": 10, "raia": "Gestor da PME", "atividade": "Ler o perfil por critério e o nível atribuído", "uc": "UC-06", "min": 2, "max": 3 },
     { "etapa": 11, "raia": "Gestor da PME", "atividade": "Ler o roteiro priorizado", "uc": "UC-07", "min": 2, "max": 3 },
     { "etapa": 12, "raia": "Gestor da PME", "atividade": "Exportar e arquivar o diagnóstico", "uc": "UC-08", "min": 0, "max": 1 }
   ],
