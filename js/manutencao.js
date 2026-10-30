@@ -73,6 +73,16 @@ export function renderManutencao(el, { modelo }) {
   const base = modelo;
   let rascunho = carregarRascunhoModelo();
   if (!rascunho || rascunho.versao_modelo !== base.versao_modelo) rascunho = structuredClone(base);
+  // Rascunho salvo antes da versão 1.2.0 da página: traz as referências (que não
+  // entram no cálculo) do modelo publicado, sem perder o que foi editado.
+  if (!rascunho.referencias && base.referencias) {
+    rascunho.referencias = structuredClone(base.referencias);
+    rascunho.dimensoes.forEach(d => { d.referencias = structuredClone(base.dimensoes.find(b => b.codigo === d.codigo)?.referencias ?? []); });
+    rascunho.itens.forEach(i => {
+      const fundamento = base.itens.find(b => b.codigo === i.codigo)?.fundamento;
+      if (fundamento) i.fundamento = structuredClone(fundamento);
+    });
+  }
   let aba = 'dimensoes';
   let filtroDim = 'D0';
 

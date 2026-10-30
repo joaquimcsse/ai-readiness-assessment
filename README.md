@@ -50,7 +50,13 @@ node --test                      # ou: npm test   (Node 20+, sem dependências)
 | `js/coleta.js` | C1 — ficha (CP-03), formulário (CP-01), completude (CP-02), guia (CP-14) |
 | `js/nucleo.js` | C2–C4 — funções puras CP-04 a CP-10 e o fluxo de UC-05 |
 | `js/painel.js` | C5 — perfil SVG (CP-11), relatório (CP-12), Canvas de Prontidão, comparação (UC-09) |
-| `js/estado.js` | armazenamento local, máquina de estados, exportação/importação (CP-13) |
+| `js/estado.js` | armazenamento local, máquina de estados, arquivamento e importação (CP-13) |
+| `js/exportacao.js` | diálogo "Exportar diagnóstico": relatório em PDF e planilha (UC-08) |
+| `js/relatorio-pdf.js` | relatório em PDF (CP-12), no padrão dos relatórios de checklist e de WIT do cop |
+| `js/planilha.js` | planilha de dados .xlsx: gera e lê de volta para a comparação (CP-13, UC-09) |
+| `js/bibliotecas.js` | carrega pdfmake e exceljs de `vendor/` só na hora de exportar ou importar |
+| `js/tema.js` | tema claro (padrão) ou escuro, escolhido no rodapé |
+| `vendor/` | pdfmake 0.3.11 e exceljs 4.4.0, licença MIT, copiados sem alteração |
 | `js/app.js` | roteamento entre telas e orquestração do processo de aplicação |
 | `js/manutencao.js` | UC-10/11/12 — editar parâmetros, validar e gerar novo `dados.json` |
 | `js/avaliacao.js` | UC-13 — protocolo de avaliação por especialistas (V3), exportado em JSON |
@@ -97,6 +103,55 @@ continuam comparáveis. As mudanças estão todas na página:
 O relatório desta etapa sai de `make` (pipeline em `pipeline/`, PDF em
 `entregas/Melhorias-MGP-PME.pdf`), que mede esta versão contra a base `b9668a4`.
 Requer `node`, `git`, `pdflatex`, `firefox` e `pdftoppm`; `make deps` confere.
+
+## Versão 1.2.0 do artefato (referências e revisão de UX)
+
+O modelo continua na versão 1.0.0: pesos, limites, itens e regras não mudaram, só
+ganharam referências, que não entram no cálculo.
+
+- **Referências bibliográficas** em `dados.json` (bloco `referencias`, 22 obras do PBL 4,
+  seção 11, cada uma com DOI conferido no PDF do artigo). Dimensões e regras apontam para
+  elas por chave, e `validarModelo` recusa chave inexistente.
+- **Início:** cada dimensão mostra a citação curta e a seção "Base científica" traz a
+  referência completa. No questionário, no Guia e no Sobre, só a citação.
+- **Questionário:** cinco afirmações, no máximo uma por dimensão (I07, I11, I16, I23,
+  I28), mostram uma linha "Na literatura" com o achado de um estudo.
+- **Resultado:** cada passo do roteiro e cada advertência citam os estudos da regra que
+  os gerou, e a explicação do teto de gargalo cita a sua fundamentação
+  (`fundamentacao.teto_de_gargalo`). A seção 5, "Referências", lista só as obras citadas
+  naquele diagnóstico.
+- **UX:** visual plano, sem cartões com sombra, filetes laterais, brilhos, degradês e
+  rótulos em caixa alta. Notificação no topo, para não cobrir a barra de progresso. Barra
+  de progresso mais baixa no celular. No celular, o Histórico vira lista com as ações à
+  vista, e "excluir" fica afastado de "exportar". Também há uma dica de por que
+  "Comparar" está desativado. Na impressão, os números de seção aparecem e a seta de
+  recolher some.
+
+## Versão 1.3.0 do artefato (exportação, paleta e tema)
+
+O modelo continua na versão 1.0.0.
+
+- **Exportar** abre um diálogo com dois arquivos, gerados no navegador:
+  - **Relatório em PDF**, no desenho dos relatórios de checklist e de WIT do cop:
+    - capa com faixa escura, dados da aplicação e quadro de resultado;
+    - a partir da página 2, cabeçalho e rodapé corridos, com "Página X de Y";
+    - seções numeradas: perfil, nível, roteiro, Canvas, respostas e referências;
+    - a planilha de dados vai anexada dentro do PDF.
+  - **Planilha de dados (.xlsx)**, com as abas Resumo, Respostas, Dimensões, Roteiro e
+    Referências. A aba oculta `_mgp` leva a aplicação completa, e é ela que o Histórico
+    importa para comparar reaplicações.
+  - O primeiro download arquiva a aplicação.
+- **JSON:** nada mais gera JSON para o gestor. Arquivos `.json` exportados antes continuam
+  importáveis.
+- **Bibliotecas:** pdfmake e exceljs ficam em `vendor/` e são carregadas só ao exportar ou
+  importar. A CSP continua `script-src 'self'`.
+- **Paleta neutra:**
+  - cinzas, um único tom de ardósia (`#39495C`) e um único vermelho de alerta (`#A43B3B`),
+    os mesmos valores do tema dos relatórios do cop;
+  - as faixas viram uma rampa da mesma matiz;
+  - todos os pares texto/fundo passam no AA, nos dois temas.
+- **Tema:** claro por padrão. O escuro, também neutro, é escolhido no rodapé e fica salvo
+  no navegador.
 
 ## Decisões de implementação a revisar
 

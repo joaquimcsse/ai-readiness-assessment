@@ -221,7 +221,7 @@ export function excluirAplicacao(id) {
 
 // ------------------------------------------------------------ arquivos
 export function baixarArquivo(nome, conteudo, tipo = 'application/json') {
-  const blob = new Blob([conteudo], { type: `${tipo};charset=utf-8` });
+  const blob = conteudo instanceof Blob ? conteudo : new Blob([conteudo], { type: `${tipo};charset=utf-8` });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -232,36 +232,30 @@ export function baixarArquivo(nome, conteudo, tipo = 'application/json') {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-function slug(texto) {
-  return String(texto || 'empresa')
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase().slice(0, 40) || 'empresa';
-}
-
-// UC-08 / CP-13 — exportar diagnóstico. Leva a aplicação a Arquivada.
-export function exportarDiagnostico(app) {
+// UC-08 / CP-13 — exportar diagnóstico. O arquivo (relatório em PDF ou planilha)
+// é gerado em exportacao.js; aqui fica só o efeito no estado: a primeira
+// exportação bem-sucedida leva a aplicação a Arquivada.
+export function arquivarExportacao(app) {
   if (!app.diagnostico) throw new Error('Não há diagnóstico para exportar.');
   app.exportadaEm = new Date().toISOString();
-  mudarEstado(app, ESTADOS.ARQUIVADA);
+  if (app.estado !== ESTADOS.ARQUIVADA) mudarEstado(app, ESTADOS.ARQUIVADA);
   salvar();
-  const pacote = {
-    formato: FORMATO_EXPORTACAO,
-    versaoFormato: 1,
-    exportadoEm: app.exportadaEm,
-    aplicacao: app,
-  };
-  baixarArquivo(`mgp-pme_${slug(app.empresa.identificador)}_${app.data}.json`, JSON.stringify(pacote, null, 2));
   return app;
 }
 
-// UC-09 — importar um diagnóstico exportado anteriormente, para comparação.
-export function importarDiagnostico(texto) {
-  let pacote;
+// Lê o pacote de um arquivo exportado antes da versão 1.3.0 (JSON). Só existe
+// para que diagnósticos antigos continuem importáveis; nada mais gera JSON.
+export function pacoteDeJson(texto) {
   try {
-    pacote = JSON.parse(texto);
+    return JSON.parse(texto);
   } catch {
-    throw new Error('O arquivo não é um JSON válido.');
+    throw new Error('O arquivo não é uma planilha nem um diagnóstico exportado pelo MGP-PME.');
   }
+}
+
+// UC-09 — importar um diagnóstico exportado anteriormente, para comparação.
+// Recebe o pacote já lido da planilha (planilha.js) ou de um JSON antigo.
+export function importarDiagnostico(pacote) {
   if (pacote?.formato !== FORMATO_EXPORTACAO || !pacote.aplicacao?.diagnostico) {
     throw new Error('O arquivo não é um diagnóstico exportado pelo MGP-PME.');
   }

@@ -85,3 +85,23 @@ test('CT-08: nenhum módulo usa canal de saída de dados', () => {
   assert.ok(!/<link[^>]+href=["']https?:/i.test(html), 'index.html carrega recurso externo');
   assert.match(html, /Content-Security-Policy/, 'CSP restringe conexões');
 });
+
+// ---------------------------------------------------------------- referências (1.2.0)
+test('referências: toda obra tem DOI e toda citação aponta para uma obra', () => {
+  assert.ok(modelo.referencias.length >= 20);
+  for (const r of modelo.referencias) {
+    for (const campo of ['chave', 'citacao', 'autores', 'ano', 'titulo', 'veiculo', 'doi']) assert.ok(String(r[campo] || '').trim(), `${r.chave}: ${campo}`);
+    assert.match(r.doi, /^10\.\d{4,}\//);
+  }
+  for (const d of modelo.dimensoes) assert.ok(d.referencias.length >= 1, d.codigo);
+  for (const r of [...modelo.regras_dimensao, ...modelo.regras_transversais]) assert.ok(r.referencias.length >= 1, r.codigo);
+  const quebrado = structuredClone(modelo);
+  quebrado.regras_dimensao[0].referencias = ['inexistente2099'];
+  assert.ok(validarModelo(quebrado).some(e => /inexistente2099/.test(e)));
+});
+
+test('referências: a citação aparece só em poucas afirmações', () => {
+  const comFundamento = modelo.itens.filter(i => i.fundamento);
+  assert.ok(comFundamento.length >= 3 && comFundamento.length <= 6, `${comFundamento.length} itens com fundamento`);
+  assert.equal(new Set(comFundamento.map(i => i.dimensao)).size, comFundamento.length, 'no máximo um por dimensão');
+});

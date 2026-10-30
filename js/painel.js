@@ -5,7 +5,7 @@
 // Ordem de leitura deliberada: perfil (evidência) → nível (conclusão) →
 // roteiro (o que fazer a respeito).
 
-import { esc, num, dataBR, nomeNivel, nomeFaixa, nomeDimensao, rotuloPorte } from './ui.js';
+import { esc, num, dataBR, nomeNivel, nomeFaixa, nomeDimensao, rotuloPorte, citar, obterReferencia, referenciaCompleta } from './ui.js';
 import { ESTADOS } from './estado.js';
 import { periodicidade } from './nucleo.js';
 
@@ -97,7 +97,11 @@ function dimensoesQueDevemMudar(diag, modelo) {
   return modelo.dimensoes.map(d => d.codigo).filter(d => alvo.has(d));
 }
 
-export function htmlCanvas(app, modelo) {
+// As oito células do Canvas como dados (título, conteúdo, origem). O conteúdo é
+// uma lista de blocos — { p: trechos }, { ol | ul: [trechos] }, { escores: [...] }
+// ou { vazio: texto } — e cada trecho é um texto ou { t, forte, faixa }. O mesmo
+// conteúdo vira HTML na tela (htmlCanvas) e tabela no PDF (relatorio-pdf.js).
+export function celulasCanvas(app, modelo) {
   const diag = app.diagnostico;
   const agora = diag.roteiro.filter(r => r.horizonte === 'Curto');
   const depois = diag.roteiro.filter(r => r.horizonte !== 'Curto');
@@ -105,31 +109,59 @@ export function htmlCanvas(app, modelo) {
   const resp = app.responsaveis || {};
   const comResp = diag.roteiro.filter(r => (resp[r.regra] || '').trim());
   const criticasF1 = diag.porDimensao.filter(d => d.critica && d.faixa === 'F1').map(d => d.codigo);
+  const forte = t => ({ t, forte: true });
+  const gargalos = diag.gargalos.map(g => `${g} ${nomeDimensao(modelo, g)}`).join(', ');
 
-  const celula = (titulo, conteudo, origem) => `<div class="canvas-celula">
-    <h4>${esc(titulo)}</h4><div class="canvas-conteudo">${conteudo}</div><p class="canvas-origem">${esc(origem)}</p></div>`;
+  return [
+    { titulo: 'Onde estamos', origem: 'Escore de cada dimensão, de 0 a 100',
+      blocos: [{ escores: diag.porDimensao.map(d => ({ rotulo: `${d.codigo} ${d.nome}`, valor: num(d.escore), faixa: d.faixa })) }] },
+    { titulo: 'O que nos trava', origem: 'Dimensão crítica de menor escore',
+      blocos: diag.tetoAtuou
+        ? [{ p: [forte(gargalos), ` limita o nível atribuído em ${diag.nivelCompensatorio - diag.nivelFinal} nível(is): de ${diag.nivelCompensatorio} para ${diag.nivelFinal}.`] },
+           ...(criticasF1.length ? [{ p: [`Dimensões críticas na faixa Crítica: ${criticasF1.join(', ')}.`] }] : [])]
+        : [{ p: ['Nenhuma dimensão crítica limita o nível atribuído.'] },
+           ...(criticasF1.length ? [{ p: [`Ainda assim, ${criticasF1.join(', ')} está na faixa Crítica.`] }] : [])] },
+    { titulo: 'Em que nível estamos', origem: 'Nível de maturidade atribuído',
+      blocos: [{ p: [forte(`Nível ${diag.nivelFinal}: ${nomeNivel(modelo, diag.nivelFinal)}.`), ` ${modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao ?? ''}`] }] },
+    { titulo: 'O que a média esconde', origem: 'Média ponderada contra nível atribuído',
+      blocos: [{ p: [diag.tetoAtuou
+        ? `A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} (${nomeNivel(modelo, diag.nivelCompensatorio)}). O nível efetivamente atribuído é ${diag.nivelFinal}: dimensões fortes não compensam a base que falta.`
+        : `Nada: o nível pela média ponderada (${num(diag.escoreGlobal)}) e o nível atribuído coincidem.`] }] },
+    { titulo: 'O que fazer agora', origem: 'Roteiro priorizado',
+      blocos: agora.length ? [{ ol: agora.map(r => [r.acao, ` (esforço ${r.esforco.toLowerCase()})`]) }] : [{ p: ['Sem ações de curto prazo neste roteiro.'] }] },
+    { titulo: 'O que fazer depois', origem: 'Roteiro priorizado',
+      blocos: depois.length ? [{ ol: depois.map(r => [r.acao, ` (${r.horizonte.toLowerCase()} prazo)`]) }] : [{ p: ['Nenhuma ação de médio ou longo prazo.'] }] },
+    { titulo: 'Quem responde por cada passo', origem: 'Preenchido pela própria PME',
+      blocos: comResp.length ? [{ ul: comResp.map(r => [forte(resp[r.regra]), `: ${r.acao}`]) }]
+        : [{ vazio: 'A preencher pela empresa: indique um responsável para cada passo na tabela do roteiro.' }] },
+    { titulo: 'Como saberemos que avançamos', origem: 'Ciclo de reaplicação',
+      blocos: [{ p: ['Próxima aplicação: ', forte(dataBR(diag.dataReaplicacao)), '.'] },
+        mudar.length ? { p: ['Espera-se mudança de faixa em: ', ...mudar.flatMap((d, k) => [k ? ', ' : '', forte(d)]), '.'] } : { p: ['Espera-se manutenção das faixas atuais.'] }] },
+  ];
+}
 
+function htmlTrechos(trechos) {
+  return trechos.map(x => {
+    if (typeof x === 'string') return esc(x);
+    const t = esc(x.t);
+    if (x.faixa) return `<strong class="txt-${esc(x.faixa)}">${t}</strong>`;
+    return x.forte ? `<strong>${t}</strong>` : t;
+  }).join('');
+}
+
+function htmlBloco(b) {
+  if (b.p) return `<p>${htmlTrechos(b.p)}</p>`;
+  if (b.ol) return `<ol>${b.ol.map(li => `<li>${htmlTrechos(li)}</li>`).join('')}</ol>`;
+  if (b.ul) return `<ul>${b.ul.map(li => `<li>${htmlTrechos(li)}</li>`).join('')}</ul>`;
+  if (b.escores) return `<ul class="mini-escores">${b.escores.map(e => `<li><span>${esc(e.rotulo)}</span><strong class="txt-${esc(e.faixa)}">${esc(e.valor)}</strong></li>`).join('')}</ul>`;
+  if (b.vazio) return `<p class="vazio">${esc(b.vazio)}</p>`;
+  return '';
+}
+
+export function htmlCanvas(app, modelo) {
   return `<div class="canvas-grade">
-    ${celula('Onde estamos', `<ul class="mini-escores">${diag.porDimensao.map(d => `<li><span>${esc(d.codigo)} ${esc(d.nome)}</span><strong class="txt-${esc(d.faixa)}">${num(d.escore)}</strong></li>`).join('')}</ul>`, 'Escore de cada dimensão, de 0 a 100')}
-    ${celula('O que nos trava', diag.tetoAtuou
-      ? `<p><strong>${diag.gargalos.map(g => `${esc(g)} ${esc(nomeDimensao(modelo, g))}`).join(', ')}</strong> limita o nível atribuído em ${diag.nivelCompensatorio - diag.nivelFinal} nível(is): de ${diag.nivelCompensatorio} para ${diag.nivelFinal}.</p>${criticasF1.length ? `<p>Dimensões críticas na faixa Crítica: ${criticasF1.map(esc).join(', ')}.</p>` : ''}`
-      : `<p>Nenhuma dimensão crítica limita o nível atribuído.</p>${criticasF1.length ? `<p>Ainda assim, ${criticasF1.map(esc).join(', ')} está na faixa Crítica.</p>` : ''}`, 'Dimensão crítica de menor escore')}
-    ${celula('Em que nível estamos', `<p><strong>Nível ${diag.nivelFinal}: ${esc(nomeNivel(modelo, diag.nivelFinal))}.</strong> ${esc(modelo.niveis.find(n => n.numero === diag.nivelFinal)?.interpretacao)}</p>`, 'Nível de maturidade atribuído')}
-    ${celula('O que a média esconde', diag.tetoAtuou
-      ? `<p>A média ponderada (${num(diag.escoreGlobal)}) indicaria o nível ${diag.nivelCompensatorio} (${esc(nomeNivel(modelo, diag.nivelCompensatorio))}). O nível efetivamente atribuído é ${diag.nivelFinal}: dimensões fortes não compensam a base que falta.</p>`
-      : `<p>Nada: o nível pela média ponderada (${num(diag.escoreGlobal)}) e o nível atribuído coincidem.</p>`, 'Média ponderada contra nível atribuído')}
-    ${celula('O que fazer agora', agora.length
-      ? `<ol>${agora.map(r => `<li>${esc(r.acao)} <small>(esforço ${esc(r.esforco.toLowerCase())})</small></li>`).join('')}</ol>`
-      : '<p>Sem ações de curto prazo neste roteiro.</p>', 'Roteiro priorizado')}
-    ${celula('O que fazer depois', depois.length
-      ? `<ol>${depois.map(r => `<li>${esc(r.acao)} <small>(${esc(r.horizonte.toLowerCase())} prazo)</small></li>`).join('')}</ol>`
-      : '<p>Nenhuma ação de médio ou longo prazo.</p>', 'Roteiro priorizado')}
-    ${celula('Quem responde por cada passo', comResp.length
-      ? `<ul>${comResp.map(r => `<li><strong>${esc(resp[r.regra])}</strong>: ${esc(r.acao)}</li>`).join('')}</ul>`
-      : '<p class="vazio">A preencher pela empresa: indique um responsável para cada passo na tabela do roteiro.</p>', 'Preenchido pela própria PME')}
-    ${celula('Como saberemos que avançamos', `<p>Próxima aplicação: <strong>${dataBR(diag.dataReaplicacao)}</strong>.</p>${mudar.length
-      ? `<p>Espera-se mudança de faixa em: ${mudar.map(d => `<strong>${esc(d)}</strong>`).join(', ')}.</p>`
-      : '<p>Espera-se manutenção das faixas atuais.</p>'}`, 'Ciclo de reaplicação')}
+    ${celulasCanvas(app, modelo).map(c => `<div class="canvas-celula">
+      <h4>${esc(c.titulo)}</h4><div class="canvas-conteudo">${c.blocos.map(htmlBloco).join('')}</div><p class="canvas-origem">${esc(c.origem)}</p></div>`).join('')}
   </div>`;
 }
 
@@ -150,10 +182,30 @@ export function primeiroPasso(diag) {
   return diag.roteiro[0];
 }
 
-const ehGargalo = (diag, r) => r.origem === 'Ação' && diag.gargalos.includes(r.dimensao);
+// Fundamentação do roteiro: cada passo cita os estudos da regra que o gerou.
+// A consulta é feita no modelo carregado (mesma versão do diagnóstico), então
+// também vale para diagnósticos importados de arquivo.
+export function referenciasDoPasso(modelo, r) {
+  const regra = [...(modelo.regras_dimensao || []), ...(modelo.regras_transversais || [])].find(x => x.codigo === r.regra);
+  return regra?.referencias || [];
+}
+
+function citacao(modelo, chaves) {
+  return chaves.length ? ` <cite class="rel-cita">(${esc(citar(modelo, chaves))})</cite>` : '';
+}
+
+// Lista das obras citadas neste relatório, na ordem alfabética dos autores.
+export function referenciasDoRelatorio(diag, modelo) {
+  const chaves = new Set(diag.roteiro.flatMap(r => referenciasDoPasso(modelo, r)));
+  if (diag.tetoAtuou) (modelo.fundamentacao?.teto_de_gargalo || []).forEach(c => chaves.add(c));
+  return [...chaves].map(c => obterReferencia(modelo, c)).filter(Boolean)
+    .sort((a, b) => a.autores.localeCompare(b.autores, 'pt-BR'));
+}
+
+export const ehGargalo = (diag, r) => r.origem === 'Ação' && diag.gargalos.includes(r.dimensao);
 const seloGargalo = '<span class="selo selo-critica">gargalo</span>';
 
-function alvoLegivel(r, modelo) {
+export function alvoLegivel(r, modelo) {
   return r.dimensao ? `${r.dimensao} ${nomeDimensao(modelo, r.dimensao)}` : `Atenção: ${r.alvo}`;
 }
 
@@ -168,7 +220,7 @@ function htmlResumo(app, modelo) {
   const diag = app.diagnostico;
   const primeiro = primeiroPasso(diag);
   const seguintes = diag.roteiro.filter(r => r !== primeiro).slice(0, 2);
-  const passo = r => `<li>${ehGargalo(diag, r) ? `${seloGargalo} ` : ''}<strong>${esc(alvoLegivel(r, modelo))}.</strong> ${esc(r.acao)} <small>(${esc(r.horizonte.toLowerCase())} prazo)</small></li>`;
+  const passo = r => `<li>${ehGargalo(diag, r) ? `${seloGargalo} ` : ''}<strong>${esc(alvoLegivel(r, modelo))}.</strong> ${esc(r.acao)}${citacao(modelo, referenciasDoPasso(modelo, r))} <small>(${esc(r.horizonte.toLowerCase())} prazo)</small></li>`;
   return `<section class="rel-resumo" aria-labelledby="resumo-titulo">
     <h2 id="resumo-titulo" class="sr">Resumo do diagnóstico</h2>
     <div class="resumo-grade">
@@ -199,12 +251,13 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
   const arquivada = app.estado === ESTADOS.ARQUIVADA;
   const resp = app.responsaveis || {};
   const advertencias = diag.roteiro.filter(r => r.origem === 'Advertência');
+  const refs = referenciasDoRelatorio(diag, modelo);
 
   // R4: um único próximo passo em destaque; o resto fica em "Mais opções".
   const opcoes = [
     !arquivada && ['corrigir', 'Corrigir respostas'],
     temAnteriores && ['comparar', 'Comparar com outra aplicação'],
-    ['imprimir', 'Imprimir ou salvar PDF'],
+    ['imprimir', 'Imprimir'],
     arquivada && ['exportar', 'Exportar novamente'],
   ].filter(Boolean);
   const principal = arquivada ? ['reaplicar', 'Reaplicar o instrumento'] : ['exportar', 'Exportar e arquivar'];
@@ -244,14 +297,14 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
       <div class="seta" aria-hidden="true">→</div>
       <div class="lado lado-final"><span class="lado-rot">Nível atribuído (teto de gargalo)</span><strong>nível ${diag.nivelFinal}</strong><span>${esc(nomeNivel(modelo, diag.nivelFinal))}</span></div>
     </div>
-    <p class="aviso aviso-alerta"><strong>Por que o nível é menor do que a média?</strong> ${esc(diag.observacoes.find(o => o.codigo === 'FA-01')?.texto ?? '')}</p>`
+    <p class="aviso aviso-info"><strong>Por que o nível é menor do que a média?</strong> ${esc(diag.observacoes.find(o => o.codigo === 'FA-01')?.texto ?? '')} A literatura trata a base digital e os dados como pré-requisito da prontidão para IA, e não como um fator que outro ponto forte compense.${citacao(modelo, modelo.fundamentacao?.teto_de_gargalo || [])}</p>`
     : `<p class="nota">Escore global ponderado: <strong>${num(diag.escoreGlobal)}</strong>. O nível atribuído coincide com o da média ponderada.</p>`}
     ${diag.observacoes.filter(o => o.codigo === 'FA-02').map(o => `<p class="aviso aviso-ok">${esc(o.texto)}</p>`).join('')}`;
 
   const roteiro = `
     <p class="rel-intro">Advertências primeiro, depois uma ação por dimensão, da mais urgente para a menos urgente. Indique um responsável para cada passo.</p>
     ${advertencias.length ? `<div class="advertencias">${advertencias.map(a => `
-      <div class="advertencia"><div><strong>Atenção: ${esc(a.alvo)}.</strong> ${esc(a.acao)}</div></div>`).join('')}</div>` : ''}
+      <div class="advertencia"><div><strong>Atenção: ${esc(a.alvo)}.</strong> ${esc(a.acao)}${citacao(modelo, referenciasDoPasso(modelo, a))}</div></div>`).join('')}</div>` : ''}
     <div class="filtro-horizonte nao-imprimir" role="group" aria-label="Filtrar por horizonte">
       <span>Filtrar por horizonte:</span>
       ${['Todos', 'Curto', 'Médio', 'Longo'].map((h, k) => `<button type="button" class="chip ${k === 0 ? 'ativo' : ''}" data-horizonte="${h}" aria-pressed="${k === 0}">${h}</button>`).join('')}
@@ -262,7 +315,7 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
         <tr data-h="${esc(r.horizonte)}" class="${r.origem === 'Advertência' ? 'linha-adv' : ''}">
           <td class="num">${r.ordem}</td>
           <td>${r.dimensao ? `<strong>${esc(r.dimensao)}</strong> ${esc(nomeDimensao(modelo, r.dimensao))}<br><small>${esc(nomeFaixa(modelo, r.faixa))}</small>` : '<strong>Atenção</strong>'}</td>
-          <td class="col-acao">${ehGargalo(diag, r) ? `${seloGargalo} ` : ''}${esc(r.acao)}</td>
+          <td class="col-acao">${ehGargalo(diag, r) ? `${seloGargalo} ` : ''}${esc(r.acao)}${citacao(modelo, referenciasDoPasso(modelo, r))}</td>
           <td>${esc(r.esforco)}</td>
           <td>${esc(r.horizonte)}</td>
           <td><input class="input-resp" data-regra="${esc(r.regra)}" value="${esc(resp[r.regra] || '')}" placeholder="Nome" aria-label="Responsável pelo passo ${r.ordem}" ${arquivada ? 'readonly' : ''}><span class="so-impressao">${esc(resp[r.regra] || '')}</span></td>
@@ -287,7 +340,7 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
         <button type="button" class="btn btn-pri" data-acao="${principal[0]}">${principal[1]}</button>
       </div>
     </div>
-    ${!arquivada ? '<p class="aviso aviso-alerta nao-imprimir"><strong>Próximo passo: exporte o arquivo.</strong> O diagnóstico fica só neste navegador, e é o arquivo que permite comparar com a próxima aplicação.</p>' : ''}
+    ${!arquivada ? '<p class="aviso aviso-info nao-imprimir"><strong>Próximo passo: exporte o diagnóstico.</strong> Ele fica só neste navegador. Baixe o relatório em PDF para ler e compartilhar, e guarde a planilha: é ela que permite comparar com a próxima aplicação.</p>' : ''}
 
     <article class="relatorio" id="relatorio">
       <header class="rel-cab">
@@ -311,6 +364,9 @@ export function htmlRelatorio(app, modelo, { temAnteriores = false } = {}) {
       ${secao(2, 'Por que este nível', diag.tetoAtuou ? `Média ${num(diag.escoreGlobal)} indicaria nível ${diag.nivelCompensatorio}; o teto de gargalo leva a ${diag.nivelFinal}` : `Média ponderada ${num(diag.escoreGlobal)}`, nivel)}
       ${secao(3, 'Roteiro completo', `${diag.totalAcoes} passos, ${advertencias.length} advertência(s)`, roteiro)}
       ${secao(4, 'Canvas de Prontidão', 'O diagnóstico resumido em oito perguntas', `<div data-canvas>${htmlCanvas(app, modelo)}</div>`, 'quebra-antes')}
+      ${refs.length ? secao(5, 'Referências', `${refs.length} estudo(s) que fundamentam as ações e a explicação do nível`, `
+        <p class="rel-intro">As ações do roteiro e a regra do teto de gargalo se apoiam nestes estudos sobre adoção de IA em PMEs. A lista muda conforme o diagnóstico: só entram as obras citadas acima.</p>
+        <ol class="referencias">${refs.map(r => `<li>${referenciaCompleta(r)}</li>`).join('')}</ol>`) : ''}
 
       <footer class="rel-rodape">
         <p><strong>Próxima aplicação sugerida: ${dataBR(diag.dataReaplicacao)}</strong> (nível ${diag.nivelFinal}: a cada ${reap?.meses} meses). Antecipe se: ${esc(reap?.gatilho)}</p>

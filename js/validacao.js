@@ -123,6 +123,25 @@ export function validarModelo(modelo) {
     if (n < 4 || n > 6) erros.push(`Dimensão ${d} deve agrupar de 4 a 6 itens (atual: ${n}).`);
   }
 
+  // Referências: toda citação de dimensão ou de item aponta para uma obra do
+  // bloco "referencias". Não entram no cálculo; só sustentam o texto da tela.
+  const chavesRef = (modelo.referencias || []).map(r => r.chave);
+  if (new Set(chavesRef).size !== chavesRef.length) erros.push('Chaves de referência duplicadas.');
+  const conferirCitacoes = (lista, onde) => {
+    if (lista === undefined) return;
+    if (!Array.isArray(lista)) { erros.push(`${onde}: referências devem ser uma lista de chaves.`); return; }
+    lista.filter(c => !chavesRef.includes(c)).forEach(c => erros.push(`${onde}: referência ${c} inexistente.`));
+  };
+  dims.forEach(d => conferirCitacoes(d.referencias, `Dimensão ${d.codigo}`));
+  for (const it of itens.filter(i => i.fundamento)) {
+    if (!String(it.fundamento.texto || '').trim()) erros.push(`Item ${it.codigo}: fundamento sem texto.`);
+    if (!it.fundamento.referencias?.length) erros.push(`Item ${it.codigo}: fundamento sem referência.`);
+    conferirCitacoes(it.fundamento.referencias, `Item ${it.codigo}`);
+  }
+  [...(modelo.regras_dimensao || []), ...(modelo.regras_transversais || [])]
+    .forEach(r => conferirCitacoes(r.referencias, `Regra ${r.codigo}`));
+  Object.entries(modelo.fundamentacao || {}).forEach(([k, v]) => conferirCitacoes(v, `Fundamentação ${k}`));
+
   // CT-03: níveis e faixas contíguos cobrindo 0 a 100
   const niveis = modelo.niveis || [];
   if (niveis.length !== 5) erros.push(`Esperados 5 níveis, encontrados ${niveis.length}.`);
