@@ -2,7 +2,7 @@
 // DSR Canvas (seção 9), decisões arquiteturais (Tabela 6), arquitetura em
 // camadas, matriz de rastreabilidade (Tabela 20) e referências.
 
-import { esc, num } from './ui.js';
+import { esc, num, citar, referenciaCompleta } from './ui.js';
 import { RASTREABILIDADE } from './rastreabilidade.js';
 import { validarModelo, esforcoGestor } from './validacao.js';
 
@@ -83,7 +83,7 @@ export function renderSobre(el, { modelo }) {
       </tbody></table>
       <h3>Modelo de referência</h3>
       <table class="tabela"><thead><tr><th>Dim.</th><th>Nome</th><th class="num">Peso</th><th>Crítica</th><th class="num">Itens</th><th>Referências</th></tr></thead><tbody>
-        ${modelo.dimensoes.map(d => `<tr><td><strong>${esc(d.codigo)}</strong></td><td>${esc(d.nome)}</td><td class="num">${num(d.peso, 2)}</td><td>${d.critica ? 'sim' : 'não'}</td><td class="num">${modelo.itens.filter(i => i.dimensao === d.codigo).length}</td><td><small>${esc(d.referencias || '')}</small></td></tr>`).join('')}
+        ${modelo.dimensoes.map(d => `<tr><td><strong>${esc(d.codigo)}</strong></td><td>${esc(d.nome)}</td><td class="num">${num(d.peso, 2)}</td><td>${d.critica ? 'sim' : 'não'}</td><td class="num">${modelo.itens.filter(i => i.dimensao === d.codigo).length}</td><td><small>${esc(citar(modelo, d.referencias))}</small></td></tr>`).join('')}
       </tbody></table>
     </section>
 
@@ -120,15 +120,10 @@ export function renderSobre(el, { modelo }) {
     </section>
 
     <section class="cartao">
-      <h2>Referências centrais</h2>
-      <ul class="referencias">
-        <li>Peffers, K., Tuunanen, T., Rothenberger, M.A., Chatterjee, S., 2007. A design science research methodology for information systems research. Journal of Management Information Systems 24, 45-77.</li>
-        <li>Al Tawara, A., Gide, E., El Khodr, M., 2026a. Development of an AI-business transformation framework for Australian SMEs. ITHET 2026, IEEE.</li>
-        <li>Kalleparambil, S.A., Akoum, M., 2025. AI organisational readiness for SMEs: a tailored model for AI adoption success. Journal of Information &amp; Knowledge Management 24.</li>
-        <li>Monisha, Kaur, N., Kaur, J., Budhiraja, K., Aggarwal, I., 2026. Integrating agile management practices and organizational culture to enable sustainable AI adoption. CCICT 2026.</li>
-        <li>Khan, A.N., Mehmood, K., Soomro, M.A., 2024. Knowledge management-based artificial intelligence (AI) adoption in construction SMEs. IEEE Transactions on Engineering Management 71.</li>
-        <li>Sharma, S., Singh, G., Islam, N., Dhir, A., 2024. Why do SMEs adopt artificial intelligence-based chatbots? IEEE Transactions on Engineering Management 71.</li>
-      </ul>
-      <p class="nota">A lista completa está no documento de arquitetura (PBL 4, seção 11).</p>
+      <h2>Referências</h2>
+      <p class="nota">Obras citadas no documento de arquitetura (PBL 4, seção 11). As das dimensões e dos itens também aparecem na página inicial.</p>
+      <ol class="referencias">
+        ${[...(modelo.referencias || [])].sort((a, b) => a.autores.localeCompare(b.autores, 'pt-BR')).map(r => `<li>${referenciaCompleta(r)}</li>`).join('')}
+      </ol>
     </section>`;
 }

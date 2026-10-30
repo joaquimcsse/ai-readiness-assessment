@@ -2,7 +2,7 @@
 // itens com as âncoras como opções de resposta (CP-01, ADR-06), validador
 // de completude (CP-02) e guia de aplicação embutido (CP-14).
 
-import { esc, dataBR, PORTES, num } from './ui.js';
+import { esc, dataBR, PORTES, num, citar } from './ui.js';
 import { ESTADOS, contarRespondidas, hojeISO } from './estado.js';
 import { itensPendentes } from './nucleo.js';
 import { esforcoGestor } from './validacao.js';
@@ -130,8 +130,8 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
           <div class="pendentes" data-pendentes></div>
         </div>
         <div class="acoes">
-          <button type="button" class="btn btn-sec" data-acao="anterior">← Bloco anterior</button>
-          <button type="button" class="btn btn-sec" data-acao="proximo">Próximo bloco →</button>
+          <button type="button" class="btn btn-sec" data-acao="anterior">← <span class="so-largo">Bloco anterior</span><span class="so-estreito">Anterior</span></button>
+          <button type="button" class="btn btn-sec" data-acao="proximo"><span class="so-largo">Próximo bloco</span><span class="so-estreito">Próximo</span> →</button>
           <button type="button" class="btn btn-sec" data-acao="gerar" data-gerar-rodape>Gerar diagnóstico</button>
         </div>
       </footer>
@@ -142,8 +142,9 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
   function cartaoItem(item) {
     const valor = app.respostas[item.codigo];
     return `
-      <fieldset class="item ${valor ? 'respondido' : ''}" id="item-${esc(item.codigo)}" data-item="${esc(item.codigo)}">
+      <fieldset class="item ${valor ? 'respondido' : ''}" id="item-${esc(item.codigo)}" data-item="${esc(item.codigo)}"${item.fundamento ? ` aria-describedby="fund-${esc(item.codigo)}"` : ''}>
         <legend><span class="cod">${esc(item.codigo)}</span> ${esc(item.assertiva)}</legend>
+        ${item.fundamento ? `<p class="item-fonte" id="fund-${esc(item.codigo)}"><span class="item-fonte-rot">Na literatura</span> ${esc(item.fundamento.texto)} <cite>(${esc(citar(modelo, item.fundamento.referencias))})</cite></p>` : ''}
         <div class="opcoes">
           ${item.ancoras.map((ancora, k) => {
             const v = k + 1;
@@ -166,7 +167,7 @@ export function renderQuestionario(el, { modelo, app, blocoInicial = 0, aoRespon
       return `<section class="dimensao-bloco">
         <header class="dim-cab">
           <h2><span class="cod-dim">${esc(d.codigo)}</span> ${esc(d.nome)} ${d.critica ? '<span class="selo selo-critica" title="Dimensão crítica: limita o nível global (teto de gargalo)">crítica</span>' : ''}</h2>
-          <p>${esc(d.definicao)}</p>
+          <p>${esc(d.definicao)}${d.referencias?.length ? ` <cite class="dim-cita">(${esc(citar(modelo, d.referencias))})</cite>` : ''}</p>
         </header>
         ${itens.map(cartaoItem).join('')}
       </section>`;
@@ -286,7 +287,7 @@ export function renderGuia(el, modelo) {
         <li>Responda os ${modelo.itens.length} itens, em três blocos. Para cada um, escolha a descrição que <strong>corresponde ao que a empresa faz hoje</strong>.</li>
         <li>Se a prática existe só no papel, ou depende de uma pessoa, escolha a opção correspondente, e não a ideal.</li>
         <li>Na dúvida entre duas opções, escolha a mais baixa: o diagnóstico só ajuda se for realista.</li>
-        <li>Gere o diagnóstico, leia o perfil, o nível e o roteiro, e <strong>exporte o arquivo</strong> para guardar.</li>
+        <li>Gere o diagnóstico, leia o perfil, o nível e o roteiro, e <strong>exporte o relatório em PDF e a planilha de dados</strong> para guardar.</li>
       </ol>
     </details>
 
@@ -303,7 +304,8 @@ export function renderGuia(el, modelo) {
     </details>
 
     <details><summary>As seis dimensões</summary>
-      <dl>${modelo.dimensoes.map(d => `<dt>${esc(d.codigo)} · ${esc(d.nome)}, peso ${num(d.peso * 100, 0)}%${d.critica ? ', crítica' : ''}</dt><dd>${esc(d.definicao)}</dd>`).join('')}</dl>
+      <dl>${modelo.dimensoes.map(d => `<dt>${esc(d.codigo)} · ${esc(d.nome)}, peso ${num(d.peso * 100, 0)}%${d.critica ? ', crítica' : ''}</dt><dd>${esc(d.definicao)}${d.referencias?.length ? ` <cite>(${esc(citar(modelo, d.referencias))})</cite>` : ''}</dd>`).join('')}</dl>
+      <p class="nota">As referências completas estão na página inicial, em “Base científica”.</p>
     </details>
 
     <details><summary>Como ler o resultado</summary>
@@ -321,11 +323,11 @@ export function renderGuia(el, modelo) {
       <table class="tabela compacta"><thead><tr><th>Nível</th><th>Periodicidade</th><th>Antecipe se…</th></tr></thead><tbody>
         ${modelo.reaplicacao.map(r => `<tr><td>${r.niveis.join(' e ')}</td><td>a cada ${r.meses} meses</td><td>${esc(r.gatilho)}</td></tr>`).join('')}
       </tbody></table>
-      <p>Guarde o arquivo exportado: na reaplicação, você poderá importá-lo e comparar a evolução.</p>
+      <p>Guarde a planilha exportada (.xlsx): na reaplicação, importe-a no Histórico para comparar a evolução.</p>
     </details>
 
     <details><summary>Privacidade</summary>
-      <p>Tudo roda neste navegador. Nenhuma resposta é enviada a servidor algum, nem ao grupo de pesquisa. Os dados ficam no armazenamento local do navegador e no arquivo que você exportar.</p>
+      <p>Tudo roda neste navegador. Nenhuma resposta é enviada a servidor algum, nem ao grupo de pesquisa. Os dados ficam no armazenamento local do navegador e nos arquivos que você exportar (relatório em PDF e planilha).</p>
       <p><strong>Atenção:</strong> limpar os dados do navegador, usar janela anônima ou trocar de dispositivo apaga a aplicação. Por isso a exportação faz parte do processo.</p>
     </details>`;
 }

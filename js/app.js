@@ -11,7 +11,10 @@ import { renderDiagnostico, renderComparacao } from './painel.js';
 import { renderManutencao } from './manutencao.js';
 import { renderAvaliacao } from './avaliacao.js';
 import { renderSobre } from './sobre.js';
-import { esc, dataBR, nomeNivel, notificar, lerArquivo, rotuloPorte } from './ui.js';
+import { esc, dataBR, nomeNivel, notificar, lerArquivo, lerArquivoBinario, rotuloPorte, citar, obterReferencia, referenciaCompleta } from './ui.js';
+import { abrirExportacao } from './exportacao.js';
+import { carregarExcelJS } from './bibliotecas.js';
+import { lerPlanilha } from './planilha.js';
 
 const URL_DADOS = 'dados.json';
 const principal = document.getElementById('conteudo');
@@ -132,11 +135,14 @@ function telaInicio() {
           <div>
             <h3>${esc(d.nome)}${d.critica ? ' <span class="lp-tag-critica">crítica</span>' : ''}</h3>
             <p>${esc(d.resumo || d.definicao.split('. ')[0].replace(/\.$/, '') + '.')}</p>
+            ${d.referencias?.length ? `<p class="lp-cita">${d.referencias.map(c => `<a href="#ref-${esc(c)}" data-ref="${esc(c)}">${esc(citar(modelo, [c]))}</a>`).join('; ')}</p>` : ''}
           </div>
         </li>`).join('')}
       </ul>
       <p class="nota">A definição completa de cada dimensão está no <button type="button" class="link" data-acao="guia">Guia</button>.</p>
-    </section>`;
+    </section>
+
+    ${secaoReferencias()}`;
 
   el.querySelector('[data-acao="guia"]').addEventListener('click', abrirGuia);
   el.querySelector('[data-acao="nova"]')?.addEventListener('click', () => {
@@ -147,6 +153,34 @@ function telaInicio() {
     ir('#/ficha');
   });
   el.querySelector('[data-acao="demo"]').addEventListener('click', carregarDemonstracao);
+  // as citações levam à referência completa; o roteamento usa o hash, então rola sem navegar
+  el.addEventListener('click', ev => {
+    const a = ev.target.closest('a[data-ref]');
+    if (!a) return;
+    ev.preventDefault();
+    const alvo = document.getElementById(`ref-${a.dataset.ref}`);
+    alvo?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    alvo?.classList.add('ref-destaque');
+    setTimeout(() => alvo?.classList.remove('ref-destaque'), 1600);
+  });
+}
+
+// Referências completas das obras citadas nas dimensões e nos itens, mais o
+// método (DSR). Nas demais telas aparecem só como citação.
+function secaoReferencias() {
+  const chaves = new Set(['peffers2007']);
+  modelo.dimensoes.forEach(d => (d.referencias || []).forEach(c => chaves.add(c)));
+  modelo.itens.forEach(i => (i.fundamento?.referencias || []).forEach(c => chaves.add(c)));
+  const refs = [...chaves].map(c => obterReferencia(modelo, c)).filter(Boolean)
+    .sort((a, b) => a.autores.localeCompare(b.autores, 'pt-BR'));
+  if (!refs.length) return '';
+  return `<section class="lp-secao lp-refs" aria-labelledby="refs-titulo">
+      <h2 id="refs-titulo">Base científica</h2>
+      <p class="lp-intro">As dimensões e as afirmações do questionário vêm de uma revisão de estudos recentes sobre adoção de IA em PMEs, e o instrumento foi construído pelo método Design Science Research. Estas são as obras citadas na página e no questionário.</p>
+      <ol class="referencias lp-referencias">
+        ${refs.map(r => `<li id="ref-${esc(r.chave)}">${referenciaCompleta(r)}</li>`).join('')}
+      </ol>
+    </section>`;
 }
 
 // Ilustração da página inicial: perfil de exemplo em colunas, com o gargalo
@@ -248,11 +282,14 @@ function telaDiagnostico(id) {
     modelo,
     app,
     temAnteriores: outras.length > 0,
-    aoExportar: () => {
-      estado.exportarDiagnostico(app);
-      notificar('Diagnóstico exportado. A aplicação foi arquivada.');
-      telaDiagnostico(id);
-    },
+    aoExportar: () => abrirExportacao({
+      app,
+      modelo,
+      aoFechar: exportou => {
+        if (exportou) notificar('Diagnóstico exportado. A aplicação foi arquivada.');
+        telaDiagnostico(id);
+      },
+    }),
     aoCorrigir: () => { estado.definirAtual(app.id); ir('#/questionario'); },
     aoReaplicar: () => {
       estado.iniciarAplicacao({ ...app.empresa, respondente: app.respondente, data: estado.hojeISO() }, modelo.versao_modelo, app.id);
@@ -278,20 +315,21 @@ function telaHistorico() {
       <h1>Histórico de aplicações</h1>
       <p class="lead">Aplicações guardadas neste navegador e diagnósticos importados de arquivo. Selecione duas para comparar a evolução. Só são comparáveis diagnósticos da mesma versão do modelo.</p>
       <div class="acoes acoes-esq">
-        <label class="btn btn-sec">Importar diagnóstico exportado (.json)<input type="file" accept="application/json,.json" data-acao="importar" multiple hidden></label>
-        <button type="button" class="btn btn-pri" data-acao="comparar" disabled>Comparar selecionadas</button>
+        <label class="btn btn-sec">Importar planilha exportada (.xlsx)<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.json" data-acao="importar" multiple hidden></label>
+        <button type="button" class="btn btn-pri" data-acao="comparar" disabled aria-describedby="dica-comparar">Comparar selecionadas</button>
       </div>
+      <p class="nota dica-comparar" id="dica-comparar">Marque duas aplicações diagnosticadas na lista para comparar.</p>
     </section>
     <section class="cartao">
       ${apps.length ? `<table class="tabela tabela-historico">
         <thead><tr><th><span class="sr">Selecionar</span></th><th>Empresa</th><th>Data</th><th>Estado</th><th class="num">Nível</th><th>Modelo</th><th></th></tr></thead>
         <tbody>${apps.map(a => `<tr class="${atual?.id === a.id ? 'linha-atual' : ''}">
-          <td>${a.diagnostico ? `<input type="checkbox" data-sel="${esc(a.id)}" aria-label="Selecionar ${esc(a.empresa.identificador)} de ${dataBR(a.data)}">` : ''}</td>
-          <td><strong>${esc(a.empresa.identificador)}</strong><br><small>${esc(a.empresa.setor)} · ${esc(rotuloPorte(a.empresa.porte))}${a.origem === 'importada' ? ' · importada' : ''}${a.anterior ? ' · reaplicação' : ''}</small></td>
-          <td>${dataBR(a.data)}</td>
-          <td><span class="selo selo-estado">${esc(a.estado)}</span>${atual?.id === a.id ? '<br><small>atual</small>' : ''}</td>
-          <td class="num">${a.diagnostico ? `<strong>${a.diagnostico.nivelFinal}</strong> <small>${esc(nomeNivel(modelo, a.diagnostico.nivelFinal))}</small>` : `${estado.contarRespondidas(a)}/${modelo.itens.length}`}</td>
-          <td>${esc(a.diagnostico?.versaoModelo || a.versaoModelo)}</td>
+          <td class="col-sel">${a.diagnostico ? `<input type="checkbox" data-sel="${esc(a.id)}" aria-label="Selecionar ${esc(a.empresa.identificador)} de ${dataBR(a.data)}">` : ''}</td>
+          <td class="col-empresa"><strong>${esc(a.empresa.identificador)}</strong><br><small>${esc(a.empresa.setor)} · ${esc(rotuloPorte(a.empresa.porte))}${a.origem === 'importada' ? ' · importada' : ''}${a.anterior ? ' · reaplicação' : ''}</small></td>
+          <td data-rotulo="Data">${dataBR(a.data)}</td>
+          <td data-rotulo="Estado"><span class="selo selo-estado">${esc(a.estado)}</span>${atual?.id === a.id ? '<br><small>atual</small>' : ''}</td>
+          <td class="num" data-rotulo="Nível">${a.diagnostico ? `<strong>${a.diagnostico.nivelFinal}</strong> <small>${esc(nomeNivel(modelo, a.diagnostico.nivelFinal))}</small>` : `${estado.contarRespondidas(a)}/${modelo.itens.length}`}</td>
+          <td data-rotulo="Modelo">${esc(a.diagnostico?.versaoModelo || a.versaoModelo)}</td>
           <td class="acoes-linha">
             ${a.diagnostico ? `<a class="link" href="#/diagnostico/${esc(a.id)}">abrir</a> <button type="button" class="link" data-exp="${esc(a.id)}">exportar</button>` : `<button type="button" class="link" data-cont="${esc(a.id)}">continuar</button>`}
             <button type="button" class="link perigo" data-del="${esc(a.id)}">excluir</button>
@@ -313,12 +351,13 @@ function telaHistorico() {
       const sel = selecionados();
       if (sel.length > 2) { ev.target.checked = false; notificar('Selecione apenas duas aplicações.'); }
       btnComparar.disabled = selecionados().length !== 2;
+      el.querySelector('#dica-comparar').hidden = !btnComparar.disabled;
     }
     if (ev.target.dataset.acao === 'importar') {
       let ok = 0;
       for (const arq of ev.target.files) {
         try {
-          const { jaExistia } = estado.importarDiagnostico(await lerArquivo(arq));
+          const { jaExistia } = estado.importarDiagnostico(await lerPacote(arq));
           if (!jaExistia) ok++;
           else notificar(`${arq.name}: diagnóstico já estava no histórico.`);
         } catch (e) {
@@ -332,13 +371,19 @@ function telaHistorico() {
     const b = ev.target.closest('button');
     if (!b) return;
     if (b.dataset.acao === 'comparar') { const [x, y] = selecionados(); ir(`#/comparar/${x}/${y}`); }
-    if (b.dataset.exp) { estado.exportarDiagnostico(estado.obterAplicacao(b.dataset.exp)); notificar('Diagnóstico exportado.'); telaHistorico(); }
+    if (b.dataset.exp) abrirExportacao({ app: estado.obterAplicacao(b.dataset.exp), modelo, aoFechar: () => telaHistorico() });
     if (b.dataset.cont) { estado.definirAtual(b.dataset.cont); ir('#/questionario'); }
     if (b.dataset.del && confirm('Excluir esta aplicação deste navegador? Se ela não foi exportada, não poderá ser recuperada.')) {
       estado.excluirAplicacao(b.dataset.del);
       telaHistorico();
     }
   });
+}
+
+// Planilha exportada (a partir da versão 1.3.0) ou JSON de versões anteriores.
+async function lerPacote(arquivo) {
+  if (/\.json$/i.test(arquivo.name)) return estado.pacoteDeJson(await lerArquivo(arquivo));
+  return lerPlanilha(await lerArquivoBinario(arquivo), await carregarExcelJS());
 }
 
 function telaComparar(idA, idB) {

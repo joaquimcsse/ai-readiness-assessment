@@ -14,37 +14,37 @@
       "codigo": "D0", "nome": "Capacidade digital básica", "peso": 0.15, "critica": true,
       "resumo": "Processos registrados em sistemas e boa conectividade.",
       "definicao": "Grau de digitalização dos processos, sistemas de gestão em uso e conectividade. É tratada como condição de entrada, e não como eixo paralelo, incorporando a distinção teórica entre ser digitalmente capaz e estar pronto para a IA.",
-      "referencias": "Al Tawara et al. (2026a); Kalleparambil e Akoum (2025)"
+      "referencias": ["altawara2026a", "kalleparambil2025"]
     },
     {
       "codigo": "D1", "nome": "Dados", "peso": 0.18, "critica": true,
       "resumo": "Dados disponíveis, confiáveis e integrados.",
       "definicao": "Disponibilidade, qualidade, estruturação, integração e propriedade dos dados operacionais, respondendo à constatação recorrente de que muitas PMEs operam com dados fragmentados ou incompletos.",
-      "referencias": "Al Tawara et al. (2026a); Han et al. (2023); Rananga e Venter (2025)"
+      "referencias": ["altawara2026a", "han2023", "rananga2025"]
     },
     {
       "codigo": "D2", "nome": "Estratégia e processos", "peso": 0.18, "critica": false,
       "resumo": "Problema claro, patrocínio e investimento reservado.",
       "definicao": "Clareza quanto ao problema de negócio a ser endereçado, patrocínio da liderança, capacidade de investimento e horizonte de retorno esperado.",
-      "referencias": "Sharma et al. (2024); Rahman et al. (2026); Permana e Murniati (2026)"
+      "referencias": ["sharma2024", "rahman2026", "permana2026"]
     },
     {
       "codigo": "D3", "nome": "Pessoas e cultura", "peso": 0.20, "critica": true,
       "resumo": "Equipe capacitada, com responsável e aberta à mudança.",
       "definicao": "Letramento em IA, existência de capacitação sistemática, atribuição de responsabilidades e abertura organizacional à mudança, dimensão em que a literatura identifica lacuna crônica entre percepção positiva e capacitação real.",
-      "referencias": "Monisha et al. (2026); Mandičák et al. (2025); Priyadarsini e Bashir (2025)"
+      "referencias": ["monisha2026", "mandicak2025", "priyadarsini2025"]
     },
     {
       "codigo": "D4", "nome": "Governança, ética e conformidade", "peso": 0.15, "critica": false,
       "resumo": "Regras de uso, controle de acesso e proteção de dados.",
       "definicao": "Políticas de uso, controle de acesso, supervisão humana sobre decisões de alto risco e conformidade com a legislação de proteção de dados, tratada como recurso estratégico e não apenas como custo de conformidade.",
-      "referencias": "Deák e Szabó (2026); Bacon e Menon (2025); Amarasuriya e Abston (2026)"
+      "referencias": ["deak2026", "bacon2025", "amarasuriya2026"]
     },
     {
       "codigo": "D5", "nome": "Ecossistema e ambiente", "peso": 0.14, "critica": false,
       "resumo": "Pressão de mercado, clientes e fornecedores capazes.",
       "definicao": "Pressão competitiva percebida, exigências de clientes e parceiros, e disponibilidade de fornecedores e intermediários capazes de sustentar a solução, reconhecendo que a prontidão isolada da PME é insuficiente.",
-      "referencias": "Gunawan et al. (2026); Angelina et al. (2025); Emon et al. (2026)"
+      "referencias": ["gunawan2026", "angelina2025", "emon2026"]
     }
   ],
   "itens": [
@@ -117,6 +117,7 @@
     {
       "codigo": "I07", "dimensao": "D1", "ancoras_status": "rascunho",
       "assertiva": "Os dados de sistemas diferentes conversam entre si sem retrabalho manual",
+      "fundamento": { "texto": "Dados fragmentados e sem integração entre sistemas aparecem entre as barreiras que mais limitam o uso de IA em PMEs.", "referencias": ["altawara2026a"] },
       "ancoras": [
         "Os mesmos dados são redigitados em cada sistema ou planilha.",
         "Há cópias manuais periódicas entre sistemas, feitas por uma pessoa específica.",
@@ -161,6 +162,7 @@
     {
       "codigo": "I11", "dimensao": "D2", "ancoras_status": "rascunho",
       "assertiva": "A liderança patrocina ativamente a iniciativa, alocando tempo e decisão",
+      "fundamento": { "texto": "Em PMEs, o apoio ativo da alta gestão, com recursos e autoridade, está associado à adoção de soluções de IA.", "referencias": ["sharma2024"] },
       "ancoras": [
         "A liderança não se envolveu nem foi consultada sobre o tema.",
         "A liderança aprova em princípio, mas não dedica tempo nem toma decisões.",
@@ -216,6 +218,7 @@
     {
       "codigo": "I16", "dimensao": "D3", "ancoras_status": "PBL4",
       "assertiva": "Existe capacitação sistemática, e não apenas aprendizado por conta própria",
+      "fundamento": { "texto": "Cursos direcionados e treinamento prático são apontados como decisivos para que gestores consigam implantar IA.", "referencias": ["mandicak2025"] },
       "ancoras": [
         "Não há qualquer ação de capacitação.",
         "O aprendizado ocorre por iniciativa individual, sem apoio da empresa.",
@@ -293,6 +296,7 @@
     {
       "codigo": "I23", "dimensao": "D4", "ancoras_status": "rascunho",
       "assertiva": "Decisões de maior impacto apoiadas por IA passam por revisão humana",
+      "fundamento": { "texto": "Recomenda-se manter com pessoas a decisão final de alto impacto, para evitar erros por viés ou por confiança excessiva no algoritmo.", "referencias": ["amarasuriya2026"] },
       "ancoras": [
         "Não se pensou em revisar o que sai de ferramentas automatizadas.",
         "Revisa-se quando alguém desconfia do resultado.",
@@ -348,6 +352,7 @@
     {
       "codigo": "I28", "dimensao": "D5", "ancoras_status": "rascunho",
       "assertiva": "Existem fornecedores ou parceiros capazes de sustentar a solução após a entrega",
+      "fundamento": { "texto": "A IA em PMEs não prospera isolada: depende de uma rede de parceiros, intermediários e estruturas de apoio.", "referencias": ["gunawan2026"] },
       "ancoras": [
         "A empresa não conhece fornecedores que poderiam sustentar uma solução.",
         "Conhece um ou outro nome, sem avaliação de capacidade.",
@@ -411,76 +416,100 @@
   ],
   "regras_dimensao": [
     { "codigo": "RD-D0-F1", "dimensao": "D0", "faixa": "F1", "esforco": "Alto", "horizonte": "Médio",
-      "acao": "Digitalizar o registro dos processos operacionais principais em um sistema de gestão único antes de iniciar qualquer projeto de IA." },
+      "acao": "Digitalizar o registro dos processos operacionais principais em um sistema de gestão único antes de iniciar qualquer projeto de IA.",
+      "referencias": ["kalleparambil2025"] },
     { "codigo": "RD-D0-F2", "dimensao": "D0", "faixa": "F2", "esforco": "Médio", "horizonte": "Curto",
-      "acao": "Fechar as lacunas de cobertura do sistema de gestão e habilitar a extração autônoma de dados em formato aberto, sem depender do fornecedor." },
+      "acao": "Fechar as lacunas de cobertura do sistema de gestão e habilitar a extração autônoma de dados em formato aberto, sem depender do fornecedor.",
+      "referencias": ["altawara2026a"] },
     { "codigo": "RD-D0-F3", "dimensao": "D0", "faixa": "F3", "esforco": "Baixo", "horizonte": "Curto",
-      "acao": "Formalizar o suporte e a redundância da infraestrutura, preservando a extração autônoma como capacidade permanente da equipe." },
+      "acao": "Formalizar o suporte e a redundância da infraestrutura, preservando a extração autônoma como capacidade permanente da equipe.",
+      "referencias": ["kalleparambil2025"] },
     { "codigo": "RD-D1-F1", "dimensao": "D1", "faixa": "F1", "esforco": "Alto", "horizonte": "Médio",
-      "acao": "Consolidar um inventário único das fontes de dados operacionais e corrigir duplicidades e campos obrigatórios vazios nos cadastros mestres." },
+      "acao": "Consolidar um inventário único das fontes de dados operacionais e corrigir duplicidades e campos obrigatórios vazios nos cadastros mestres.",
+      "referencias": ["altawara2026a"] },
     { "codigo": "RD-D1-F2", "dimensao": "D1", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
-      "acao": "Integrar as fontes que ainda exigem consolidação manual e instituir indicadores de qualidade de dados com responsável designado." },
+      "acao": "Integrar as fontes que ainda exigem consolidação manual e instituir indicadores de qualidade de dados com responsável designado.",
+      "referencias": ["altawara2026a"] },
     { "codigo": "RD-D1-F3", "dimensao": "D1", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
-      "acao": "Estender a retenção e a documentação do histórico e revisar periodicamente as regras de qualidade já instituídas." },
+      "acao": "Estender a retenção e a documentação do histórico e revisar periodicamente as regras de qualidade já instituídas.",
+      "referencias": ["altawara2026a"] },
     { "codigo": "RD-D2-F1", "dimensao": "D2", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
-      "acao": "Delimitar um único problema de negócio com meta quantificada, responsável e prazo, substituindo o interesse genérico em IA por um escopo verificável." },
+      "acao": "Delimitar um único problema de negócio com meta quantificada, responsável e prazo, substituindo o interesse genérico em IA por um escopo verificável.",
+      "referencias": ["varunkrishna2026"] },
     { "codigo": "RD-D2-F2", "dimensao": "D2", "faixa": "F2", "esforco": "Médio", "horizonte": "Curto",
-      "acao": "Reservar orçamento formal para o período e explicitar as premissas de retorno, com prazo compatível com o horizonte do projeto." },
+      "acao": "Reservar orçamento formal para o período e explicitar as premissas de retorno, com prazo compatível com o horizonte do projeto.",
+      "referencias": ["sharma2024", "permana2026"] },
     { "codigo": "RD-D2-F3", "dimensao": "D2", "faixa": "F3", "esforco": "Médio", "horizonte": "Médio",
-      "acao": "Constituir uma carteira de problemas priorizada por valor esperado e viabilidade, revisada periodicamente pela direção." },
+      "acao": "Constituir uma carteira de problemas priorizada por valor esperado e viabilidade, revisada periodicamente pela direção.",
+      "referencias": ["cimino2025"] },
     { "codigo": "RD-D3-F1", "dimensao": "D3", "faixa": "F1", "esforco": "Médio", "horizonte": "Curto",
-      "acao": "Realizar letramento básico em IA para liderança e equipe operacional antes de selecionar ferramenta, tratando expectativas irreais como risco de projeto." },
+      "acao": "Realizar letramento básico em IA para liderança e equipe operacional antes de selecionar ferramenta, tratando expectativas irreais como risco de projeto.",
+      "referencias": ["mandicak2025"] },
     { "codigo": "RD-D3-F2", "dimensao": "D3", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
-      "acao": "Designar formalmente o responsável pela iniciativa, com horas semanais protegidas, e converter treinamentos pontuais em plano de capacitação." },
+      "acao": "Designar formalmente o responsável pela iniciativa, com horas semanais protegidas, e converter treinamentos pontuais em plano de capacitação.",
+      "referencias": ["monisha2026"] },
     { "codigo": "RD-D3-F3", "dimensao": "D3", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
-      "acao": "Ampliar a participação da equipe na definição dos usos e das salvaguardas, consolidando a capacitação contínua avaliada por resultado." },
+      "acao": "Ampliar a participação da equipe na definição dos usos e das salvaguardas, consolidando a capacitação contínua avaliada por resultado.",
+      "referencias": ["priyadarsini2025"] },
     { "codigo": "RD-D4-F1", "dimensao": "D4", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
-      "acao": "Publicar política mínima de uso de IA (usos permitidos, dados que não podem ser submetidos e revisão humana obrigatória) e verificar a base legal do tratamento de dados pessoais." },
+      "acao": "Publicar política mínima de uso de IA (usos permitidos, dados que não podem ser submetidos e revisão humana obrigatória) e verificar a base legal do tratamento de dados pessoais.",
+      "referencias": ["amarasuriya2026"] },
     { "codigo": "RD-D4-F2", "dimensao": "D4", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
-      "acao": "Instituir revisão periódica dos acessos a dados sensíveis e padronizar o registro das decisões de maior impacto apoiadas por IA." },
+      "acao": "Instituir revisão periódica dos acessos a dados sensíveis e padronizar o registro das decisões de maior impacto apoiadas por IA.",
+      "referencias": ["han2023"] },
     { "codigo": "RD-D4-F3", "dimensao": "D4", "faixa": "F3", "esforco": "Médio", "horizonte": "Longo",
-      "acao": "Evidenciar a conformidade em auditoria interna e converter a governança em diferencial declarável a clientes e parceiros." },
+      "acao": "Evidenciar a conformidade em auditoria interna e converter a governança em diferencial declarável a clientes e parceiros.",
+      "referencias": ["deak2026"] },
     { "codigo": "RD-D5-F1", "dimensao": "D5", "faixa": "F1", "esforco": "Baixo", "horizonte": "Curto",
-      "acao": "Mapear fornecedores e parceiros capazes de sustentar a solução após a entrega e verificar elegibilidade a programas de fomento e apoio técnico." },
+      "acao": "Mapear fornecedores e parceiros capazes de sustentar a solução após a entrega e verificar elegibilidade a programas de fomento e apoio técnico.",
+      "referencias": ["gunawan2026", "angelina2025"] },
     { "codigo": "RD-D5-F2", "dimensao": "D5", "faixa": "F2", "esforco": "Médio", "horizonte": "Médio",
-      "acao": "Negociar condições e nível de serviço com os fornecedores já avaliados e estruturar a troca de dados com os parceiros principais." },
+      "acao": "Negociar condições e nível de serviço com os fornecedores já avaliados e estruturar a troca de dados com os parceiros principais.",
+      "referencias": ["sharma2024"] },
     { "codigo": "RD-D5-F3", "dimensao": "D5", "faixa": "F3", "esforco": "Baixo", "horizonte": "Longo",
-      "acao": "Usar a prontidão consolidada como argumento comercial e aderir aos padrões de interoperabilidade do ecossistema em que a empresa opera." }
+      "acao": "Usar a prontidão consolidada como argumento comercial e aderir aos padrões de interoperabilidade do ecossistema em que a empresa opera.",
+      "referencias": ["gunawan2026"] }
   ],
   "regras_transversais": [
     { "codigo": "RT-01", "esforco": "Alto", "horizonte": "Médio",
       "condicao_texto": "D0 na faixa Crítica",
       "condicao": { "tipo": "faixa", "dimensao": "D0", "faixa": "F1" },
-      "acao": "Suspender a seleção de ferramentas de IA e tratar a digitalização básica como projeto antecedente: sem registro digital da operação não há insumo para nenhuma aplicação." },
+      "acao": "Suspender a seleção de ferramentas de IA e tratar a digitalização básica como projeto antecedente: sem registro digital da operação não há insumo para nenhuma aplicação.",
+      "referencias": ["kalleparambil2025"] },
     { "codigo": "RT-02", "esforco": "Alto", "horizonte": "Longo",
       "condicao_texto": "Duas ou mais dimensões críticas na faixa Crítica",
       "condicao": { "tipo": "criticas_em_faixa", "faixa": "F1", "minimo": 2 },
-      "acao": "Reenquadrar a iniciativa como programa de reestruturação interna, e não como projeto de IA, com marcos de reavaliação a cada trimestre." },
+      "acao": "Reenquadrar a iniciativa como programa de reestruturação interna, e não como projeto de IA, com marcos de reavaliação a cada trimestre.",
+      "referencias": ["altawara2026a"] },
     { "codigo": "RT-03", "esforco": "Baixo", "horizonte": "Curto",
       "condicao_texto": "Escore global na faixa Consolidada com alguma dimensão crítica na faixa Crítica",
       "condicao": { "tipo": "todas", "condicoes": [
         { "tipo": "faixa_global", "faixa": "F3" },
         { "tipo": "criticas_em_faixa", "faixa": "F1", "minimo": 1 }
       ] },
-      "acao": "Comunicar explicitamente no relatório que o escore ponderado superestima a prontidão real e que o nível atribuído foi limitado pela dimensão crítica de menor escore." },
+      "acao": "Comunicar explicitamente no relatório que o escore ponderado superestima a prontidão real e que o nível atribuído foi limitado pela dimensão crítica de menor escore.",
+      "referencias": ["kalleparambil2025"] },
     { "codigo": "RT-04", "esforco": "Médio", "horizonte": "Curto",
       "condicao_texto": "D1 na faixa Crítica e D2 fora da faixa Crítica",
       "condicao": { "tipo": "todas", "condicoes": [
         { "tipo": "faixa", "dimensao": "D1", "faixa": "F1" },
         { "tipo": "nao", "condicao": { "tipo": "faixa", "dimensao": "D2", "faixa": "F1" } }
       ] },
-      "acao": "Alinhar ambição e base disponível: a clareza estratégica está acima da maturidade dos dados, o que expõe a empresa a investir em solução sem insumo que a sustente." },
+      "acao": "Alinhar ambição e base disponível: a clareza estratégica está acima da maturidade dos dados, o que expõe a empresa a investir em solução sem insumo que a sustente.",
+      "referencias": ["altawara2026a"] },
     { "codigo": "RT-05", "esforco": "Médio", "horizonte": "Curto",
       "condicao_texto": "D3 na faixa Crítica",
       "condicao": { "tipo": "faixa", "dimensao": "D3", "faixa": "F1" },
-      "acao": "Priorizar letramento e atribuição de responsabilidade antes da contratação de qualquer ferramenta, sob pena de a rejeição interna anular o investimento." },
+      "acao": "Priorizar letramento e atribuição de responsabilidade antes da contratação de qualquer ferramenta, sob pena de a rejeição interna anular o investimento.",
+      "referencias": ["monisha2026"] },
     { "codigo": "RT-06", "esforco": "Baixo", "horizonte": "Curto",
       "condicao_texto": "D4 na faixa Crítica com D1 fora da faixa Crítica",
       "condicao": { "tipo": "todas", "condicoes": [
         { "tipo": "faixa", "dimensao": "D4", "faixa": "F1" },
         { "tipo": "nao", "condicao": { "tipo": "faixa", "dimensao": "D1", "faixa": "F1" } }
       ] },
-      "acao": "Instituir governança mínima antes de ampliar o uso dos dados: a empresa já acumula dados utilizáveis sem as salvaguardas correspondentes." }
+      "acao": "Instituir governança mínima antes de ampliar o uso dos dados: a empresa já acumula dados utilizáveis sem as salvaguardas correspondentes.",
+      "referencias": ["amarasuriya2026"] }
   ],
   "priorizacao": {
     "peso_faixa": { "F1": 300, "F2": 200, "F3": 100 },
@@ -506,5 +535,32 @@
     { "etapa": 10, "raia": "Gestor da PME", "atividade": "Ler o perfil por dimensão e o nível atribuído", "uc": "UC-06", "min": 2, "max": 3 },
     { "etapa": 11, "raia": "Gestor da PME", "atividade": "Ler o roteiro priorizado", "uc": "UC-07", "min": 2, "max": 3 },
     { "etapa": 12, "raia": "Gestor da PME", "atividade": "Exportar e arquivar o diagnóstico", "uc": "UC-08", "min": 0, "max": 1 }
+  ],
+  "fundamentacao": {
+    "teto_de_gargalo": ["kalleparambil2025", "altawara2026a"]
+  },
+  "referencias": [
+    { "chave": "altawara2026a", "citacao": "Al Tawara et al., 2026a", "autores": "Al Tawara, A., Gide, E., El Khodr, M.", "ano": "2026a", "titulo": "Development of an AI-business transformation framework for Australian SMEs: a PRISMA-based systematic review and design science approach", "veiculo": "2026 22nd International Conference on Information Technology Based Higher Education and Training (ITHET), IEEE, pp. 1-9", "doi": "10.1109/ITHET69978.2026.11584989" },
+    { "chave": "amarasuriya2026", "citacao": "Amarasuriya e Abston, 2026", "autores": "Amarasuriya, S., Abston, K.A.", "ano": "2026", "titulo": "Procurement 4.0: a three-pillar framework for ethical AI adoption in small businesses", "veiculo": "Journal of Small Business Strategy 36(2)", "doi": "10.53703/001c.157792" },
+    { "chave": "angelina2025", "citacao": "Angelina et al., 2025", "autores": "Angelina, E., Gunadi, V., Sarjono, H., Putri, M.A.", "ano": "2025", "titulo": "Leveraging AI and organizational factors to overcome technology adoption challenges in Indonesian SMEs", "veiculo": "2025 4th International Conference on Digital Transformation and Applications (ICDXA), IEEE, pp. 1-6", "doi": "10.1109/ICDXA69105.2025.11329597" },
+    { "chave": "bacon2025", "citacao": "Bacon e Menon, 2025", "autores": "Bacon, G., Menon, V.", "ano": "2025", "titulo": "Exploring transparency and AI assessment in LLM-assisted research applications", "veiculo": "SoutheastCon 2025, IEEE, pp. 346-351", "doi": "10.1109/SoutheastCon56624.2025.10971523" },
+    { "chave": "cimino2025", "citacao": "Cimino et al., 2025", "autores": "Cimino, A., Corvello, V., Troise, C., Thomas, A., Tani, M.", "ano": "2025", "titulo": "Artificial intelligence adoption for sustainable growth in SMEs: an extended dynamic capability framework", "veiculo": "Corporate Social Responsibility and Environmental Management 32(5), pp. 6120-6138", "doi": "10.1002/csr.70019" },
+    { "chave": "deak2026", "citacao": "Deák e Szabó, 2026", "autores": "Deák, B., Szabó, I.", "ano": "2026", "titulo": "Smarter marketing, stronger trust: AI adoption in SMEs", "veiculo": "2026 IEEE 24th World Symposium on Applied Machine Intelligence and Informatics (SAMI), IEEE, pp. 175-180", "doi": "10.1109/SAMI68106.2026.11420364" },
+    { "chave": "emon2026", "citacao": "Emon et al., 2026", "autores": "Emon, M.M.H., Rahman, M.A., Jahan, S., Noman, S.M.S., Tasnim, Z., Mahmud, J.", "ano": "2026", "titulo": "Adoption of artificial intelligence in customer relationship management: insights from Bangladesh's digital marketing sector", "veiculo": "2026 IEEE 2nd International Conference on Quantum Photonics, Artificial Intelligence & Networking (QPAIN), IEEE, pp. 1-6", "doi": "10.1109/QPAIN69676.2026.11546086" },
+    { "chave": "gunawan2026", "citacao": "Gunawan et al., 2026", "autores": "Gunawan, A., Wiputra, R., Wijaya, M.I., Santoso, F.", "ano": "2026", "titulo": "Designing an ecosystem-based AI framework for collaborative SME internationalization: a design science approach", "veiculo": "2026 International Conference on Connected Intelligence for Industrial Applications (CI2A), IEEE, pp. 1-7", "doi": "10.1109/CI2A69097.2026.11576900" },
+    { "chave": "han2023", "citacao": "Han et al., 2023", "autores": "Han, T.A., Pandit, D., Joneidy, S., Hasan, M.M., Hossain, J., Hoque Tania, M., Hossain, M.A., Nourmohammadi, N.", "ano": "2023", "titulo": "An explainable AI tool for operational risks evaluation of AI systems for SMEs", "veiculo": "2023 15th International Conference on Software, Knowledge, Information Management and Applications (SKIMA), IEEE, pp. 69-74", "doi": "10.1109/SKIMA59232.2023.10387301" },
+    { "chave": "kalleparambil2025", "citacao": "Kalleparambil e Akoum, 2025", "autores": "Kalleparambil, S.A., Akoum, M.", "ano": "2025", "titulo": "AI organisational readiness for SMEs: a tailored model for AI adoption success", "veiculo": "Journal of Information & Knowledge Management 24(6), 2550076", "doi": "10.1142/S0219649225500765" },
+    { "chave": "khan2024", "citacao": "Khan et al., 2024", "autores": "Khan, A.N., Mehmood, K., Soomro, M.A.", "ano": "2024", "titulo": "Knowledge management-based artificial intelligence (AI) adoption in construction SMEs: the moderating role of knowledge integration", "veiculo": "IEEE Transactions on Engineering Management 71, pp. 10874-10884", "doi": "10.1109/TEM.2024.3403981" },
+    { "chave": "kudryavtsev2025", "citacao": "Kudryavtsev et al., 2025", "autores": "Kudryavtsev, D., Moilanen, T., Laatikainen, E., Khan, U.A.", "ano": "2025", "titulo": "AI implementation capability assessment and development planning: towards a tool for SMEs", "veiculo": "2025 IEEE 23rd World Symposium on Applied Machine Intelligence and Informatics (SAMI), IEEE, pp. 471-476", "doi": "10.1109/SAMI63904.2025.10883262" },
+    { "chave": "mandicak2025", "citacao": "Mandičák et al., 2025", "autores": "Mandičák, T., Mésároš, P., Krajníková, K., Galgóci, G.", "ano": "2025", "titulo": "Analysis of digital, competency, and educational readiness of construction managers for AI implementation", "veiculo": "2025 International Conference on Emerging eLearning Technologies and Applications (ICETA), IEEE, pp. 560-565", "doi": "10.1109/ICETA67772.2025.11280038" },
+    { "chave": "monisha2026", "citacao": "Monisha et al., 2026", "autores": "Monisha, Kaur, N., Kaur, J., Budhiraja, K., Aggarwal, I.", "ano": "2026", "titulo": "Integrating agile management practices and organizational culture to enable sustainable AI adoption: an empirical study of digital transformation readiness", "veiculo": "2026 8th International Conference on Computational Intelligence and Communication Technologies (CCICT), pp. 436-442", "doi": "10.23919/CCICTCPS00010.2026.00078" },
+    { "chave": "peffers2007", "citacao": "Peffers et al., 2007", "autores": "Peffers, K., Tuunanen, T., Rothenberger, M.A., Chatterjee, S.", "ano": "2007", "titulo": "A design science research methodology for information systems research", "veiculo": "Journal of Management Information Systems 24(3), pp. 45-77", "doi": "10.2753/MIS0742-1222240302" },
+    { "chave": "permana2026", "citacao": "Permana e Murniati, 2026", "autores": "Permana, G.G.S., Murniati", "ano": "2026", "titulo": "Measuring the causal impact of generative AI adoption on SME productivity: a double machine learning approach", "veiculo": "2026 8th International Symposium on Computational and Business Intelligence (ISCBI), IEEE", "doi": "10.1109/ISCBI69404.2026.11495725" },
+    { "chave": "priyadarsini2025", "citacao": "Priyadarsini e Bashir, 2025", "autores": "Priyadarsini, M.K., Bashir, F.", "ano": "2025", "titulo": "Impact of artificial intelligence readiness on employee experience in IT sector", "veiculo": "2025 6th International Conference on Mobile Computing and Sustainable Informatics (ICMCSI), IEEE, pp. 1847-1852", "doi": "10.1109/ICMCSI64620.2025.10883252" },
+    { "chave": "rahman2026", "citacao": "Rahman et al., 2026", "autores": "Rahman, M.A., Ahid, M.M.H., Jahan, S., Noman, S.M.S., Tasnim, Z., Mahmud, J.", "ano": "2026", "titulo": "Exploring internal and external determinants of AI adoption in digital marketing among SMEs in Bangladesh", "veiculo": "2026 IEEE 2nd International Conference on Quantum Photonics, Artificial Intelligence & Networking (QPAIN), IEEE, pp. 1-6", "doi": "10.1109/QPAIN69676.2026.11546271" },
+    { "chave": "rananga2025", "citacao": "Rananga e Venter, 2025", "autores": "Rananga, N., Venter, H.S.", "ano": "2025", "titulo": "Beyond the hype: readiness assessment of SMEs for AI-driven cybersecurity audits", "veiculo": "2025 International Conference on Intelligent Computing and Next Generation Networks (ICNGN), IEEE, pp. 1-6", "doi": "10.1109/ICNGN67480.2025.11413704" },
+    { "chave": "saleem2024", "citacao": "Saleem et al., 2024", "autores": "Saleem, I., Al-Breiki, N.S.S., Asad, M.", "ano": "2024", "titulo": "The nexus of artificial intelligence, frugal innovation and business model innovation to nurture internationalization: a survey of SME's readiness", "veiculo": "Journal of Open Innovation: Technology, Market, and Complexity 10(3), 100326", "doi": "10.1016/j.joitmc.2024.100326" },
+    { "chave": "sharma2024", "citacao": "Sharma et al., 2024", "autores": "Sharma, S., Singh, G., Islam, N., Dhir, A.", "ano": "2024", "titulo": "Why do SMEs adopt artificial intelligence-based chatbots?", "veiculo": "IEEE Transactions on Engineering Management 71, pp. 1773-1786", "doi": "10.1109/TEM.2022.3203469" },
+    { "chave": "varunkrishna2026", "citacao": "Varun Krishna et al., 2026", "autores": "Varun Krishna, M., Praveen, N., Shashidhar Kini, K.", "ano": "2026", "titulo": "Empirical analysis of AI adoption in SMEs: proposing a strategic framework and readiness scorecard", "veiculo": "2026 IEEE International Conference on Emerging Synergy Science and Technology (ICESST), IEEE, pp. 1-6", "doi": "10.1109/ICESST69086.2026.11582848" }
   ]
 }

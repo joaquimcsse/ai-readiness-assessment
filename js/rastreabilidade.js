@@ -14,8 +14,8 @@ export const RASTREABILIDADE = {
     { "codigo": "CP-09", "camada": "C4", "nome": "Seletor de regras", "modulos": ["nucleo.js"] },
     { "codigo": "CP-10", "camada": "C4", "nome": "Priorizador do roteiro", "modulos": ["nucleo.js"] },
     { "codigo": "CP-11", "camada": "C5", "nome": "Painel de perfil", "modulos": ["painel.js"] },
-    { "codigo": "CP-12", "camada": "C5", "nome": "Relatório de diagnóstico", "modulos": ["painel.js"] },
-    { "codigo": "CP-13", "camada": "C5", "nome": "Exportador", "modulos": ["estado.js"] },
+    { "codigo": "CP-12", "camada": "C5", "nome": "Relatório de diagnóstico", "modulos": ["painel.js", "relatorio-pdf.js"] },
+    { "codigo": "CP-13", "camada": "C5", "nome": "Exportador", "modulos": ["estado.js", "exportacao.js", "planilha.js", "relatorio-pdf.js", "bibliotecas.js"] },
     { "codigo": "CP-14", "camada": "C1", "nome": "Guia de aplicação embutido", "modulos": ["coleta.js", "index.html"] }
   ],
   "casos_de_uso": [
@@ -26,8 +26,8 @@ export const RASTREABILIDADE = {
     { "codigo": "UC-05", "pacote": "P1", "nome": "Gerar diagnóstico de prontidão", "ator": "Gestor da PME", "modulos": ["nucleo.js", "app.js"] },
     { "codigo": "UC-06", "pacote": "P2", "nome": "Consultar perfil de prontidão por dimensão", "ator": "Gestor da PME", "modulos": ["painel.js"] },
     { "codigo": "UC-07", "pacote": "P2", "nome": "Consultar roteiro de ação priorizado", "ator": "Gestor da PME", "modulos": ["painel.js"] },
-    { "codigo": "UC-08", "pacote": "P2", "nome": "Exportar diagnóstico", "ator": "Gestor da PME", "modulos": ["estado.js"] },
-    { "codigo": "UC-09", "pacote": "P2", "nome": "Reaplicar o instrumento e comparar resultados", "ator": "Gestor da PME", "modulos": ["estado.js", "painel.js"] },
+    { "codigo": "UC-08", "pacote": "P2", "nome": "Exportar diagnóstico", "ator": "Gestor da PME", "modulos": ["exportacao.js", "relatorio-pdf.js", "planilha.js", "estado.js"] },
+    { "codigo": "UC-09", "pacote": "P2", "nome": "Reaplicar o instrumento e comparar resultados", "ator": "Gestor da PME", "modulos": ["estado.js", "planilha.js", "painel.js"] },
     { "codigo": "UC-10", "pacote": "P3", "nome": "Parametrizar dimensões, pesos e faixas", "ator": "Pesquisador mantenedor", "modulos": ["manutencao.js", "validacao.js"] },
     { "codigo": "UC-11", "pacote": "P3", "nome": "Manter banco de itens e âncoras", "ator": "Pesquisador mantenedor", "modulos": ["manutencao.js", "validacao.js"] },
     { "codigo": "UC-12", "pacote": "P3", "nome": "Manter base de regras de recomendação", "ator": "Pesquisador mantenedor", "modulos": ["manutencao.js", "validacao.js"] },
