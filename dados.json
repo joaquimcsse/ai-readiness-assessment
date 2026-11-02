@@ -117,7 +117,7 @@
     {
       "codigo": "I07", "dimensao": "D1", "ancoras_status": "rascunho",
       "assertiva": "Os dados de sistemas diferentes conversam entre si sem retrabalho manual",
-      "fundamento": { "texto": "Dados fragmentados e sem integração entre sistemas aparecem entre as barreiras que mais limitam o uso de IA em PMEs.", "referencias": ["altawara2026a"] },
+      "fundamento": { "texto": "Dados fragmentados, inconsistentes ou de baixa qualidade estão entre as principais barreiras à adoção de IA em PMEs.", "referencias": ["altawara2026a"] },
       "ancoras": [
         "Os mesmos dados são redigitados em cada sistema ou planilha.",
         "Há cópias manuais periódicas entre sistemas, feitas por uma pessoa específica.",
@@ -162,7 +162,7 @@
     {
       "codigo": "I11", "dimensao": "D2", "ancoras_status": "rascunho",
       "assertiva": "A liderança patrocina ativamente a iniciativa, alocando tempo e decisão",
-      "fundamento": { "texto": "Em PMEs, o apoio ativo da alta gestão, com recursos e autoridade, está associado à adoção de soluções de IA.", "referencias": ["sharma2024"] },
+      "fundamento": { "texto": "Em PMEs, o apoio da alta gestão, com recursos e autoridade, está associado à intenção de adotar chatbots baseados em IA.", "referencias": ["sharma2024"] },
       "ancoras": [
         "A liderança não se envolveu nem foi consultada sobre o tema.",
         "A liderança aprova em princípio, mas não dedica tempo nem toma decisões.",
@@ -541,7 +541,7 @@
   },
   "referencias": [
     { "chave": "altawara2026a", "citacao": "Al Tawara et al., 2026a", "autores": "Al Tawara, A., Gide, E., El Khodr, M.", "ano": "2026a", "titulo": "Development of an AI-business transformation framework for Australian SMEs: a PRISMA-based systematic review and design science approach", "veiculo": "2026 22nd International Conference on Information Technology Based Higher Education and Training (ITHET), IEEE, pp. 1-9", "doi": "10.1109/ITHET69978.2026.11584989" },
-    { "chave": "amarasuriya2026", "citacao": "Amarasuriya e Abston, 2026", "autores": "Amarasuriya, S., Abston, K.A.", "ano": "2026", "titulo": "Procurement 4.0: a three-pillar framework for ethical AI adoption in small businesses", "veiculo": "Journal of Small Business Strategy 36(2)", "doi": "10.53703/001c.157792" },
+    { "chave": "amarasuriya2026", "citacao": "Amarasuriya e Abston, 2026", "autores": "Amarasuriya, S., Abston, K.A.", "ano": "2026", "titulo": "Procurement 4.0: a three-pillar framework for ethical AI adoption in small businesses", "veiculo": "Journal of Small Business Strategy 36(2), 27-37", "doi": "10.53703/001c.157792" },
     { "chave": "angelina2025", "citacao": "Angelina et al., 2025", "autores": "Angelina, E., Gunadi, V., Sarjono, H., Putri, M.A.", "ano": "2025", "titulo": "Leveraging AI and organizational factors to overcome technology adoption challenges in Indonesian SMEs", "veiculo": "2025 4th International Conference on Digital Transformation and Applications (ICDXA), IEEE, pp. 1-6", "doi": "10.1109/ICDXA69105.2025.11329597" },
     { "chave": "bacon2025", "citacao": "Bacon e Menon, 2025", "autores": "Bacon, G., Menon, V.", "ano": "2025", "titulo": "Exploring transparency and AI assessment in LLM-assisted research applications", "veiculo": "SoutheastCon 2025, IEEE, pp. 346-351", "doi": "10.1109/SoutheastCon56624.2025.10971523" },
     { "chave": "cimino2025", "citacao": "Cimino et al., 2025", "autores": "Cimino, A., Corvello, V., Troise, C., Thomas, A., Tani, M.", "ano": "2025", "titulo": "Artificial intelligence adoption for sustainable growth in SMEs: an extended dynamic capability framework", "veiculo": "Corporate Social Responsibility and Environmental Management 32(5), pp. 6120-6138", "doi": "10.1002/csr.70019" },

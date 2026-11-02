@@ -11,9 +11,12 @@ import { renderDiagnostico, renderComparacao } from './painel.js';
 import { renderManutencao } from './manutencao.js';
 import { renderAvaliacao } from './avaliacao.js';
 import { renderSobre } from './sobre.js';
-import { esc, dataBR, nomeNivel, notificar, lerArquivo, lerArquivoBinario, rotuloPorte, citar, obterReferencia, referenciaCompleta } from './ui.js';
+import { esc, dataBR, nomeNivel, notificar, lerArquivo, lerArquivoBinario, rotuloPorte, icone } from './ui.js';
+import { descartarGraficos } from './graficos.js';
+import { limparAnimacoes } from './animacoes.js';
+import { renderInicio } from './inicio.js';
 import { abrirExportacao } from './exportacao.js';
-import { carregarExcelJS } from './bibliotecas.js';
+import { carregarExcelJS, carregarECharts } from './bibliotecas.js';
 import { lerPlanilha } from './planilha.js';
 
 const URL_DADOS = 'dados.json';
@@ -28,10 +31,13 @@ const CASO_AURORA = {
 
 // ------------------------------------------------------------ utilidades de tela
 function novaTela(classe = '') {
+  descartarGraficos();
+  limparAnimacoes();
   const el = document.createElement('div');
   el.className = `tela ${classe}`;
   principal.replaceChildren(el);
   principal.dataset.tela = classe;
+  document.body.dataset.tela = classe || 'ferramenta';
   principal.focus({ preventScroll: true });
   window.scrollTo(0, 0);
   return el;
@@ -74,10 +80,10 @@ function versaoDivergente(app) {
 }
 
 function telaVersaoDivergente(el, app) {
-  el.innerHTML = `<section class="cartao estreito">
+  el.innerHTML = `<section class="painel estreito">
     <h1>O modelo foi atualizado</h1>
-    <div class="aviso aviso-erro" role="alert"><strong>Cálculo interrompido.</strong> Esta aplicação foi iniciada sob a versão <strong>${esc(app.versaoModelo)}</strong> do modelo, mas a página agora usa a versão <strong>${esc(modelo.versao_modelo)}</strong>. Para não misturar respostas coletadas sob modelos distintos, a aplicação precisa ser reiniciada.</div>
-    <div class="acoes"><button type="button" class="btn btn-pri" data-acao="reiniciar">Reiniciar com a mesma ficha</button></div>
+    <p class="sub">Esta aplicação começou na versão ${esc(app.versaoModelo)} do modelo; a página usa a ${esc(modelo.versao_modelo)}. Para não misturar versões, recomece com os mesmos dados da empresa.</p>
+    <div class="form-rodape" style="margin-top:20px"><span></span><button type="button" class="btn btn-pri" data-acao="reiniciar">Recomeçar</button></div>
   </section>`;
   el.querySelector('[data-acao="reiniciar"]').addEventListener('click', () => {
     estado.iniciarAplicacao({ ...app.empresa, respondente: app.respondente, data: estado.hojeISO() }, modelo.versao_modelo, app.anterior);
@@ -90,118 +96,26 @@ function telaVersaoDivergente(el, app) {
 function telaInicio() {
   const el = novaTela('inicio');
   const app = estado.aplicacaoAtual();
-  const total = modelo.itens.length;
-  const respondidas = app ? estado.contarRespondidas(app) : 0;
-  const semArmazenamento = !estado.armazenamentoDisponivel();
-
-  const criticas = modelo.dimensoes.filter(d => d.critica);
-  el.innerHTML = `
-    <section class="lp-heroi">
-      <div class="lp-heroi-texto">
-        <p class="etapa-rotulo">Diagnóstico autoaplicável · gratuito</p>
-        <h1>A sua empresa está pronta para a Inteligência Artificial, ou algo vai travar o investimento?</h1>
-        <div class="acoes acoes-esq">
-          ${app && app.estado !== estado.ESTADOS.ARQUIVADA
-            ? `<a class="btn btn-pri" href="${app.diagnostico ? '#/diagnostico' : '#/questionario'}">${app.diagnostico ? 'Ver diagnóstico atual' : `Continuar aplicação (${respondidas}/${total})`}</a>
-               <button type="button" class="btn btn-sec" data-acao="nova">Iniciar nova aplicação</button>`
-            : '<button type="button" class="btn btn-pri" data-acao="nova">Iniciar aplicação</button>'}
-          <button type="button" class="btn btn-sec" data-acao="demo">Ver exemplo preenchido</button>
-        </div>
-        ${app ? `<p class="lp-atual">Aplicação atual: <strong>${esc(app.empresa.identificador)}</strong> · ${dataBR(app.data)} · <span class="selo selo-estado">${esc(app.estado)}</span></p>` : ''}
-        ${semArmazenamento ? '<p class="aviso aviso-alerta">O armazenamento local deste navegador está indisponível (janela anônima ou bloqueio). Você pode aplicar o instrumento, mas exporte o diagnóstico antes de fechar a página.</p>' : ''}
-      </div>
-      <figure class="lp-visual">
-        ${svgExemplo()}
-        <figcaption>Exemplo: pela média, a empresa estaria no nível 3. Mas <strong class="txt-F1">Dados</strong> é crítico e está no nível 2, então o nível atribuído é 2.</figcaption>
-      </figure>
-    </section>
-
-    <section class="lp-secao">
-      <h2>Como funciona</h2>
-      <ol class="lp-passos">
-        <li><span class="lp-num">1</span><strong>Ficha da empresa</strong><small>2 a 3 min</small></li>
-        <li><span class="lp-num">2</span><strong>${total} afirmações em 3 blocos</strong><small>13 a 18 min</small></li>
-        <li><span class="lp-num">3</span><strong>Perfil, nível e roteiro</strong><small>4 a 6 min</small></li>
-        <li><span class="lp-num">4</span><strong>Exportar e arquivar</strong><small>até 1 min</small></li>
-      </ol>
-    </section>
-
-    <section class="lp-secao">
-      <h2>Estrutura do Diagnóstico</h2>
-      <p class="lp-intro">A empresa é avaliada nos critérios abaixo. Os ${criticas.length} marcados como <span class="txt-F1">críticos</span> limitam o resultado: o nível final nunca fica acima do nível do critério crítico mais fraco.</p>
-      <ul class="lp-dims">
-        ${modelo.dimensoes.map(d => `<li class="${d.critica ? 'critica' : ''}">
-          <div>
-            <h3>${esc(d.nome)}${d.critica ? ' <span class="lp-tag-critica">crítico</span>' : ''}</h3>
-            <p>${esc(d.resumo || d.definicao.split('. ')[0].replace(/\.$/, '') + '.')}</p>
-            ${d.referencias?.length ? `<p class="lp-cita">${d.referencias.map(c => `<a href="#ref-${esc(c)}" data-ref="${esc(c)}">${esc(citar(modelo, [c]))}</a>`).join('; ')}</p>` : ''}
-          </div>
-        </li>`).join('')}
-      </ul>
-      <p class="nota">A definição completa de cada critério está no <button type="button" class="link" data-acao="guia">Guia</button>.</p>
-    </section>
-
-    ${secaoReferencias()}`;
-
-  el.querySelector('[data-acao="guia"]').addEventListener('click', abrirGuia);
-  el.querySelector('[data-acao="nova"]')?.addEventListener('click', () => {
-    const atual = estado.aplicacaoAtual();
-    if (atual && atual.estado !== estado.ESTADOS.ARQUIVADA && estado.contarRespondidas(atual) > 0 &&
-        !confirm('Já existe uma aplicação em andamento. Ela continuará disponível no Histórico. Iniciar uma nova?')) return;
-    estado.definirAtual(null);
-    ir('#/ficha');
+  const emCurso = Boolean(app && app.estado !== estado.ESTADOS.ARQUIVADA);
+  renderInicio(el, {
+    modelo, app, emCurso,
+    respondidas: app ? estado.contarRespondidas(app) : 0,
+    semArmazenamento: !estado.armazenamentoDisponivel(),
+    caso: CASO_AURORA,
   });
-  el.querySelector('[data-acao="demo"]').addEventListener('click', carregarDemonstracao);
-  // as citações levam à referência completa; o roteamento usa o hash, então rola sem navegar
   el.addEventListener('click', ev => {
-    const a = ev.target.closest('a[data-ref]');
-    if (!a) return;
-    ev.preventDefault();
-    const alvo = document.getElementById(`ref-${a.dataset.ref}`);
-    alvo?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    alvo?.classList.add('ref-destaque');
-    setTimeout(() => alvo?.classList.remove('ref-destaque'), 1600);
+    const b = ev.target.closest('[data-acao]');
+    if (!b) return;
+    if (b.dataset.acao === 'demo') carregarDemonstracao();
+    if (b.dataset.acao === 'continuar') telaAplicacao();
+    if (b.dataset.acao === 'nova') {
+      const atual = estado.aplicacaoAtual();
+      if (atual && atual.estado !== estado.ESTADOS.ARQUIVADA && estado.contarRespondidas(atual) > 0 &&
+          !confirm('Há um diagnóstico em andamento. Ele continua no Histórico. Começar outro?')) return;
+      estado.definirAtual(null);
+      ir('#/ficha');
+    }
   });
-}
-
-// Referências completas das obras citadas nas dimensões e nos itens, mais o
-// método (DSR). Nas demais telas aparecem só como citação.
-function secaoReferencias() {
-  const chaves = new Set(['peffers2007']);
-  modelo.dimensoes.forEach(d => (d.referencias || []).forEach(c => chaves.add(c)));
-  modelo.itens.forEach(i => (i.fundamento?.referencias || []).forEach(c => chaves.add(c)));
-  const refs = [...chaves].map(c => obterReferencia(modelo, c)).filter(Boolean)
-    .sort((a, b) => a.autores.localeCompare(b.autores, 'pt-BR'));
-  if (!refs.length) return '';
-  return `<section class="lp-secao lp-refs" aria-labelledby="refs-titulo">
-      <h2 id="refs-titulo">Base científica</h2>
-      <p class="lp-intro">Os critérios e as afirmações do questionário vêm de uma revisão de estudos recentes sobre adoção de IA em PMEs, e o instrumento foi construído pelo método Design Science Research. Estas são as obras citadas na página e no questionário.</p>
-      <ol class="referencias lp-referencias">
-        ${refs.map(r => `<li id="ref-${esc(r.chave)}">${referenciaCompleta(r)}</li>`).join('')}
-      </ol>
-    </section>`;
-}
-
-// Ilustração da página inicial: perfil de exemplo em colunas, com o gargalo
-// em destaque. Valores fixos, apenas para explicar o conceito.
-function svgExemplo() {
-  const dados = [['D0', 62.5, 'F2'], ['D1', 20, 'F1'], ['D2', 75, 'F3'], ['D3', 41.7, 'F2'], ['D4', 50, 'F2'], ['D5', 55, 'F2']];
-  const base = 214, alt = 170, larg = 36, passo = 58, x0 = 44;
-  const y = v => base - (v / 100) * alt;
-  const grade = [0, 20, 40, 60, 80, 100].map(v => `<line class="grade" x1="30" x2="400" y1="${y(v)}" y2="${y(v)}"/><text class="eixo" x="22" y="${y(v) + 4}" text-anchor="end">${v}</text>`).join('');
-  const barras = dados.map(([c, v, f], k) => {
-    const x = x0 + k * passo;
-    return `<rect class="barra barra-${f}" x="${x}" y="${y(v)}" width="${larg}" height="${base - y(v)}" rx="5"/>
-      <text class="lp-cod ${f === 'F1' ? 'txt-F1' : ''}" x="${x + larg / 2}" y="${base + 20}" text-anchor="middle">${c}</text>`;
-  }).join('');
-  const xg = x0 + passo + larg / 2;
-  return `<svg class="grafico-perfil lp-grafico" viewBox="0 0 410 240" role="img" aria-label="Exemplo de perfil: cinco critérios entre 40 e 75 pontos e o critério Dados com 20 pontos, marcada como gargalo. A média ponderada é 50.">
-    ${grade}
-    <line class="linha-global" x1="30" x2="400" y1="${y(50)}" y2="${y(50)}"/>
-    <text class="rotulo-global" x="${x0 + passo + larg / 2}" y="${y(50) - 8}" text-anchor="middle">média 50</text>
-    ${barras}
-    <text class="lp-gargalo" x="${xg}" y="${y(20) - 10}" text-anchor="middle">gargalo</text>
-  </svg>`;
 }
 
 function carregarDemonstracao() {
@@ -231,7 +145,7 @@ function telaFicha() {
   });
 }
 
-function telaQuestionario(bloco) {
+function telaQuestionario(item) {
   const el = novaTela();
   const app = estado.aplicacaoAtual();
   if (!app) { ir('#/ficha'); return; }
@@ -239,7 +153,7 @@ function telaQuestionario(bloco) {
   renderQuestionario(el, {
     modelo,
     app,
-    blocoInicial: Number(bloco) || 0,
+    itemInicial: item || null,
     aoResponder: (item, valor) => estado.registrarResposta(app, item, valor, modelo.itens.length),
     aoGerar: () => (app.diagnostico ? ir('#/diagnostico') : gerarDiagnostico(app)),
     aoEditarFicha: () => ir('#/ficha'),
@@ -261,7 +175,7 @@ function gerarDiagnostico(app) {
     } else if (e.codigo === 'FE-02') {
       telaVersaoDivergente(novaTela(), app);
     } else {
-      novaTela().innerHTML = `<section class="cartao estreito"><div class="aviso aviso-erro" role="alert"><strong>Cálculo interrompido.</strong> ${esc(e.message)}</div></section>`;
+      novaTela().innerHTML = `<section class="painel estreito"><div class="aviso aviso-erro" role="alert">${icone('alerta')}<p><strong>Cálculo interrompido.</strong> ${esc(e.message)}</p></div></section>`;
     }
   }
 }
@@ -271,9 +185,9 @@ function telaDiagnostico(id) {
   const app = id ? estado.obterAplicacao(id) : estado.aplicacaoAtual();
   if (!app) { ir('#/inicio'); return; }
   if (!app.diagnostico) {
-    el.innerHTML = `<section class="cartao estreito"><h1>Diagnóstico ainda não gerado</h1>
-      <p>Esta aplicação está no estado <strong>${esc(app.estado)}</strong>: ${esc(estado.SIGNIFICADO_ESTADO[app.estado])}</p>
-      <div class="acoes"><a class="btn btn-pri" href="#/questionario">Ir ao questionário</a></div></section>`;
+    el.innerHTML = `<section class="painel estreito"><h1>Diagnóstico ainda não gerado</h1>
+      <p class="sub">${esc(estado.SIGNIFICADO_ESTADO[app.estado])}</p>
+      <div class="form-rodape" style="margin-top:20px"><span></span><a class="btn btn-pri" href="#/questionario">Continuar questionário</a></div></section>`;
     return;
   }
   const outras = estado.listarAplicacoes().filter(a => a.id !== app.id && a.diagnostico);
@@ -306,42 +220,41 @@ function telaDiagnostico(id) {
 // UC-09 — histórico, importação e comparação.
 function telaHistorico() {
   const el = novaTela();
+  carregarECharts().catch(() => {}); // a comparação usa gráficos
   const apps = estado.listarAplicacoes();
   const atual = estado.aplicacaoAtual();
+  const meses = modelo.reaplicacao.map(r => r.meses);
   el.innerHTML = `
-    <section class="cartao">
-      <p class="etapa-rotulo">Exportar, reaplicar e comparar</p>
-      <h1>Histórico de aplicações</h1>
-      <p class="lead">Aplicações guardadas neste navegador e diagnósticos importados de arquivo. Selecione duas para comparar a evolução. Só são comparáveis diagnósticos da mesma versão do modelo.</p>
-      <div class="acoes acoes-esq">
-        <label class="btn btn-sec">Importar planilha exportada (.xlsx)<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.json" data-acao="importar" multiple hidden></label>
-        <button type="button" class="btn btn-pri" data-acao="comparar" disabled aria-describedby="dica-comparar">Comparar selecionadas</button>
+    <header class="pagina-cab">
+      <div>
+        <h1>Histórico</h1>
+        <p class="sub">Diagnósticos guardados neste navegador. Marque dois para comparar.</p>
       </div>
-      <p class="nota dica-comparar" id="dica-comparar">Marque duas aplicações diagnosticadas na lista para comparar.</p>
-    </section>
-    <section class="cartao">
-      ${apps.length ? `<table class="tabela tabela-historico">
-        <thead><tr><th><span class="sr">Selecionar</span></th><th>Empresa</th><th>Data</th><th>Estado</th><th class="num">Nível</th><th>Modelo</th><th></th></tr></thead>
+      <div class="acoes">
+        <label class="btn btn-sec">Importar planilha<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.json" data-acao="importar" multiple hidden></label>
+        <button type="button" class="btn btn-pri" data-acao="comparar" disabled aria-describedby="dica-comparar">Comparar</button>
+      </div>
+    </header>
+    ${apps.length ? `<section class="painel painel-flush">
+      <table class="tabela tabela-historico">
+        <thead><tr><th><span class="sr">Selecionar</span></th><th>Empresa</th><th>Data</th><th>Situação</th><th class="num">Nível</th><th><span class="sr">Ações</span></th></tr></thead>
         <tbody>${apps.map(a => `<tr class="${atual?.id === a.id ? 'linha-atual' : ''}">
           <td class="col-sel">${a.diagnostico ? `<input type="checkbox" data-sel="${esc(a.id)}" aria-label="Selecionar ${esc(a.empresa.identificador)} de ${dataBR(a.data)}">` : ''}</td>
           <td class="col-empresa"><strong>${esc(a.empresa.identificador)}</strong><br><small>${esc(a.empresa.setor)} · ${esc(rotuloPorte(a.empresa.porte))}${a.origem === 'importada' ? ' · importada' : ''}${a.anterior ? ' · reaplicação' : ''}</small></td>
-          <td data-rotulo="Data">${dataBR(a.data)}</td>
-          <td data-rotulo="Estado"><span class="selo selo-estado">${esc(a.estado)}</span>${atual?.id === a.id ? '<br><small>atual</small>' : ''}</td>
-          <td class="num" data-rotulo="Nível">${a.diagnostico ? `<strong>${a.diagnostico.nivelFinal}</strong> <small>${esc(nomeNivel(modelo, a.diagnostico.nivelFinal))}</small>` : `${estado.contarRespondidas(a)}/${modelo.itens.length}`}</td>
-          <td data-rotulo="Modelo">${esc(a.diagnostico?.versaoModelo || a.versaoModelo)}</td>
+          <td data-rotulo="Data">${dataBR(a.data)}<br><small>modelo ${esc(a.diagnostico?.versaoModelo || a.versaoModelo)}</small></td>
+          <td data-rotulo="Situação">${esc(a.estado)}${atual?.id === a.id ? ' <small>· atual</small>' : ''}</td>
+          <td class="num" data-rotulo="Nível">${a.diagnostico ? `<strong>${a.diagnostico.nivelFinal}</strong> <small>${esc(nomeNivel(modelo, a.diagnostico.nivelFinal))}</small>` : `<small>${estado.contarRespondidas(a)}/${modelo.itens.length}</small>`}</td>
           <td class="acoes-linha">
-            ${a.diagnostico ? `<a class="link" href="#/diagnostico/${esc(a.id)}">abrir</a> <button type="button" class="link" data-exp="${esc(a.id)}">exportar</button>` : `<button type="button" class="link" data-cont="${esc(a.id)}">continuar</button>`}
-            <button type="button" class="link perigo" data-del="${esc(a.id)}">excluir</button>
-          </td></tr>`).join('')}</tbody></table>`
-      : '<p class="nota">Nenhuma aplicação registrada neste navegador. Inicie uma aplicação ou importe um diagnóstico exportado.</p>'}
+            ${a.diagnostico ? `<a class="link" href="#/diagnostico/${esc(a.id)}">Abrir</a> <button type="button" class="link" data-exp="${esc(a.id)}">Exportar</button>` : `<button type="button" class="link" data-cont="${esc(a.id)}">Continuar</button>`}
+            <button type="button" class="link perigo" data-del="${esc(a.id)}">Excluir</button>
+          </td></tr>`).join('')}</tbody></table>
     </section>
-    <section class="cartao">
-      <h2>Ciclo de reaplicação</h2>
-      <p>A prontidão muda. O valor do instrumento está tanto no diagnóstico quanto na comparação entre diagnósticos sucessivos. Quanto menor o nível, mais curto o intervalo, porque as ações de curto prazo produzem mudança mensurável mais depressa.</p>
-      <table class="tabela compacta"><thead><tr><th>Nível</th><th>Periodicidade</th><th>Antecipe se…</th></tr></thead><tbody>
-        ${modelo.reaplicacao.map(r => `<tr><td>${r.niveis.join(' e ')}</td><td>a cada ${r.meses} meses</td><td>${esc(r.gatilho)}</td></tr>`).join('')}
-      </tbody></table>
-    </section>`;
+    <p class="nota" id="dica-comparar">Só diagnósticos da mesma versão do modelo são comparáveis. Reaplique a cada ${Math.min(...meses)} a ${Math.max(...meses)} meses, conforme o nível.</p>`
+    : `<section class="painel estreito" style="text-align:center;padding:48px 24px">
+        <h2>Nenhum diagnóstico neste navegador</h2>
+        <p class="nota">Comece um novo ou importe uma planilha exportada.</p>
+        <a class="btn btn-pri" href="#/ficha">Iniciar diagnóstico</a>
+      </section><p class="nota" id="dica-comparar" hidden></p>`}`;
 
   const btnComparar = el.querySelector('[data-acao="comparar"]');
   const selecionados = () => [...el.querySelectorAll('[data-sel]:checked')].map(c => c.dataset.sel);
@@ -350,7 +263,6 @@ function telaHistorico() {
       const sel = selecionados();
       if (sel.length > 2) { ev.target.checked = false; notificar('Selecione apenas duas aplicações.'); }
       btnComparar.disabled = selecionados().length !== 2;
-      el.querySelector('#dica-comparar').hidden = !btnComparar.disabled;
     }
     if (ev.target.dataset.acao === 'importar') {
       let ok = 0;
@@ -389,13 +301,14 @@ function telaComparar(idA, idB) {
   const el = novaTela();
   const a = estado.obterAplicacao(idA);
   const b = estado.obterAplicacao(idB);
-  el.innerHTML = `<section class="cartao"><p class="etapa-rotulo">Reaplicar o instrumento e comparar resultados</p>
-    <h1>Comparação entre aplicações</h1>
-    <div class="acoes acoes-esq nao-imprimir"><a class="btn btn-sec" href="#/historico">← Histórico</a><button type="button" class="btn btn-sec" data-acao="imprimir">Imprimir</button></div>
-    <div data-comp></div></section>`;
+  el.innerHTML = `<header class="pagina-cab">
+      <div><a class="link nao-imprimir" href="#/historico">${icone('voltar')} Histórico</a><h1 style="margin-top:8px">Comparação</h1></div>
+      <div class="acoes nao-imprimir"><button type="button" class="btn btn-sec" data-acao="imprimir">Imprimir</button></div>
+    </header>
+    <div data-comp></div>`;
   el.querySelector('[data-acao="imprimir"]').addEventListener('click', () => window.print());
   if (!a?.diagnostico || !b?.diagnostico) {
-    el.querySelector('[data-comp]').innerHTML = '<p class="aviso aviso-erro">Uma das aplicações não foi encontrada ou não tem diagnóstico.</p>';
+    el.querySelector('[data-comp]').innerHTML = `<p class="aviso aviso-erro">${icone('alerta')}<span>Uma das aplicações não foi encontrada ou não tem diagnóstico.</span></p>`;
     return;
   }
   renderComparacao(el.querySelector('[data-comp]'), { modelo, a, b });
@@ -450,16 +363,16 @@ async function iniciar() {
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
     modelo = await resp.json();
   } catch (e) {
-    principal.innerHTML = `<section class="cartao estreito"><div class="aviso aviso-erro" role="alert">
-      <strong>Não foi possível carregar o modelo (dados.json).</strong> ${esc(e.message)}</div>
-      <p>Se você abriu o arquivo <code>index.html</code> diretamente do disco, o navegador bloqueia a leitura do modelo. Use a versão publicada (GitHub Pages) ou sirva a pasta localmente, por exemplo com <code>python3 -m http.server</code>, e acesse <code>http://localhost:8000</code>.</p></section>`;
+    principal.innerHTML = `<section class="painel estreito"><div class="aviso aviso-erro" role="alert">${icone('alerta')}
+      <p><strong>Não foi possível carregar o modelo (dados.json).</strong> ${esc(e.message)}</p></div>
+      <p class="nota">Aberto direto do disco? Sirva a pasta, por exemplo com <code>python3 -m http.server</code>, e acesse <code>http://localhost:8000</code>.</p></section>`;
     return;
   }
   const erros = validarModelo(modelo);
   if (erros.length) {
-    principal.innerHTML = `<section class="cartao estreito"><div class="aviso aviso-erro" role="alert">
-      <strong>Parâmetros do modelo inválidos.</strong> O diagnóstico não será calculado com um modelo inconsistente.
-      <ul>${erros.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></section>`;
+    principal.innerHTML = `<section class="painel estreito"><div class="aviso aviso-erro" role="alert">${icone('alerta')}
+      <div><strong>Parâmetros do modelo inválidos.</strong> O diagnóstico não será calculado com um modelo inconsistente.
+      <ul>${erros.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div></div></section>`;
     return;
   }
   renderGuia(document.getElementById('guia-conteudo'), modelo);

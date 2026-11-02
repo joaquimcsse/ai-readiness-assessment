@@ -10,7 +10,7 @@
     if (tema === 'escuro') raiz.setAttribute('data-tema', 'escuro');
     else raiz.removeAttribute('data-tema');
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', tema === 'escuro' ? '#16191d' : '#ffffff');
+    if (meta) meta.setAttribute('content', tema === 'escuro' ? '#1a1e23' : '#ffffff');
     var botoes = document.querySelectorAll('[data-tema]');
     for (var i = 0; i < botoes.length; i++) {
       if (botoes[i] !== raiz) botoes[i].setAttribute('aria-pressed', String(botoes[i].getAttribute('data-tema') === (tema || 'claro')));

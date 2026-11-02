@@ -1,6 +1,6 @@
-// bibliotecas.js — carga sob demanda das bibliotecas de exportação (pdfmake e
-// exceljs), copiadas em vendor/. Só são buscadas quando o gestor exporta ou
-// importa um diagnóstico: a página inicial não paga o seu peso. São arquivos do
+// bibliotecas.js — carga sob demanda das bibliotecas (pdfmake, exceljs e
+// echarts), copiadas em vendor/. Só são buscadas quando o gestor exporta,
+// importa ou abre um diagnóstico: a página inicial não paga o seu peso. São arquivos do
 // próprio site, então a CSP (script-src 'self') continua valendo.
 
 const carregados = new Map();
@@ -29,4 +29,10 @@ export async function carregarPdfMake() {
 export async function carregarExcelJS() {
   await carregarScript('vendor/exceljs/exceljs.min.js');
   return window.ExcelJS;
+}
+
+// Apache ECharts: gráficos do diagnóstico e da comparação.
+export async function carregarECharts() {
+  await carregarScript('vendor/echarts/echarts.min.js');
+  return window.echarts;
 }

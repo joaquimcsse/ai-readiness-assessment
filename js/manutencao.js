@@ -5,16 +5,16 @@
 // rascunho e gerar o novo dados.json, que o mantenedor versiona no
 // repositório (ADR-04). Parâmetros inconsistentes impedem a publicação.
 
-import { esc, num, notificar, lerArquivo } from './ui.js';
+import { esc, num, notificar, lerArquivo, icone } from './ui.js';
 import { validarModelo } from './validacao.js';
 import { carregarRascunhoModelo, salvarRascunhoModelo, descartarRascunhoModelo, baixarArquivo } from './estado.js';
 
 const ABAS = [
   { id: 'dimensoes', rotulo: 'Critérios e pesos', uc: 'UC-10' },
-  { id: 'faixas', rotulo: 'Níveis, faixas e priorização', uc: 'UC-10' },
+  { id: 'faixas', rotulo: 'Níveis e faixas', uc: 'UC-10' },
   { id: 'itens', rotulo: 'Itens e âncoras', uc: 'UC-11' },
-  { id: 'regras', rotulo: 'Base de regras', uc: 'UC-12' },
-  { id: 'publicar', rotulo: 'Publicar versão', uc: 'UC-10 a 12' },
+  { id: 'regras', rotulo: 'Regras', uc: 'UC-12' },
+  { id: 'publicar', rotulo: 'Publicar', uc: '' },
 ];
 
 function compararVersao(a, b) {
@@ -87,19 +87,27 @@ export function renderManutencao(el, { modelo }) {
   let filtroDim = 'D0';
 
   el.innerHTML = `
-    <section class="cartao">
-      <p class="etapa-rotulo">Pacote P3 · Pesquisador mantenedor</p>
-      <h1>Manutenção do modelo</h1>
-      <p class="lead">Edite pesos, limites, itens, âncoras e regras a partir de evidência da avaliação empírica (etapa V4). As alterações ficam em um rascunho neste navegador; ao publicar, o sistema valida o modelo e gera o novo <code>dados.json</code>, que deve substituir o arquivo do repositório. Parâmetros inconsistentes impedem a publicação e a versão anterior é mantida.</p>
-      <p class="nota">Versão publicada em uso: <strong>${esc(base.versao_modelo)}</strong> (${esc(base.data_versao || '')}). Diagnósticos de versões diferentes não são comparáveis (RN-07).</p>
-      <div class="acoes acoes-esq">
-        <label class="btn btn-sec">Carregar dados.json de arquivo<input type="file" accept="application/json,.json" data-acao="carregar" hidden></label>
-        <button type="button" class="btn btn-sec" data-acao="descartar">Descartar rascunho</button>
+    <header class="pagina-cab">
+      <div>
+        <span class="rotulo">Pesquisa · pesquisador mantenedor</span>
+        <h1>Manutenção do modelo</h1>
+        <p class="sub">Rascunho local da versão ${esc(base.versao_modelo)}${base.data_versao ? ` (${esc(base.data_versao)})` : ''}. Publicar gera um novo <code>dados.json</code>.</p>
       </div>
-    </section>
-    <div class="painel-validacao" data-validacao aria-live="polite"></div>
-    <nav class="abas" role="tablist">${ABAS.map(a => `<button type="button" role="tab" class="aba" data-aba="${a.id}">${esc(a.rotulo)} <small>${esc(a.uc)}</small></button>`).join('')}</nav>
-    <div data-corpo class="cartao"></div>`;
+      <div class="acoes">
+        <label class="btn btn-sec">Carregar dados.json<input type="file" accept="application/json,.json" data-acao="carregar" hidden></label>
+        <button type="button" class="btn btn-fantasma perigo" data-acao="descartar">Descartar rascunho</button>
+      </div>
+    </header>
+    <div class="layout-lateral">
+      <nav class="nav-lateral" role="tablist" aria-label="Seções do modelo" aria-orientation="vertical">
+        <span class="nav-lateral-titulo">Seções</span>
+        ${ABAS.map(a => `<button type="button" role="tab" data-aba="${a.id}">${esc(a.rotulo)}${a.uc ? ` <small>${esc(a.uc)}</small>` : ''}</button>`).join('')}
+      </nav>
+      <div>
+        <div class="status-validacao" data-validacao aria-live="polite"></div>
+        <div data-corpo class="painel"></div>
+      </div>
+    </div>`;
 
   const corpo = el.querySelector('[data-corpo]');
   const painelVal = el.querySelector('[data-validacao]');
@@ -119,60 +127,62 @@ export function renderManutencao(el, { modelo }) {
     const erros = validarModelo(rascunho);
     const mudancas = diferencas(base, rascunho);
     const soma = rascunho.dimensoes.reduce((a, d) => a + (Number(d.peso) || 0), 0);
+    painelVal.classList.toggle('erro', erros.length > 0);
     painelVal.innerHTML = erros.length
-      ? `<div class="aviso aviso-erro"><strong>${erros.length} inconsistência(s): a publicação está bloqueada.</strong><ul>${erros.slice(0, 12).map(e => `<li>${esc(e)}</li>`).join('')}${erros.length > 12 ? `<li>… e mais ${erros.length - 12}.</li>` : ''}</ul></div>`
-      : `<div class="aviso aviso-ok"><strong>Modelo consistente.</strong> ${mudancas.length ? `${mudancas.length} alteração(ões) em relação à versão ${esc(base.versao_modelo)}.` : 'Nenhuma alteração em relação à versão publicada.'} Soma dos pesos: ${num(soma, 2)}.</div>`;
+      ? `${icone('alerta')}<strong>${erros.length} inconsistência(s): publicação bloqueada</strong><span class="nota">Soma dos pesos ${num(soma, 2)}</span>
+        <details><summary>Ver lista</summary><ul>${erros.slice(0, 12).map(e => `<li>${esc(e)}</li>`).join('')}${erros.length > 12 ? `<li>… e mais ${erros.length - 12}.</li>` : ''}</ul></details>`
+      : `${icone('check')}<strong>Modelo consistente</strong><span class="nota">${mudancas.length ? `${mudancas.length} alteração(ões) sobre a ${esc(base.versao_modelo)}` : 'Sem alterações'} · soma dos pesos ${num(soma, 2)}</span>`;
     const somaEl = el.querySelector('[data-soma]');
     if (somaEl) { somaEl.textContent = num(soma, 2); somaEl.classList.toggle('txt-F1', Math.abs(soma - 1) > 1e-6); }
     return { erros, mudancas };
   }
 
   function desenhar() {
-    el.querySelectorAll('[data-aba]').forEach(b => { b.classList.toggle('ativa', b.dataset.aba === aba); b.setAttribute('aria-selected', String(b.dataset.aba === aba)); });
+    el.querySelectorAll('[data-aba]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.aba === aba)));
     if (aba === 'dimensoes') {
-      corpo.innerHTML = `
+      corpo.innerHTML = `<div class="secao-edicao">
         <h2>Critérios, pesos e criticidade <small>UC-10</small></h2>
         <p class="nota">A soma dos pesos deve ser 1 e exatamente três critérios devem ser críticos (operam como gargalo). Soma atual: <strong data-soma></strong>.</p>
-        <table class="tabela tabela-edicao"><thead><tr><th>Cód.</th><th>Nome</th><th>Peso</th><th>Crítico</th><th>Resumo (página inicial)</th><th>Definição</th></tr></thead><tbody>
+        <div class="tabela-rolagem"><table class="tabela tabela-edicao"><thead><tr><th>Cód.</th><th>Nome</th><th>Peso</th><th>Crítico</th><th>Resumo (página inicial)</th><th>Definição</th></tr></thead><tbody>
           ${rascunho.dimensoes.map((d, k) => `<tr><td><strong>${esc(d.codigo)}</strong></td><td>${campo(`dimensoes.${k}.nome`, { rotulo: 'Nome' })}</td>
             <td>${campo(`dimensoes.${k}.peso`, { tipo: 'num', passo: '0.01', rotulo: `Peso ${d.codigo}`, classe: 'curto' })}</td>
             <td class="centro">${campo(`dimensoes.${k}.critica`, { tipo: 'bool', rotulo: `Crítico ${d.codigo}` })}</td>
             <td>${campo(`dimensoes.${k}.resumo`, { area: true, rotulo: 'Resumo' })}</td>
             <td>${campo(`dimensoes.${k}.definicao`, { area: true, rotulo: 'Definição' })}</td></tr>`).join('')}
-        </tbody></table>`;
+        </tbody></table></div></div>`;
     } else if (aba === 'faixas') {
-      corpo.innerHTML = `
+      corpo.innerHTML = `<div class="secao-edicao">
         <h2>Níveis de maturidade <small>UC-10</small></h2>
         <p class="nota">Os limites devem ser contíguos e cobrir de 0 a 100 (inferior inclusivo, superior exclusivo, exceto no último).</p>
         <table class="tabela tabela-edicao"><thead><tr><th>Nível</th><th>Nome</th><th>De</th><th>Até</th><th>Interpretação</th></tr></thead><tbody>
           ${rascunho.niveis.map((n, k) => `<tr><td><strong>${n.numero}</strong></td><td>${campo(`niveis.${k}.nome`)}</td>
             <td>${campo(`niveis.${k}.limite_inferior`, { tipo: 'num', classe: 'curto' })}</td><td>${campo(`niveis.${k}.limite_superior`, { tipo: 'num', classe: 'curto' })}</td>
             <td>${campo(`niveis.${k}.interpretacao`, { area: true })}</td></tr>`).join('')}
-        </tbody></table>
-        <h2>Faixas da base de regras <small>UC-10</small></h2>
+        </tbody></table></div>
+        <div class="secao-edicao"><h2>Faixas da base de regras <small>UC-10</small></h2>
         <table class="tabela tabela-edicao"><thead><tr><th>Faixa</th><th>Nome</th><th>De</th><th>Até</th><th>Leitura</th></tr></thead><tbody>
           ${rascunho.faixas.map((f, k) => `<tr><td><strong>${esc(f.codigo)}</strong></td><td>${campo(`faixas.${k}.nome`)}</td>
             <td>${campo(`faixas.${k}.limite_inferior`, { tipo: 'num', classe: 'curto' })}</td><td>${campo(`faixas.${k}.limite_superior`, { tipo: 'num', classe: 'curto' })}</td>
             <td>${campo(`faixas.${k}.leitura`, { area: true })}</td></tr>`).join('')}
-        </tbody></table>
-        <h2>Priorização do roteiro</h2>
+        </tbody></table></div>
+        <div class="secao-edicao"><h2>Priorização do roteiro</h2>
         <p class="nota">prioridade = peso da faixa + bônus se o critério for crítico + bônus de esforço. Advertências recebem o peso de advertência e precedem todas as ações.</p>
         <div class="grade-campos">
           ${rascunho.faixas.map(f => `<label>Peso da faixa ${esc(f.codigo)} ${campo(`priorizacao.peso_faixa.${f.codigo}`, { tipo: 'num', classe: 'curto' })}</label>`).join('')}
           <label>Bônus de critério crítico ${campo('priorizacao.bonus_dimensao_critica', { tipo: 'num', classe: 'curto' })}</label>
           ${['Baixo', 'Médio', 'Alto'].map(e => `<label>Bônus de esforço ${e} ${campo(`priorizacao.bonus_esforco.${e}`, { tipo: 'num', classe: 'curto' })}</label>`).join('')}
           <label>Peso de advertência ${campo('priorizacao.peso_advertencia', { tipo: 'num', classe: 'curto' })}</label>
-        </div>
-        <h2>Periodicidade de reaplicação</h2>
+        </div></div>
+        <div class="secao-edicao"><h2>Periodicidade de reaplicação</h2>
         <table class="tabela tabela-edicao"><thead><tr><th>Níveis</th><th>Meses</th><th>Gatilho para antecipar</th></tr></thead><tbody>
           ${rascunho.reaplicacao.map((r, k) => `<tr><td>${r.niveis.join(' e ')}</td><td>${campo(`reaplicacao.${k}.meses`, { tipo: 'num', classe: 'curto' })}</td><td>${campo(`reaplicacao.${k}.gatilho`, { area: true })}</td></tr>`).join('')}
-        </tbody></table>`;
+        </tbody></table></div>`;
     } else if (aba === 'itens') {
       const itens = rascunho.itens.map((it, k) => ({ it, k })).filter(x => x.it.dimensao === filtroDim);
-      corpo.innerHTML = `
+      corpo.innerHTML = `<div class="secao-edicao">
         <h2>Banco de itens e âncoras <small>UC-11</small></h2>
         <p class="nota">Cada item tem cinco âncoras de prática observável, da 1 (Inexistente) à 5 (Otimizada). Use o status para marcar âncoras revisadas pelo grupo.</p>
-        <div class="filtro-horizonte" role="group" aria-label="Critério">${rascunho.dimensoes.map(d => `<button type="button" class="chip ${d.codigo === filtroDim ? 'ativo' : ''}" data-dim="${esc(d.codigo)}">${esc(d.codigo)} <small>${rascunho.itens.filter(i => i.dimensao === d.codigo).length}</small></button>`).join('')}</div>
+        <div class="segmentado" role="group" aria-label="Critério" style="margin-bottom:16px">${rascunho.dimensoes.map(d => `<button type="button" data-dim="${esc(d.codigo)}" aria-pressed="${d.codigo === filtroDim}" title="${esc(d.nome)}">${esc(d.codigo)} · ${rascunho.itens.filter(i => i.dimensao === d.codigo).length}</button>`).join('')}</div>
         ${itens.map(({ it, k }) => `
           <details class="item-edicao" ${itens.length <= 6 ? '' : ''}>
             <summary><strong>${esc(it.codigo)}</strong> ${esc(it.assertiva)} <span class="selo ${it.ancoras_status === 'rascunho' ? 'selo-alerta' : ''}">${esc(it.ancoras_status || '')}</span></summary>
@@ -182,23 +192,23 @@ export function renderManutencao(el, { modelo }) {
               <label>Status das âncoras ${campo(`itens.${k}.ancoras_status`, { opcoes: ['PBL4', 'rascunho', 'revisada'] })}</label>
             </div>
             ${it.ancoras.map((_, j) => `<label>Âncora ${j + 1} · ${esc(rascunho.escala[j]?.descritor)} ${campo(`itens.${k}.ancoras.${j}`, { area: true })}</label>`).join('')}
-          </details>`).join('')}`;
+          </details>`).join('')}</div>`;
     } else if (aba === 'regras') {
-      corpo.innerHTML = `
+      corpo.innerHTML = `<div class="secao-edicao">
         <h2>Regras de critério <small>UC-12</small></h2>
         <p class="nota">Exatamente uma regra por par critério-faixa, para que nenhum perfil produza roteiro vazio (CT-05).</p>
         <table class="tabela tabela-edicao"><thead><tr><th>Regra</th><th>Ação prescrita</th><th>Esforço</th><th>Horizonte</th></tr></thead><tbody>
           ${rascunho.regras_dimensao.map((r, k) => `<tr><td><code>${esc(r.codigo)}</code></td><td>${campo(`regras_dimensao.${k}.acao`, { area: true })}</td>
             <td>${campo(`regras_dimensao.${k}.esforco`, { opcoes: ['Baixo', 'Médio', 'Alto'] })}</td><td>${campo(`regras_dimensao.${k}.horizonte`, { opcoes: ['Curto', 'Médio', 'Longo'] })}</td></tr>`).join('')}
-        </tbody></table>
-        <h2>Regras transversais <small>UC-12</small></h2>
+        </tbody></table></div>
+        <div class="secao-edicao"><h2>Regras transversais <small>UC-12</small></h2>
         <p class="nota">A condição é uma expressão declarativa sobre as faixas. Tipos: <code>faixa</code> {dimensao, faixa}, <code>faixa_global</code> {faixa}, <code>criticas_em_faixa</code> {faixa, minimo}, <code>todas</code>/<code>alguma</code> {condicoes: […]}, <code>nao</code> {condicao}.</p>
         <table class="tabela tabela-edicao"><thead><tr><th>Regra</th><th>Condição</th><th>Advertência</th><th>Esforço</th><th>Horizonte</th></tr></thead><tbody>
           ${rascunho.regras_transversais.map((r, k) => `<tr><td><code>${esc(r.codigo)}</code></td>
             <td>${campo(`regras_transversais.${k}.condicao_texto`, { area: true, rotulo: 'Condição em texto' })}${campo(`regras_transversais.${k}.condicao`, { tipo: 'json', rotulo: 'Condição' })}</td>
             <td>${campo(`regras_transversais.${k}.acao`, { area: true })}</td>
             <td>${campo(`regras_transversais.${k}.esforco`, { opcoes: ['Baixo', 'Médio', 'Alto'] })}</td><td>${campo(`regras_transversais.${k}.horizonte`, { opcoes: ['Curto', 'Médio', 'Longo'] })}</td></tr>`).join('')}
-        </tbody></table>`;
+        </tbody></table></div>`;
     } else {
       const { erros, mudancas } = validar();
       corpo.innerHTML = `
@@ -213,8 +223,8 @@ export function renderManutencao(el, { modelo }) {
           </div>
           <label>Por que mudou (evidência que justifica o ajuste)
             <textarea name="notas" rows="3" required placeholder="Ex.: avaliação com especialistas (V3) indicou que…"></textarea></label>
-          <div class="acoes"><button type="submit" class="btn btn-pri" ${erros.length ? 'disabled' : ''}>Publicar e baixar dados.json</button></div>
-          ${erros.length ? '<p class="aviso aviso-erro">Corrija as inconsistências acima para publicar.</p>' : ''}
+          <div class="form-rodape"><span class="nota">Substitua o dados.json do repositório depois de baixar.</span><button type="submit" class="btn btn-pri" ${erros.length ? 'disabled' : ''}>Publicar e baixar dados.json</button></div>
+          ${erros.length ? `<p class="aviso aviso-erro">${icone('alerta')}<span>Corrija as inconsistências para publicar.</span></p>` : ''}
         </form>`;
     }
     validar();

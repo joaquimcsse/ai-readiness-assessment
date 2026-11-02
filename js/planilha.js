@@ -13,7 +13,7 @@ export const VERSAO_FORMATO = 2;
 const ABA_DADOS = '_mgp';
 const TAMANHO_PEDACO = 32000; // limite de uma célula do Excel: 32 767 caracteres
 
-const COR = { faixa: 'FF39495C', branco: 'FFFFFFFF', zebra: 'FFF3F3F3', filete: 'FFE2E5E9', alerta: 'FFA43B3B' };
+const COR = { faixa: 'FF8A0638', branco: 'FFFFFFFF', zebra: 'FFF9F9F9', filete: 'FFEAEAEA', alerta: 'FFD90036' };
 
 function aba(wb, nome, colunas, linhas) {
   const ws = wb.addWorksheet(nome, { views: [{ state: 'frozen', ySplit: 1 }] });
