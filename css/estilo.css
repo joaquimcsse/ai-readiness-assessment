@@ -655,7 +655,8 @@ input.curto { max-width: 96px; }
 /* o gráfico ocupa todo o painel: o painel é uma coluna e a caixa cresce */
 .graficos > .painel { display: flex; flex-direction: column; }
 .grafico-caixa { position: relative; flex: 1 1 auto; width: 100%; min-height: 360px; }
-.grafico-caixa > div { position: absolute !important; inset: 0; }
+/* só o primeiro filho é a área do gráfico; o outro div do ECharts é a dica (tooltip) */
+.grafico-caixa > div:first-child { position: absolute !important; inset: 0; }
 /* o SVG estático só aparece se a biblioteca não carregar (ou na impressão) */
 .grafico-caixa > svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; visibility: hidden; }
 .grafico-caixa.sem-biblioteca > svg { visibility: visible; }
@@ -936,7 +937,8 @@ input.curto { max-width: 96px; }
   .so-impressao { display: inline; }
   .graficos { grid-template-columns: 1.55fr 1fr; break-inside: avoid; }
   .grafico-caixa { overflow: hidden; height: auto !important; min-height: 0; flex: none; }
-  .grafico-caixa > div, .grafico-caixa svg { position: static !important; width: 100% !important; height: auto !important; visibility: visible !important; }
+  .grafico-caixa > div:not(:first-child) { display: none !important; }
+  .grafico-caixa > div:first-child, .grafico-caixa svg { position: static !important; width: 100% !important; height: auto !important; visibility: visible !important; }
   .quebra-antes { break-before: page; }
   .tabela tr, .canvas-celula, .advertencia, .teto-explica, .kpis, .prioridades li { break-inside: avoid; }
   h2 { break-after: avoid; }

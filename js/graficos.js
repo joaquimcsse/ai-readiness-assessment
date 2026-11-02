@@ -5,7 +5,7 @@
 // estático desenhado por painel.js: se a biblioteca não carregar, ele fica.
 
 import { carregarECharts } from './bibliotecas.js';
-import { num } from './ui.js';
+import { num, esc } from './ui.js';
 
 const FONTE = '"IBM Plex Sans", system-ui, sans-serif';
 // gráficos: rótulos de eixo a 12-13px, para acompanhar o corpo de 17px
@@ -39,9 +39,9 @@ function base(c, animar) {
     animationDelay: k => k * 70,
     textStyle: { fontFamily: FONTE, color: c.texto },
     tooltip: {
-      backgroundColor: c.superficie, borderWidth: 0, padding: [8, 12],
-      textStyle: { color: c.texto, fontFamily: FONTE, fontSize: 12 },
-      extraCssText: 'box-shadow: 0 4px 16px rgba(16,24,40,.16); border-radius: 2px;',
+      confine: true, backgroundColor: c.superficie, borderWidth: 0, padding: [10, 14],
+      textStyle: { color: c.texto, fontFamily: FONTE, fontSize: 13 },
+      extraCssText: 'box-shadow: 0 8px 24px rgba(40,10,25,.18); border-radius: 8px; max-width: 300px; white-space: normal; line-height: 1.5;',
     },
   };
 }
@@ -108,6 +108,14 @@ export function opcoesPerfil(diag, modelo, c, { animar = true, largura = 800 } =
   };
 }
 
+// Dica do radar: o nome do polígono (não o da série) e o valor em cada eixo.
+// Para a linha de limite, que é igual em todos os eixos, uma linha só.
+export function dicaRadar(p, nomes, c, limite = null) {
+  const titulo = `<strong style="color:${p.color}">${esc(p.name)}</strong>`;
+  if (limite !== null) return `${titulo}<br>${num(limite, 0)} pontos em todos os critérios`;
+  return `${titulo}${nomes.map((n, k) => `<div style="display:flex;justify-content:space-between;gap:16px"><span>${esc(n)}</span><b>${num(p.value[k])}</b></div>`).join('')}`;
+}
+
 function radarBase(nomes, c, largura = 800) {
   return {
     radius: largura < 520 ? '46%' : '56%', center: ['50%', '48%'], splitNumber: 5, shape: 'polygon',
@@ -126,7 +134,7 @@ export function opcoesRadar(diag, modelo, c, { animar = true, largura = 800 } = 
   return {
     ...base(c, animar),
     tooltip: { ...base(c, animar).tooltip, trigger: 'item',
-      formatter: p => `<strong>${p.seriesName}</strong><br>${linhas.map((d, k) => `${d.nome}: ${num(p.value[k])}`).join('<br>')}` },
+      formatter: p => dicaRadar(p, linhas.map(d => d.nome), c, p.name === 'Empresa' ? null : limite) },
     legend: { bottom: 0, itemWidth: 14, itemHeight: 8, textStyle: { color: c.texto2, fontSize: 11 }, data: ['Empresa', 'Limite da faixa Crítica'] },
     radar: radarBase(linhas.map(d => d.nome), c, largura),
     series: [{
@@ -171,7 +179,7 @@ export function opcoesRadarComparacao(da, db, modelo, rotulos, c, { animar = tru
   });
   return {
     ...base(c, animar),
-    tooltip: { ...base(c, animar).tooltip, trigger: 'item' },
+    tooltip: { ...base(c, animar).tooltip, trigger: 'item', formatter: p => dicaRadar(p, dims.map(d => d.nome), c) },
     legend: { bottom: 0, itemWidth: 14, itemHeight: 8, textStyle: { color: c.texto2, fontSize: 11 } },
     radar: radarBase(dims.map(d => d.nome), c, largura),
     series: [{ type: 'radar', data: [item(rotulos[0], da, c.serieA, false), item(rotulos[1], db, c.serieB, true)] }],
