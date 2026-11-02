@@ -115,3 +115,24 @@ export function lerArquivo(arquivo) {
     leitor.readAsText(arquivo, 'utf-8');
   });
 }
+
+// Ícones em linha (SVG de 16px, traço na cor do texto). Um conjunto pequeno e
+// fixo, para não depender de glifos de fonte como ✓ ▲ ▸.
+const TRACOS = {
+  check: '<path d="M3.5 8.5l3 3 6-7"/>',
+  chevron: '<path d="M6 4l4 4-4 4"/>',
+  baixo: '<path d="M4 6l4 4 4-4"/>',
+  voltar: '<path d="M10 4L6 8l4 4"/>',
+  seta: '<path d="M3 8h10M9 4l4 4-4 4"/>',
+  sobe: '<path d="M8 13V3M4 7l4-4 4 4"/>',
+  desce: '<path d="M8 3v10M4 9l4 4 4-4"/>',
+  alerta: '<path d="M8 2.5l6 11H2z"/><path d="M8 6.5v3M8 11.5v.5"/>',
+  info: '<circle cx="8" cy="8" r="6"/><path d="M8 7.5v4M8 5v.5"/>',
+  baixar: '<path d="M8 2.5v8M4.5 7L8 10.5 11.5 7M3 13.5h10"/>',
+  fechar: '<path d="M4 4l8 8M12 4l-8 8"/>',
+};
+
+export function icone(nome, rotulo = '') {
+  const aria = rotulo ? `role="img" aria-label="${esc(rotulo)}"` : 'aria-hidden="true"';
+  return `<svg class="icone" viewBox="0 0 16 16" ${aria} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${TRACOS[nome] || ''}</svg>`;
+}

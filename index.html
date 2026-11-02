@@ -11,6 +11,8 @@
   <meta name="description" content="MGP-PME: diagnóstico autoaplicável de prontidão para Inteligência Artificial em Pequenas e Médias Empresas, com teto de gargalo e roteiro de ação priorizado.">
   <title>MGP-PME · Prontidão para IA</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2339495c'/%3E%3Crect x='7' y='17' width='4' height='8' fill='%23ffffff'/%3E%3Crect x='14' y='11' width='4' height='14' fill='%23ffffff'/%3E%3Crect x='21' y='7' width='4' height='18' fill='%23ffffff' fill-opacity='.55'/%3E%3C/svg%3E">
+  <link rel="preload" href="vendor/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="vendor/fonts/ibm-plex-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/estilo.css">
   <script src="js/tema.js"></script>
   <script type="module" src="js/app.js"></script>
@@ -20,8 +22,8 @@
   <header class="topo nao-imprimir">
     <div class="topo-interno">
       <a class="marca" href="#/inicio" aria-label="MGP-PME, início">
-        <svg viewBox="0 0 32 32" aria-hidden="true" width="30" height="30"><rect width="32" height="32" rx="7" class="marca-fundo"/><rect x="7" y="17" width="4" height="8" class="marca-barra"/><rect x="14" y="11" width="4" height="14" class="marca-barra"/><rect x="21" y="7" width="4" height="18" class="marca-barra-destaque"/></svg>
-        <span><strong>MGP-PME</strong><small>Prontidão para IA</small></span>
+        <svg viewBox="0 0 32 32" aria-hidden="true" width="26" height="26"><rect width="32" height="32" rx="3" class="marca-fundo"/><rect x="7" y="17" width="4" height="8" class="marca-barra"/><rect x="14" y="11" width="4" height="14" class="marca-barra"/><rect x="21" y="7" width="4" height="18" class="marca-barra-destaque"/></svg>
+        <span>MGP-PME <small>Prontidão para IA</small></span>
       </a>
       <!-- Três rotas do gestor; as telas da equipe de pesquisa ficam agrupadas -->
       <nav class="menu" aria-label="Principal">
@@ -29,7 +31,7 @@
         <a href="#/aplicacao" data-rota="aplicacao">Diagnóstico</a>
         <a href="#/historico" data-rota="historico">Histórico</a>
         <details class="menu-grupo" id="menu-pesquisa">
-          <summary data-grupo="pesquisa">Pesquisa</summary>
+          <summary data-grupo="pesquisa">Pesquisa <svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></summary>
           <div class="menu-lista">
             <a href="#/avaliacao" data-rota="avaliacao">Avaliação por especialistas</a>
             <a href="#/manutencao" data-rota="manutencao">Manutenção do modelo</a>
@@ -37,27 +39,33 @@
           </div>
         </details>
       </nav>
-      <button type="button" class="btn btn-guia" id="abrir-guia" aria-controls="guia" aria-expanded="false">? Guia</button>
+      <button type="button" class="btn btn-fantasma btn-guia" id="abrir-guia" aria-controls="guia" aria-expanded="false">Guia</button>
     </div>
   </header>
 
   <main id="conteudo" tabindex="-1">
-    <section class="cartao estreito carregando"><p>Carregando o modelo…</p>
-      <noscript><p class="aviso aviso-erro">O MGP-PME precisa de JavaScript habilitado no navegador.</p></noscript>
-    </section>
+    <p class="carregando">Carregando o modelo…</p>
+    <noscript><p class="aviso aviso-erro">O MGP-PME precisa de JavaScript habilitado no navegador.</p></noscript>
   </main>
 
-  <!-- CP-14: Guia de aplicação embutido, acessível em qualquer etapa -->
+  <!-- Guia de aplicação embutido, acessível em qualquer etapa -->
   <aside id="guia" class="guia nao-imprimir" aria-labelledby="guia-titulo" hidden>
-    <button type="button" class="fechar" id="fechar-guia" aria-label="Fechar guia">×</button>
-    <div id="guia-conteudo"></div>
+    <div class="guia-cab">
+      <h2 id="guia-titulo">Guia de aplicação</h2>
+      <button type="button" class="btn btn-fantasma" id="fechar-guia" aria-label="Fechar guia"><svg class="icone" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></button>
+    </div>
+    <div class="guia-corpo" id="guia-conteudo"></div>
   </aside>
   <div class="veu nao-imprimir" id="veu" hidden></div>
 
   <footer class="rodape nao-imprimir">
-    <p>MGP-PME · Modelo de Gargalos de Prontidão para Pequenas e Médias Empresas · Grupo G02 · Pesquisa Aplicada, PUCPR.
-      Tudo é processado neste navegador: nenhuma resposta sai do seu dispositivo.</p>
-    <p class="rodape-tema">Tema: <button type="button" class="link" data-tema="claro" aria-pressed="true">claro</button> · <button type="button" class="link" data-tema="escuro" aria-pressed="false">escuro</button></p>
+    <div class="rodape-interno">
+      <p>Tudo é processado neste navegador. Nenhuma resposta sai do seu dispositivo.</p>
+      <div class="segmentado" role="group" aria-label="Tema">
+        <button type="button" data-tema="claro" aria-pressed="true">Claro</button>
+        <button type="button" data-tema="escuro" aria-pressed="false">Escuro</button>
+      </div>
+    </div>
   </footer>
 </body>
 </html>

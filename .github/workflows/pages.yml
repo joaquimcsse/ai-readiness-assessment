@@ -46,7 +46,7 @@ jobs:
       - name: Montar site (somente arquivos da página)
         run: |
           mkdir -p _site
-          cp -r index.html dados.json css js _site/
+          cp -r index.html dados.json css js vendor _site/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

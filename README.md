@@ -49,14 +49,18 @@ node --test                      # ou: npm test   (Node 20+, sem dependências)
 | `dados.json` | contrato de dados: R1 banco de itens, R2 níveis/faixas/pesos, R3 base de regras, versão do modelo |
 | `js/coleta.js` | C1 — ficha (CP-03), formulário (CP-01), completude (CP-02), guia (CP-14) |
 | `js/nucleo.js` | C2–C4 — funções puras CP-04 a CP-10 e o fluxo de UC-05 |
-| `js/painel.js` | C5 — perfil SVG (CP-11), relatório (CP-12), Canvas de Prontidão, comparação (UC-09) |
+| `js/painel.js` | C5 — perfil (CP-11), relatório (CP-12), Canvas de Prontidão, comparação (UC-09) |
+| `js/graficos.js` | gráficos do diagnóstico e da comparação (Apache ECharts), com as opções em funções puras |
+| `js/inicio.js` | página inicial |
+| `js/pesquisa.js` | dados da pesquisa (artigo, objetivos, requisitos, evidências, vereditos) usados no Sobre e no Início |
+| `js/animacoes.js` | movimento: revelar ao rolar, contagem de números, parallax, topo que muda ao rolar |
 | `js/estado.js` | armazenamento local, máquina de estados, arquivamento e importação (CP-13) |
 | `js/exportacao.js` | diálogo "Exportar diagnóstico": relatório em PDF e planilha (UC-08) |
 | `js/relatorio-pdf.js` | relatório em PDF (CP-12), no padrão dos relatórios de checklist e de WIT do cop |
 | `js/planilha.js` | planilha de dados .xlsx: gera e lê de volta para a comparação (CP-13, UC-09) |
-| `js/bibliotecas.js` | carrega pdfmake e exceljs de `vendor/` só na hora de exportar ou importar |
+| `js/bibliotecas.js` | carrega pdfmake, exceljs e echarts de `vendor/` só quando são usados |
 | `js/tema.js` | tema claro (padrão) ou escuro, escolhido no rodapé |
-| `vendor/` | pdfmake 0.3.11 e exceljs 4.4.0, licença MIT, copiados sem alteração |
+| `vendor/` | pdfmake 0.3.11 e exceljs 4.4.0 (MIT), echarts 5.6.0 (Apache 2.0) e IBM Plex (OFL), copiados sem alteração |
 | `js/app.js` | roteamento entre telas e orquestração do processo de aplicação |
 | `js/manutencao.js` | UC-10/11/12 — editar parâmetros, validar e gerar novo `dados.json` |
 | `js/avaliacao.js` | UC-13 — protocolo de avaliação por especialistas (V3), exportado em JSON |
@@ -152,6 +156,84 @@ O modelo continua na versão 1.0.0.
   - todos os pares texto/fundo passam no AA, nos dois temas.
 - **Tema:** claro por padrão. O escuro, também neutro, é escolhido no rodapé e fica salvo
   no navegador.
+
+## Versão 1.4.0 do artefato (nova interface)
+
+O modelo continua na versão 1.0.0. Só mudou a interface.
+
+**Visual**
+- Paleta da identidade da PUCPR sobre branco:
+  - vinho `#8A0638` nas ações, nos títulos e na faixa de abertura (`#4E0420`);
+  - vermelho `#FF0040` só no gargalo, nos critérios críticos e nos erros;
+  - violeta só nos gráficos e nas legendas deles.
+- Regra contra o excesso de cor: no máximo uma superfície saturada por tela.
+- Fonte IBM Plex Sans (400 a 700), guardada em `vendor/fonts` (licença OFL). Corpo de 17px.
+- Painéis brancos com sombra leve e sem borda. Botões com canto de 10px; "crítico" e "gargalo" em pílulas.
+- Ícones em SVG no lugar de glifos como ✓ ▲ ◆.
+- Movimento curto, em `js/animacoes.js`:
+  - as seções entram ao aparecer na tela e os números contam até o valor;
+  - a afirmação desliza ao navegar no questionário;
+  - os gráficos crescem ao carregar.
+  - Com "reduzir movimento" ligado no sistema, nada se move.
+
+**Página inicial** (`js/inicio.js`)
+- Uma sequência que se lê rolando:
+  1. faixa vinho com a prévia de um resultado;
+  2. os números do instrumento;
+  3. como funciona;
+  4. o método, com uma animação de como o teto de gargalo leva a média de nível 3 para 2;
+  5. os seis critérios;
+  6. o que o gestor recebe;
+  7. privacidade e o convite final.
+- A prévia e a animação usam o caso ilustrativo calculado pelo próprio núcleo, não números inventados.
+- O instrumento aparece como artefato de Design Science Research.
+
+**Questionário**
+- Uma afirmação por tela, com a trilha dos seis critérios ao lado.
+- Teclas 1 a 5 respondem e as setas navegam. Ao responder, a tela avança sozinha.
+- A tela de revisão mostra todas as respostas e leva ao diagnóstico.
+- O endereço (`#/questionario/I07`) guarda onde o gestor parou.
+
+**Diagnóstico**
+- No topo, quatro indicadores: nível, escore global, o que trava e a próxima aplicação.
+- Perfil em barras e forma do perfil em radar, com Apache ECharts 5.6.0 (`vendor/echarts`). A biblioteca só é carregada nesta tela e na comparação.
+- Um SVG estático fica no lugar dos gráficos se a biblioteca não carregar.
+- Em seguida, os três primeiros passos do roteiro.
+- Os detalhes ficam em abas: Critérios, Roteiro, Nível, Canvas e Referências. Na impressão saem todas.
+- Com o caso Aurora, a tela mostra ao abrir 304 palavras, contra 363 na versão 1.3.0, já contando os indicadores e os gráficos.
+
+**Outras telas**
+- A comparação usa os mesmos gráficos.
+- O Histórico perdeu a tabela de periodicidade, que já está no Guia.
+- A página inicial ficou com título, três números, um botão e a prévia de um resultado. As referências estão recolhidas em "Base científica".
+- Nas telas de pesquisa:
+  - Manutenção ganhou navegação lateral e uma linha fixa com o estado da validação.
+  - Avaliação ganhou uma matriz Likert.
+  - Sobre ganhou um índice "Ir para".
+
+**Conteúdo alinhado ao artigo** (`js/pesquisa.js`)
+- **Sobre:**
+  - título do artigo e autores;
+  - DSR Canvas atualizado (revisão de 35 artigos, avaliação no quadro FEDS, contribuição do tipo "melhoria");
+  - objetivos OE1 a OE7 e requisitos.
+- **Nova seção Avaliação em Sobre:**
+  - evidências E1 a E5;
+  - vereditos dos 26 critérios (19 atendidos, 7 parciais);
+  - as lacunas dos parciais e o que a página mudou depois;
+  - as limitações.
+- **Avaliação por especialistas** passou a usar o protocolo do artigo:
+  - SUS (Brooke, 1996), com escore calculado na tela;
+  - as perguntas abertas PA1 a PA3.
+  - O texto dos itens do SUS é provisório até o grupo informar a versão em português aplicada (`ITENS_SUS` em `js/avaliacao.js`).
+  - Avaliações salvas no protocolo anterior continuam listadas.
+- **Conferência com os PDFs originais.** Foram corrigidos, sem mudar a versão do modelo:
+  - o resumo de literatura dos itens I07 e I11, que dizia mais do que as fontes;
+  - as páginas de Amarasuriya e Abston (2026).
+- **Textos da interface:** revisados para leitura mais direta.
+
+**Exportação:** o PDF e a planilha usam a mesma paleta da página (capa vinho, títulos e cabeçalhos vinho, vermelho só no gargalo), e não mais a paleta neutra da versão 1.3.0.
+
+**Publicação:** o workflow do GitHub Pages passou a copiar `vendor/`. Antes, a exportação não funcionava na publicação a partir de `main`.
 
 ## Decisões de implementação a revisar
 

@@ -4,7 +4,7 @@
 // Como no relatório de checklist do cop, cada arquivo mostra o próprio estado
 // (gerando, baixado, erro com "Tentar de novo"). Tudo é gerado no navegador.
 
-import { esc, nomeArquivo } from './ui.js';
+import { esc, nomeArquivo, icone } from './ui.js';
 import { ESTADOS, arquivarExportacao, baixarArquivo } from './estado.js';
 import { carregarPdfMake, carregarExcelJS } from './bibliotecas.js';
 import { gerarPdf } from './relatorio-pdf.js';
@@ -13,15 +13,17 @@ import { gerarPlanilha } from './planilha.js';
 const OPCOES = [
   {
     id: 'pdf',
-    titulo: 'Relatório em PDF',
-    descricao: 'Para ler, imprimir e compartilhar. A planilha de dados vai anexada dentro do PDF.',
+    formato: 'PDF',
+    titulo: 'Relatório',
+    descricao: 'Para ler e compartilhar. Leva a planilha anexada.',
     botao: 'Baixar PDF',
     primario: true,
   },
   {
     id: 'xlsx',
-    titulo: 'Planilha de dados (.xlsx)',
-    descricao: 'Guarde este arquivo: é ele que o Histórico importa para comparar com a próxima aplicação.',
+    formato: 'XLSX',
+    titulo: 'Planilha de dados',
+    descricao: 'O Histórico importa este arquivo para comparar aplicações.',
     botao: 'Baixar planilha',
     primario: false,
   },
@@ -58,19 +60,22 @@ export function abrirExportacao({ app, modelo, aoFechar = () => {} }) {
   dialogo.innerHTML = `
     <form method="dialog" class="dialogo-corpo">
       <h2 id="exportar-titulo">Exportar diagnóstico</h2>
-      <p class="nota">${esc(app.empresa.identificador)}. Os arquivos são gerados neste navegador; nada é enviado.</p>
+      <p class="nota">${esc(app.empresa.identificador)} · gerado neste navegador, nada é enviado.</p>
       <ul class="exportar-opcoes">
         ${OPCOES.map(o => `<li data-opcao="${o.id}">
+          <span class="exportar-formato" aria-hidden="true">${esc(o.formato)}</span>
           <div>
             <h3>${esc(o.titulo)}</h3>
             <p>${esc(o.descricao)}</p>
             <p class="exportar-estado" data-estado role="status" aria-live="polite"></p>
           </div>
-          <button type="button" class="btn ${o.primario ? 'btn-pri' : 'btn-sec'}" data-gerar="${o.id}">${esc(o.botao)}</button>
+          <button type="button" class="btn ${o.primario ? 'btn-pri' : 'btn-sec'}" data-gerar="${o.id}">${icone('baixar')} ${esc(o.botao)}</button>
         </li>`).join('')}
       </ul>
-      ${app.estado !== ESTADOS.ARQUIVADA ? '<p class="nota">Ao baixar o primeiro arquivo, a aplicação passa a Arquivada: as respostas ficam guardadas como estão.</p>' : ''}
-      <div class="acoes"><button type="submit" class="btn btn-sec" value="fechar">Fechar</button></div>
+      <div class="form-rodape" style="border-top:0;padding-top:0">
+        <span class="nota">${app.estado !== ESTADOS.ARQUIVADA ? 'O primeiro download arquiva as respostas.' : ''}</span>
+        <button type="submit" class="btn btn-sec" value="fechar">Fechar</button>
+      </div>
     </form>`;
   document.body.appendChild(dialogo);
 
@@ -91,7 +96,7 @@ export function abrirExportacao({ app, modelo, aoFechar = () => {} }) {
       if (!exportou) { arquivarExportacao(app); exportou = true; }
       estadoEl.textContent = `Baixado: ${nome}`;
       estadoEl.classList.add('ok');
-      botao.textContent = 'Baixar de novo';
+      botao.innerHTML = `${icone('baixar')} Baixar de novo`;
     } catch (e) {
       estadoEl.textContent = `Não foi possível gerar o arquivo. ${e.message || ''}`.trim();
       estadoEl.classList.add('erro');

@@ -13,23 +13,25 @@ import {
   primeiroPasso, ehGargalo, alvoLegivel, referenciasDoPasso, referenciasDoRelatorio, celulasCanvas,
 } from './painel.js';
 
-// ------------------------------------------------------------ tema (cop: report-theme.ts)
+// ------------------------------------------------------------ tema (o mesmo da página, versão 1.4.0)
+// Vinho na estrutura (capa, títulos, cabeçalhos), vermelho só para a faixa
+// Crítica e o gargalo, violeta só nas marcas de dado das faixas, como nos gráficos.
 export const CORES = {
-  faixa: '#39495C',      // capa, títulos, cabeçalho das tabelas
-  primaria: '#506A88',   // links e destaques
-  texto: '#21262B',
-  mudo: '#5E666F',
-  filete: '#E2E5E9',
-  zebra: '#F3F3F3',
-  alerta: '#A43B3B',     // faixa Crítica e gargalo: a única cor de alerta
+  capa: '#4E0420',       // faixa da capa
+  faixa: '#8A0638',      // títulos e cabeçalho das tabelas
+  primaria: '#8A0638',   // links e destaques
+  texto: '#222222',
+  mudo: '#4F4F4F',
+  filete: '#EAEAEA',
+  zebra: '#F9F9F9',
+  alerta: '#D90036',     // faixa Crítica e gargalo: a única cor de alerta
   branco: '#FFFFFF',
 };
-// Faixas: uma rampa de luminância de uma só matiz, mais o alerta.
-export const COR_FAIXA = { F1: CORES.alerta, F2: '#8A99AD', F3: CORES.faixa };
-// O cinza médio de F2 serve para barras; em texto ele fica abaixo de 4,5:1, então
-// o texto usa um tom mais escuro da mesma matiz.
-export const COR_FAIXA_TEXTO = { F1: CORES.alerta, F2: '#5F6E82', F3: CORES.faixa };
-const FUNDO_FAIXA = { F1: '#F7ECEC', F2: '#F1F3F6', F3: '#E6EAEF' };
+// Faixas: as cores dos gráficos (vermelho, violeta claro, violeta).
+export const COR_FAIXA = { F1: '#FF0040', F2: '#B48BFF', F3: '#6A2FD6' };
+// Em texto, só a Crítica tem cor; violeta fica restrito às marcas de dado.
+export const COR_FAIXA_TEXTO = { F1: CORES.alerta, F2: CORES.mudo, F3: CORES.texto };
+const FUNDO_FAIXA = { F1: '#FFF0F4', F2: '#F6F1FF', F3: '#EFE8FD' };
 
 export const PAGINA = { largura: 595.28, altura: 841.89, margens: [40, 72, 40, 56] };
 const LARGURA_UTIL = PAGINA.largura - PAGINA.margens[0] - PAGINA.margens[2];
@@ -101,16 +103,16 @@ function fundoCapa(app) {
   const nome = app.empresa.identificador;
   const tamanho = nome.length > 70 ? 15 : nome.length > 48 ? 18 : nome.length > 30 ? 21 : 24;
   return [
-    { canvas: [{ type: 'rect', x: 0, y: 0, w: PAGINA.largura, h: ALTURA_CAPA, color: CORES.faixa }] },
+    { canvas: [{ type: 'rect', x: 0, y: 0, w: PAGINA.largura, h: ALTURA_CAPA, color: CORES.capa }] },
     {
       absolutePosition: { x: PAGINA.margens[0], y: 52 },
       width: LARGURA_UTIL,
       stack: [
         { text: 'MGP-PME', bold: true, fontSize: 11, color: CORES.branco },
-        { text: 'Modelo de Gargalos de Prontidão para PMEs', fontSize: 8, color: '#C9D1DB', margin: [0, 1, 0, 0] },
-        { text: 'DIAGNÓSTICO DE PRONTIDÃO PARA IA', bold: true, fontSize: 8.5, characterSpacing: 1.2, color: '#C9D1DB', margin: [0, 34, 0, 6] },
+        { text: 'Modelo de Gargalos de Prontidão para PMEs', fontSize: 8, color: '#EBD5DF', margin: [0, 1, 0, 0] },
+        { text: 'DIAGNÓSTICO DE PRONTIDÃO PARA IA', bold: true, fontSize: 8.5, characterSpacing: 1.2, color: '#EBD5DF', margin: [0, 34, 0, 6] },
         { text: nome, bold: true, fontSize: tamanho, color: CORES.branco, lineHeight: 1.05 },
-        { text: `${app.empresa.setor} · ${rotuloPorte(app.empresa.porte)} · ${app.empresa.funcionarios} funcionários`, fontSize: 10, color: '#C9D1DB', margin: [0, 6, 0, 0] },
+        { text: `${app.empresa.setor} · ${rotuloPorte(app.empresa.porte)} · ${app.empresa.funcionarios} funcionários`, fontSize: 10, color: '#EBD5DF', margin: [0, 6, 0, 0] },
       ],
     },
   ];
