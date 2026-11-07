@@ -1,0 +1,421 @@
+{
+  "semente": 20261013,
+  "node": "v24.18.0",
+  "versao_modelo": "1.0.0",
+  "gerado_em": "2026-11-07",
+  "ablacao": {
+    "itens_independentes": {
+      "perfis": 20000,
+      "nivel_final_medio": 2.34,
+      "nivel_compensatorio_medio": 3,
+      "teto_atua_pct": 58.8,
+      "niveis_perdidos_media": 0.66,
+      "perdem_2_ou_mais_pct": 7.3,
+      "pesos_uniformes_mudam_compensatorio_pct": 2.3,
+      "pesos_uniformes_mudam_final_pct": 0.2,
+      "teto_seis_dimensoes_mudaria_final_pct": 25,
+      "com_advertencia_pct": 64.8,
+      "sem_acao_curto_prazo_pct": 1.6,
+      "tamanho_medio_roteiro": 7.04,
+      "com_teto_primeira_acao_do_gargalo_pct": 93.7,
+      "com_teto_outra_dimensao_na_frente_pct": 3.5,
+      "com_teto_faixa_do_gargalo_pct": {
+        "F1": 92.6,
+        "F2": 7.4,
+        "F3": 0
+      }
+    },
+    "maturidade_correlacionada": {
+      "perfis": 20000,
+      "nivel_final_medio": 2.47,
+      "nivel_compensatorio_medio": 3,
+      "teto_atua_pct": 48,
+      "niveis_perdidos_media": 0.53,
+      "perdem_2_ou_mais_pct": 4.5,
+      "pesos_uniformes_mudam_compensatorio_pct": 2.8,
+      "pesos_uniformes_mudam_final_pct": 0.3,
+      "teto_seis_dimensoes_mudaria_final_pct": 19.7,
+      "com_advertencia_pct": 55.1,
+      "sem_acao_curto_prazo_pct": 0.7,
+      "tamanho_medio_roteiro": 7.39,
+      "com_teto_primeira_acao_do_gargalo_pct": 71.4,
+      "com_teto_outra_dimensao_na_frente_pct": 15.1,
+      "com_teto_faixa_do_gargalo_pct": {
+        "F1": 57.1,
+        "F2": 30.9,
+        "F3": 11.9
+      }
+    }
+  },
+  "ruido_e_complacencia": {
+    "perfis": 5000,
+    "ruido_20pct_itens_mais_ou_menos_1": {
+      "final_muda_pct": 12.6,
+      "compensatorio_muda_pct": 8.2,
+      "ganho_medio_final": -0.019,
+      "ganho_medio_compensatorio": -0.002
+    },
+    "complacencia_30pct_itens_mais_1": {
+      "final_muda_pct": 25,
+      "compensatorio_muda_pct": 30.3,
+      "ganho_medio_final": 0.251,
+      "ganho_medio_compensatorio": 0.303
+    },
+    "complacencia_uniforme_todos_mais_1": {
+      "final_muda_pct": 91,
+      "compensatorio_muda_pct": 81.7,
+      "ganho_medio_final": 1.061,
+      "ganho_medio_compensatorio": 0.964
+    }
+  },
+  "sensibilidade": {
+    "sorteios": 200,
+    "perfis": 800,
+    "pesos_20pct": {
+      "final": {
+        "media_pct": 0.2,
+        "p95_pct": 0.5
+      },
+      "compensatorio": {
+        "media_pct": 2.2,
+        "p95_pct": 3.5
+      },
+      "ordem": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "regras": {
+        "media_pct": 0,
+        "p95_pct": 0.1
+      }
+    },
+    "pesos_50pct": {
+      "final": {
+        "media_pct": 0.6,
+        "p95_pct": 1.6
+      },
+      "compensatorio": {
+        "media_pct": 5.4,
+        "p95_pct": 9
+      },
+      "ordem": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "regras": {
+        "media_pct": 0.1,
+        "p95_pct": 0.3
+      }
+    },
+    "limites_niveis_5pts": {
+      "final": {
+        "media_pct": 9.3,
+        "p95_pct": 15.3
+      },
+      "compensatorio": {
+        "media_pct": 10.3,
+        "p95_pct": 15.1
+      },
+      "ordem": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "regras": {
+        "media_pct": 0,
+        "p95_pct": 0
+      }
+    },
+    "limites_faixas_5pts": {
+      "final": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "compensatorio": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "ordem": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "regras": {
+        "media_pct": 23.2,
+        "p95_pct": 36
+      }
+    },
+    "priorizacao_50pct": {
+      "final": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "compensatorio": {
+        "media_pct": 0,
+        "p95_pct": 0
+      },
+      "ordem": {
+        "media_pct": 27,
+        "p95_pct": 57.6
+      },
+      "regras": {
+        "media_pct": 0,
+        "p95_pct": 0
+      }
+    }
+  },
+  "personas": {
+    "casos": 6,
+    "divergencias": 0,
+    "detalhes": [
+      {
+        "id": "P1",
+        "perfil": [
+          1,
+          1,
+          5,
+          4,
+          2,
+          3
+        ],
+        "esperado": {
+          "nivel": 1,
+          "gargalos": [
+            "D0",
+            "D1"
+          ],
+          "rt": [
+            "RT-01",
+            "RT-02",
+            "RT-04"
+          ]
+        },
+        "observado": {
+          "nivel": 1,
+          "gargalos": [
+            "D0",
+            "D1"
+          ],
+          "rt": [
+            "RT-01",
+            "RT-02",
+            "RT-04"
+          ]
+        },
+        "confere": true
+      },
+      {
+        "id": "P2",
+        "perfil": [
+          5,
+          4,
+          3,
+          3,
+          1,
+          3
+        ],
+        "esperado": {
+          "nivel": 3,
+          "gargalos": [],
+          "rt": [
+            "RT-06"
+          ]
+        },
+        "observado": {
+          "nivel": 3,
+          "gargalos": [],
+          "rt": [
+            "RT-06"
+          ]
+        },
+        "confere": true
+      },
+      {
+        "id": "P3",
+        "perfil": [
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "esperado": {
+          "nivel": 3,
+          "gargalos": [],
+          "rt": []
+        },
+        "observado": {
+          "nivel": 3,
+          "gargalos": [],
+          "rt": []
+        },
+        "confere": true
+      },
+      {
+        "id": "P4",
+        "perfil": [
+          1,
+          1,
+          5,
+          1,
+          1,
+          1
+        ],
+        "esperado": {
+          "nivel": 1,
+          "gargalos": [],
+          "rt": [
+            "RT-01",
+            "RT-02",
+            "RT-04",
+            "RT-05"
+          ]
+        },
+        "observado": {
+          "nivel": 1,
+          "gargalos": [],
+          "rt": [
+            "RT-01",
+            "RT-02",
+            "RT-04",
+            "RT-05"
+          ]
+        },
+        "confere": true
+      },
+      {
+        "id": "P5",
+        "perfil": [
+          5,
+          5,
+          5,
+          1,
+          5,
+          5
+        ],
+        "esperado": {
+          "nivel": 1,
+          "gargalos": [
+            "D3"
+          ],
+          "rt": [
+            "RT-03",
+            "RT-05"
+          ]
+        },
+        "observado": {
+          "nivel": 1,
+          "gargalos": [
+            "D3"
+          ],
+          "rt": [
+            "RT-03",
+            "RT-05"
+          ]
+        },
+        "confere": true
+      },
+      {
+        "id": "P6",
+        "perfil": [
+          5,
+          5,
+          5,
+          5,
+          1,
+          5
+        ],
+        "esperado": {
+          "nivel": 5,
+          "gargalos": [],
+          "rt": [
+            "RT-06"
+          ]
+        },
+        "observado": {
+          "nivel": 5,
+          "gargalos": [],
+          "rt": [
+            "RT-06"
+          ]
+        },
+        "confere": true
+      }
+    ]
+  },
+  "cobertura": {
+    "perfis": 15625,
+    "combinacoes_de_faixas": "729 de 729",
+    "regras_nunca_acionadas": [],
+    "tamanho_roteiro": {
+      "min": 6,
+      "max": 10
+    },
+    "teto_atua_pct": 80.7,
+    "frequencia_advertencias_pct": {
+      "RT-01": 40,
+      "RT-02": 35.2,
+      "RT-03": 2.6,
+      "RT-04": 24,
+      "RT-05": 40,
+      "RT-06": 24
+    }
+  },
+  "verificacoes": {
+    "aurora": {
+      "casos": 1,
+      "divergencias": 0
+    },
+    "harness": {
+      "casos": 2000,
+      "divergencias": 0
+    },
+    "teto": {
+      "casos": 2000,
+      "divergencias": 0
+    },
+    "monotonicidade": {
+      "casos": 24042,
+      "divergencias": 0
+    },
+    "fronteiras": {
+      "casos": 28750,
+      "divergencias": 0
+    },
+    "entradas_invalidas": {
+      "casos": 2003,
+      "divergencias": 0
+    },
+    "modelo_corrompido": {
+      "casos": 8,
+      "divergencias": 0
+    },
+    "datas": {
+      "casos": 1305,
+      "divergencias": 0
+    },
+    "ordem_roteiro": {
+      "casos": 15625,
+      "divergencias": 0
+    }
+  },
+  "trajetorias": {
+    "perfis": 500,
+    "seguir_roteiro": {
+      "alcancou_pct": 100,
+      "ciclos_media": 4.56,
+      "meses_media": 34.2
+    },
+    "sortear_duas": {
+      "alcancou_pct": 100,
+      "ciclos_media": 8.88,
+      "meses_media": 62.5
+    },
+    "priorizar_criticas_mais_fracas": {
+      "alcancou_pct": 100,
+      "ciclos_media": 4.34,
+      "meses_media": 32.4
+    },
+    "roteiro_mais_lento_que_criticas_pct": 28.8,
+    "roteiro_mais_rapido_que_criticas_pct": 8
+  }
+}

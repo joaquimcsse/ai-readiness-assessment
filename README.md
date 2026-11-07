@@ -41,6 +41,22 @@ node --test                      # ou: npm test   (Node 20+, sem dependências)
 | `tests/interface.test.js` | RNF01 (nenhum código de especificação ou de regra na tela do gestor), resumo primeiro, um único próximo passo, gargalo sinalizado, menu agrupado |
 | `tests/metricas.test.js` | registro local do tempo de preenchimento e das aberturas do guia |
 
+## Simulação sintética (E4)
+
+```bash
+make simular    # node pipeline/simular.mjs: grava pipeline/saida/simulacao.json
+make mutacao    # node pipeline/mutacao.mjs: injeta 5 defeitos numa cópia do núcleo
+```
+
+`pipeline/simular.mjs` importa `js/nucleo.js` e `dados.json` (modelo 1.0.0) sem alterá-los e usa
+a semente 20261013. Roda ablação, ruído e complacência, sensibilidade, personas, cobertura,
+verificações de propriedade contra oráculos independentes e trajetórias de melhoria, sobre duas
+populações sintéticas (itens independentes e maturidade correlacionada). O script foi reescrito
+a partir da especificação do relatório do PBL 7, porque o original não chegou a ser versionado.
+`pipeline/mutacao.mjs` copia `js/` para um diretório temporário, injeta um defeito por vez
+(limite inclusivo, teto removido, desempate invertido, teto incorreto e data de reaplicação sem
+ajuste ao fim do mês) e falha se a simulação deixar algum passar.
+
 ## Estrutura (seção 8 — módulos)
 
 | Arquivo | Realiza |
@@ -246,3 +262,8 @@ O modelo continua na versão 1.0.0. Só mudou a interface.
 - **RT-02/RT-03:** “dimensões críticas” = D0, D1, D3 (é o que reproduz a Tabela 13).
 - **RT-03 × FA-01:** a explicação do teto (FA-01) aparece sempre que o teto atua; a regra
   RT-03 só entra no roteiro quando a sua condição (escore global Consolidado) é satisfeita.
+
+## Licença
+
+Código distribuído sob a licença MIT (arquivo `LICENSE`). As bibliotecas em `vendor/` mantêm
+as licenças próprias, indicadas em cada pasta.

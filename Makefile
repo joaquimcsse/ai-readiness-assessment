@@ -30,6 +30,14 @@ medir:
 test:
 	node --test
 
+## simular: simulação sintética (E4), grava pipeline/saida/simulacao.json
+simular:
+	node $(PIPE)/simular.mjs > /dev/null
+
+## mutacao: injeta 5 defeitos numa cópia do núcleo e exige que a simulação detecte todos
+mutacao:
+	node $(PIPE)/mutacao.mjs
+
 ## deps: confere os programas externos do pipeline
 deps:
 	cd $(PIPE) && $(PY) paths.py
@@ -43,4 +51,4 @@ clean:
 help:
 	@grep -E '^## ' $(MAKEFILE_LIST) | sed 's/## /  make /'
 
-.PHONY: all build check qa medir test deps clean help
+.PHONY: all build check qa medir test simular mutacao deps clean help
